@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
-    @Bean
-    public ModelResolver modelResolver(ObjectMapper objectMapper) {
-        return new ModelResolver(objectMapper);
-    }
+//    @Bean
+//    public ModelResolver modelResolver(ObjectMapper objectMapper) {
+//        return new ModelResolver(objectMapper);
+//    }
 
     @Bean
     public OpenAPI openAPI() {
