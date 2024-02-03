@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.domains.user;
+package com.itcook.cooking.domain.domains.user.enums;
 
 import lombok.Getter;
 
