@@ -1,9 +1,12 @@
 spring:
   profiles:
-    active:
+    active: local
     include:
       - domain
+      - infra
 
+logging:
+  config: classpath:logback-${spring.profiles.active}.xml
 ---
 spring:
   config:
