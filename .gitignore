@@ -6,6 +6,7 @@ build/
 
 docker-compose.yml
 application-local.yml
+application-test.yml
 
 ### IntelliJ IDEA ###
 .idea
