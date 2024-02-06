@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "itcook_user")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ItCookUser extends BaseTimeEntity {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +24,7 @@ public class ItCookUser extends BaseTimeEntity {
     private UserRole userRole;
 
     @Builder
-    public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole) {
+    public User(Long id, String email, String password, String nickName, UserRole userRole) {
         this.id = id;
         this.email = email;
         this.password = password;

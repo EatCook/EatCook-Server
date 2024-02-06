@@ -1,15 +1,14 @@
 package com.itcook.cooking;
 
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.entity.User;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ItCookUserCreate {
 
-    public static ItCookUser createUser() {
-        return ItCookUser.builder()
+    public static User createUser() {
+        return User.builder()
                 .email("test@gmail.com")
                 .password("1234")
                 .nickName("테스트")
@@ -17,11 +16,11 @@ public class ItCookUserCreate {
                 ;
     }
 
-    public static List<ItCookUser> createUsers() {
+    public static List<User> createUsers() {
 
         return IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> {
-                    return ItCookUser.builder()
+                    return User.builder()
                             .email("test" + i + "@gmail.com")
                             .password("1234")
                             .nickName("테스트" + i)
