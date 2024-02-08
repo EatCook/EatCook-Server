@@ -18,11 +18,20 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String password;
+
+    @Column(nullable = false)
     private String nickName;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole userRole;
+
+    private String profile; //프로필 이미지
 
     @Builder
     public User(Long id, String email, String password, String nickName, UserRole userRole) {
