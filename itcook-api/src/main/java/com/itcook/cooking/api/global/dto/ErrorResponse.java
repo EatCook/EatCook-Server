@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.global.dto;
 
 import com.itcook.cooking.api.global.errorcode.ErrorCode;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter @Setter
 public class ErrorResponse extends ApiResponse{
 
+    @Schema(description = "에러 validation 필드",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private final Map<String, String> validation;
 
     protected ErrorResponse(String code, String message) {
