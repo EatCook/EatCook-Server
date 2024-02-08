@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseTimeEntity {
+@Table(name = "itcook_user")
+public class ItCookUser extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +35,7 @@ public class User extends BaseTimeEntity {
     private String profile; //프로필 이미지
 
     @Builder
-    public User(Long id, String email, String password, String nickName, UserRole userRole) {
+    public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole) {
         this.id = id;
         this.email = email;
         this.password = password;
