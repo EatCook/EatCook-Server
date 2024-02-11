@@ -15,11 +15,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(Exception exception) {
-        log.error("",exception);
+        log.error("", exception);
 
         ErrorResponse errorResponse = ErrorResponse.ERROR(CommonErrorCode.SERVER_ERROR);
         return ResponseEntity.status(CommonErrorCode.SERVER_ERROR.getHttpStatusCode())
-                .body(errorResponse)
-                ;
+            .body(errorResponse)
+            ;
     }
 }

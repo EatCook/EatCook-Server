@@ -14,32 +14,32 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(1)
 @RestControllerAdvice
 public class ValidExceptionHandler {
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> validException(
-            MethodArgumentNotValidException exception
+        MethodArgumentNotValidException exception
     ) {
-        log.error("",exception);
+        log.error("", exception);
 
         ErrorResponse errorResponse = ErrorResponse.ERROR(CommonErrorCode.BAD_REQUEST);
 
         for (FieldError fieldError : exception.getFieldErrors()) {
             errorResponse.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
-        }    
-        
+        }
+
         return ResponseEntity.status(CommonErrorCode.BAD_REQUEST.getHttpStatusCode())
-                .body(errorResponse)
-                ;
+            .body(errorResponse)
+            ;
     }
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ErrorResponse> nullPointException(NullPointerException exception) {
-        log.error("",exception);
+        log.error("", exception);
 
         ErrorResponse errorResponse = ErrorResponse.ERROR(CommonErrorCode.NULL_POINT);
 
         return ResponseEntity.status(CommonErrorCode.NULL_POINT.getHttpStatusCode())
-                .body(errorResponse)
-                ;
+            .body(errorResponse)
+            ;
     }
 }

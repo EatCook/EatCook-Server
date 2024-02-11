@@ -1,7 +1,9 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
+import com.itcook.cooking.domain.domains.user.enums.ResideType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +35,20 @@ public class ItCookUser extends BaseTimeEntity {
     private UserRole userRole;
 
     private String profile; //프로필 이미지
+
+    private Integer likeCount; // 좋아요수
+
+    private ResideType resideType; // 거주 형태
+
+    @ElementCollection
+    @CollectionTable(name = "follower", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "follower_name")
+    private List<String> followers;
+
+    @ElementCollection
+    @CollectionTable(name = "following", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "following_name")
+    private List<String> followings;
 
     @Builder
     public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole) {

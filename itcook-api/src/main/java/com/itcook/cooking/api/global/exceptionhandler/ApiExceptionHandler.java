@@ -16,14 +16,14 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> apiException(ApiException apiException) {
-        log.info("",apiException);
+        log.info("", apiException);
 
         ErrorCode errorCode = apiException.getErrorCode();
         String errorDescription = apiException.getErrorDescription();
 
         return ResponseEntity.status(errorCode.getHttpStatusCode())
-                .body(ErrorResponse.ERROR(errorCode, errorDescription))
-                ;
+            .body(ErrorResponse.ERROR(errorCode, errorDescription))
+            ;
 
     }
 }
