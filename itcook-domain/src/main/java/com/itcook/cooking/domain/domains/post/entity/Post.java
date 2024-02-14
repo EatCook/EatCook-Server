@@ -30,7 +30,7 @@ public class Post extends BaseTimeEntity {
     private String introduction; // 요리 소개글
     private Integer likeCount; // 좋아요수
 
-
+    @Column(nullable = false)
     private Long userId;
 
     @ElementCollection

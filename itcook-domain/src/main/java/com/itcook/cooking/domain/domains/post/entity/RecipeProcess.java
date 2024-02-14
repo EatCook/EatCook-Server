@@ -23,6 +23,7 @@ public class RecipeProcess {
     @Column(name = "recipe_process_id")
     private Long id;
 
+    @Column(nullable = false)
     private String recipeWriting;
 
     @ManyToOne(fetch = FetchType.LAZY)

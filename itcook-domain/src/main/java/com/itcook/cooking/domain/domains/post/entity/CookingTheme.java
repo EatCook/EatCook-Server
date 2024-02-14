@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CookingTheme extends BaseTimeEntity {
+public class CookingTheme {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,8 @@ public class CookingTheme extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    private Long userId;
 
     @Builder
     public CookingTheme(Long id, CookingType cookingType, Post post) {
