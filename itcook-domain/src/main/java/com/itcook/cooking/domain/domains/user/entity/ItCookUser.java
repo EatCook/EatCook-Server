@@ -1,6 +1,7 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
+import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.ResideType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import java.util.List;
@@ -32,13 +33,17 @@ public class ItCookUser extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole userRole;
+    private UserRole userRole = UserRole.USER;
 
     private String profile; //프로필 이미지
 
     private Integer likeCount; // 좋아요수
 
+    @Enumerated(EnumType.STRING)
     private ResideType resideType; // 거주 형태
+
+    @Enumerated(EnumType.STRING)
+    private ProviderType providerType = ProviderType.COMMON;
 
     @ElementCollection
     @CollectionTable(name = "follower", joinColumns = @JoinColumn(name = "user_id"))
