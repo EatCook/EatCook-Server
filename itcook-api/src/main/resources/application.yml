@@ -25,6 +25,11 @@ springdoc:
     disable-swagger-default-url: true
     doc-expansion: none
     display-request-duration: true
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}
+  access-exp: ${JWT_ACCESS_EXP:3600}
+  refresh-exp: ${JWT_ACCESS_EXP:3600}
 ---
 spring:
   config:
