@@ -5,9 +5,12 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ROLES_CLAIM;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 
+import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.errorcode.CommonErrorCode;
 import com.itcook.cooking.api.global.errorcode.UserErrorCode;
 import com.itcook.cooking.api.global.exception.ApiException;
+import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
+import com.itcook.cooking.infra.redis.config.RedisService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -19,10 +22,13 @@ import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+
 public class JwtTokenProvider {
 
     @Value("${jwt.access-exp}")
@@ -30,9 +36,33 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh-exp}")
     private Long refreshExp;
     private final Key key;
+    private final RedisService redisService;
 
-    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey) {
+    public JwtTokenProvider(
+        @Value("${jwt.secret-key}") String secretKey,
+        RedisService redisService
+    ) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.redisService = redisService;
+    }
+
+
+    public TokenDto generateAccessTokenAndRefreshToken(Authentication authResult) {
+
+        AuthenticationUser principalUser = (AuthenticationUser) authResult.getPrincipal();
+        String username = principalUser.getUsername();
+        List<String> authorities = principalUser.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority).toList();
+
+        String accessToken = generateAccessToken(username, authorities);
+        String refreshToken = generateRefreshToken();
+
+        redisService.setDataWithExpire(username, refreshToken, refreshExp);
+
+        return TokenDto.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
     }
 
 
