@@ -33,17 +33,16 @@ public class ItCookUser extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole userRole = UserRole.USER;
+    private UserRole userRole;
 
     private String profile; //프로필 이미지
-
-    private Integer likeCount; // 좋아요수
 
     @Enumerated(EnumType.STRING)
     private ResideType resideType; // 거주 형태
 
     @Enumerated(EnumType.STRING)
-    private ProviderType providerType = ProviderType.COMMON;
+    @Column(nullable = false)
+    private ProviderType providerType;
 
     @ElementCollection
     @CollectionTable(name = "follower", joinColumns = @JoinColumn(name = "user_id"))
@@ -56,11 +55,15 @@ public class ItCookUser extends BaseTimeEntity {
     private List<String> followings;
 
     @Builder
-    public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole) {
+    public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
+        String profile, ProviderType providerType
+    ) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.nickName = nickName;
         this.userRole = userRole;
+        this.profile = profile;
+        this.providerType = providerType;
     }
 }

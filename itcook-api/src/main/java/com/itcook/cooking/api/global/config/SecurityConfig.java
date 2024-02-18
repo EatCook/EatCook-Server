@@ -3,7 +3,7 @@ package com.itcook.cooking.api.global.config;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.SWAGGER_PATTERNS;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itcook.cooking.api.global.security.jwt.authentication.JwtAuthenticationFilter;
+import com.itcook.cooking.api.global.security.jwt.filter.JwtLoginFilter;
 import com.itcook.cooking.api.global.security.jwt.service.ItCookUserDetailsService;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -49,19 +49,19 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-            .anyRequest().permitAll();
+            .anyRequest().hasRole("USER");
 
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(objectMapper,
+    public JwtLoginFilter jwtLoginFilter() {
+        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(objectMapper,
             jwtTokenProvider);
-        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager());
-        return jwtAuthenticationFilter;
+        jwtLoginFilter.setAuthenticationManager(authenticationManager());
+        return jwtLoginFilter;
     }
 
     @Bean

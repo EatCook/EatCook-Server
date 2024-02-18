@@ -1,18 +1,22 @@
 package com.itcook.cooking.api.global.security.jwt.service;
 
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_SUBJECT;
+import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_SUBJECT;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ROLES_CLAIM;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 
-import com.itcook.cooking.api.global.consts.ItCookConstants;
+import com.itcook.cooking.api.global.errorcode.CommonErrorCode;
+import com.itcook.cooking.api.global.errorcode.UserErrorCode;
+import com.itcook.cooking.api.global.exception.ApiException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,12 +47,30 @@ public class JwtTokenProvider {
             ;
     }
 
+    public String generateRefreshToken() {
+        return Jwts.builder()
+            .setSubject(REFRESH_TOKEN_SUBJECT)
+            .setExpiration(new Date(new Date().getTime() + refreshExp * 1000L))
+            .signWith(key)
+            .compact()
+            ;
+    }
+
     public Claims isTokenValid(String token) {
-        return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJwt(token)
-            .getBody();
+        try {
+            return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                ;
+        } catch (ExpiredJwtException e) {
+            throw new ApiException(UserErrorCode.TOKEN_EXPIRED);
+        } catch (JwtException e) {
+            throw new ApiException(UserErrorCode.TOKEN_NOT_VALID);
+        } catch (Exception e) {
+            throw new ApiException(CommonErrorCode.BAD_REQUEST);
+        }
     }
 
 }
