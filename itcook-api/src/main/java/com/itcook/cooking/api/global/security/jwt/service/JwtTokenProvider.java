@@ -4,6 +4,7 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_
 import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_SUBJECT;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ROLES_CLAIM;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
+import static io.jsonwebtoken.SignatureAlgorithm.*;
 
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.errorcode.CommonErrorCode;
@@ -15,6 +16,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -72,7 +74,7 @@ public class JwtTokenProvider {
             .claim(USERNAME_CLAIM, username)
             .claim(ROLES_CLAIM, authorities)
             .setExpiration(new Date(new Date().getTime() + accessExp * 1000L))
-            .signWith(key)
+            .signWith(key, HS512)
             .compact()
             ;
     }
@@ -81,7 +83,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
             .setSubject(REFRESH_TOKEN_SUBJECT)
             .setExpiration(new Date(new Date().getTime() + refreshExp * 1000L))
-            .signWith(key)
+            .signWith(key, HS512)
             .compact()
             ;
     }

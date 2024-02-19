@@ -28,7 +28,7 @@ springdoc:
 
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}
+  secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}
   access-exp: ${JWT_ACCESS_EXP:3600}
   refresh-exp: ${JWT_ACCESS_EXP:3600}
 server:

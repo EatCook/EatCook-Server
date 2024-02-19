@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.global.security.jwt;
 
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_HEADER;
+import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_HEADER;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -114,6 +115,12 @@ public class JWTLoginTest {
         //then
         assertEquals(HttpStatus.UNAUTHORIZED.value(),httpClientErrorException.getStatusCode().value());
 
+    }
+
+    private HttpEntity getAuthAccessTokenHeaderEntity(String accessToken) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(ACCESS_TOKEN_HEADER, BEARER + accessToken);
+        return new HttpEntity<>("", httpHeaders);
     }
 
 }
