@@ -72,6 +72,7 @@ public class JWTLoginTest {
 
     @BeforeEach
     void init() {
+        userRepository.deleteAll();
         userRepository.save(
             ItCookUser.builder()
                 .email("hangs0908@test.com")
@@ -154,7 +155,7 @@ public class JWTLoginTest {
     @DisplayName("엑세스 토큰 검증시 유효하지 않은 테스트")
     void test4() throws URISyntaxException, JsonProcessingException {
         //given
-        HttpEntity httpEntity = getAuthAccessTokenHeaderEntity("adsfadsdfassdaf");
+        HttpEntity httpEntity = getAuthAccessTokenHeaderEntity("Bearer adsfadsdfassdaf");
         //when
         HttpClientErrorException exception = assertThrows(
             HttpClientErrorException.class,
@@ -258,8 +259,6 @@ public class JWTLoginTest {
         //given
         TokenDto token1 = getToken("hangs0908@test1.com", "1234");
         TokenDto token2 = getToken("hangs0908@test.com", "1234");
-        System.out.println("token1 = " + token1.getRefreshToken());
-        System.out.println("token2 = " + token2.getRefreshToken());
 
         HttpEntity httpEntity = getAuthTokensHeaderEntity(token1.getAccessToken(),
             token2.getRefreshToken());
