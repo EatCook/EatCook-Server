@@ -9,6 +9,7 @@ public class ItCookConstants {
     public static final String BEARER = "Bearer ";
     public static final String ACCESS_TOKEN_HEADER = "Authorization";
     public static final String REFRESH_TOKEN_HEADER = "Authorization-refresh";
+    public static final String TOKEN_ISSUER = "eatcook";
 
     public static final String[] SWAGGER_PATTERNS = {
         "/swagger-ui/**","/swagger-resources/**","/swagger-ui.html","/v3/api-docs",

@@ -3,6 +3,8 @@ package com.itcook.cooking.api.global.config;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.SWAGGER_PATTERNS;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itcook.cooking.api.global.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
+import com.itcook.cooking.api.global.security.jwt.filter.JwtCheckFilter;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtLoginFilter;
 import com.itcook.cooking.api.global.security.jwt.service.ItCookUserDetailsService;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
@@ -29,6 +31,8 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final ItCookUserDetailsService userDetailsService;
+    private final JwtCheckFilter jwtCheckFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -52,6 +56,14 @@ public class SecurityConfig {
             .anyRequest().hasRole("USER");
 
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // todo
+        http.exceptionHandling()
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//            .accessDeniedHandler(accessDeniedEntryPoint);
+        ;
+
 
         return http.build();
     }
