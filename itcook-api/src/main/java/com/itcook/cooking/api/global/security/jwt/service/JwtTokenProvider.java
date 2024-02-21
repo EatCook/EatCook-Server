@@ -109,6 +109,7 @@ public class JwtTokenProvider {
         }
     }
 
+    // TODO JwtCheckFilter로 무빙
     public void successAuthentication(Claims tokenClaims) {
         String username = tokenClaims.get(USERNAME_CLAIM, String.class);
         List<String> roles = tokenClaims.get(ROLES_CLAIM, List.class);
@@ -156,6 +157,8 @@ public class JwtTokenProvider {
                 .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
+        } catch (JwtException e) {
+            throw new ApiException(UserErrorCode.TOKEN_NOT_VALID);
         }
     }
 }
