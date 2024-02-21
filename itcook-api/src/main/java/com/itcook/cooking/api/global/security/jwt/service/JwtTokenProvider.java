@@ -36,7 +36,6 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-
 public class JwtTokenProvider {
 
     @Value("${jwt.access-exp}")
@@ -55,13 +54,7 @@ public class JwtTokenProvider {
     }
 
 
-    public TokenDto generateAccessTokenAndRefreshToken(Authentication authResult) {
-
-        AuthenticationUser principalUser = (AuthenticationUser) authResult.getPrincipal();
-        String username = principalUser.getUsername();
-        List<String> authorities = principalUser.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority).toList();
-
+    public TokenDto generateAccessTokenAndRefreshToken(String username, List<String> authorities) {
         String accessToken = generateAccessToken(username, authorities);
         String refreshToken = generateRefreshToken(username);
 
@@ -151,14 +144,7 @@ public class JwtTokenProvider {
             throw new ApiException(UserErrorCode.NOT_EQUAL_REFRESH_TOKEN);
         }
 
-        String accessToken = generateAccessToken(username, authorities);
-        String refreshToken = generateRefreshToken(username);
-        redisService.setDataWithExpire(username, refreshToken, refreshExp);
-
-        return TokenDto.builder()
-            .accessToken(BEARER + accessToken)
-            .refreshToken(BEARER + refreshToken)
-            .build();
+        return generateAccessTokenAndRefreshToken(username, authorities);
     }
 
     public Claims getAccessTokenClaims(String accessToken) {

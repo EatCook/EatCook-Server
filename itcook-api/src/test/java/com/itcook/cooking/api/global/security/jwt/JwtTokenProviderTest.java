@@ -9,18 +9,11 @@ import com.itcook.cooking.api.global.errorcode.ErrorCode;
 import com.itcook.cooking.api.global.errorcode.UserErrorCode;
 import com.itcook.cooking.api.global.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -69,19 +62,6 @@ class JwtTokenProviderTest {
         assertEquals(errorCode.getHttpStatusCode(), UserErrorCode.TOKEN_EXPIRED.getHttpStatusCode());
         assertEquals(errorCode.getErrorCode(), UserErrorCode.TOKEN_EXPIRED.getErrorCode());
 
-    }
-
-    @Test
-    @DisplayName("리프레쉬 토큰 생성")
-    void test5() {
-        //given
-        String refreshToken = jwtTokenProvider.generateRefreshToken("test1");
-        String refreshToken1 = jwtTokenProvider.generateRefreshToken("test2");
-        String refreshToken2 = jwtTokenProvider.generateRefreshToken("test3");
-        String refreshToken3 = jwtTokenProvider.generateRefreshToken("test4");
-        //when
-
-        //then
     }
 
     @Test

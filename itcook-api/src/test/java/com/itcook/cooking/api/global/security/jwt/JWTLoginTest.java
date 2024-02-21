@@ -138,7 +138,7 @@ public class JWTLoginTest {
     }
 
     @Test
-    @DisplayName("로그인 성공 후 ACCESS TOKEN 검증 테스트")
+    @DisplayName("로그인 성공 후 ACCESS TOKEN 검증 성공 테스트")
     void test3() throws URISyntaxException {
         //given
         String accessToken = getToken("hangs0908@test.com", "1234").getAccessToken();

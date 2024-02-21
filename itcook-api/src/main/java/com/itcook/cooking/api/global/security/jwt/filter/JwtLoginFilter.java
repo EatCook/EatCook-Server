@@ -5,6 +5,7 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_HEADER;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.user.dto.request.UserLogin;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.api.global.dto.ErrorResponse;
@@ -15,6 +16,7 @@ import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
@@ -77,7 +81,12 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         ApiResponse apiResponse = ApiResponse.OK("로그인 성공");
         String body = objectMapper.writeValueAsString(apiResponse);
 
-        TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(authResult);
+        AuthenticationUser principalUser = (AuthenticationUser) authResult.getPrincipal();
+        String username = principalUser.getUsername();
+        List<String> authorities = principalUser.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority).toList();
+
+        TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username, authorities);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

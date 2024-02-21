@@ -39,26 +39,13 @@ public class JwtCheckFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
         log.info("doFilterInternal JWT 토큰 체크");
-        String accessTokenValue = null;
-        String refreshTokenValue = null;
         String accessTokenHeader = request.getHeader(ACCESS_TOKEN_HEADER);
         String refreshTokenHeader = request.getHeader(REFRESH_TOKEN_HEADER);
 
-        // TODO access token 만료후 access Token & refresh token 재발급
+        // access token 만료후 access Token & refresh token 재발급
         if (StringUtils.hasText(refreshTokenHeader) && refreshTokenHeader.startsWith(BEARER)) {
-            try {
-                refreshTokenValue = refreshTokenHeader.replace(BEARER, "");
-                accessTokenValue = accessTokenHeader.replace(BEARER, "");
-                log.info("access token 만료로 토큰 재발급");
-                TokenDto tokens = jwtTokenProvider.reissue(accessTokenValue, refreshTokenValue);
-
-                sendReissueResponse(response, tokens);
-                return;
-            } catch (ApiException e) {
-                request.setAttribute("exception",e);
-                filterChain.doFilter(request,response);
-                return;
-            }
+            reissueTokens(request, response, filterChain, refreshTokenHeader, accessTokenHeader);
+            return;
         }
 
         // 엑세스 유효성 체크
@@ -68,9 +55,32 @@ public class JwtCheckFilter extends OncePerRequestFilter {
         }
 
         // access token 검증
+        // TODO 로그아웃 구현시 블랙리스트 추가
+        //  엑세스 토큰이 블랙리스트에 있는지 검증 로직 추가 , access token 과 refresh token이 같이 보내는경우
+        //  refresh token만 보낼 경우 refresh token이 탈취 당하는 경우 방지
         verifyAccessToken(accessTokenHeader,request);
 
         filterChain.doFilter(request,response);
+    }
+
+    private void reissueTokens(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain, String refreshTokenHeader, String accessTokenHeader)
+        throws IOException, ServletException {
+        String accessTokenValue;
+        String refreshTokenValue;
+        try {
+            refreshTokenValue = refreshTokenHeader.replace(BEARER, "");
+            accessTokenValue = accessTokenHeader.replace(BEARER, "");
+            log.info("access token 만료로 토큰 재발급");
+            TokenDto tokens = jwtTokenProvider.reissue(accessTokenValue, refreshTokenValue);
+
+            sendReissueResponse(response, tokens);
+            return;
+        } catch (ApiException e) {
+            request.setAttribute("exception",e);
+            filterChain.doFilter(request, response);
+            return;
+        }
     }
 
     private void sendReissueResponse(HttpServletResponse response, TokenDto tokens)
