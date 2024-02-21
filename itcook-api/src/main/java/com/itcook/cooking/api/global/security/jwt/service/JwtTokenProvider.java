@@ -38,19 +38,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtTokenProvider {
 
-    @Value("${jwt.access-exp}")
-    private Long accessExp;
-    @Value("${jwt.refresh-exp}")
-    private Long refreshExp;
+    private final Long accessExp;
+    private final Long refreshExp;
     private final Key key;
     private final RedisService redisService;
 
     public JwtTokenProvider(
         @Value("${jwt.secret-key}") String secretKey,
+        @Value("${jwt.access-exp}") Long accessExp,
+        @Value("${jwt.refresh-exp}") Long refreshExp,
         RedisService redisService
     ) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.redisService = redisService;
+        this.accessExp = accessExp;
+        this.refreshExp = refreshExp;
     }
 
 

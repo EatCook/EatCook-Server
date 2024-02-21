@@ -17,7 +17,6 @@ import com.itcook.cooking.infra.redis.config.RedisService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 class JwtTokenProviderTest {
     private JwtTokenProvider jwtTokenProvider;
@@ -25,9 +24,9 @@ class JwtTokenProviderTest {
     @BeforeEach
     void init() {
         String key = "testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey";
-        jwtTokenProvider = new JwtTokenProvider(key, redisService);
-        ReflectionTestUtils.setField(jwtTokenProvider, "accessExp",3L);
-        ReflectionTestUtils.setField(jwtTokenProvider, "refreshExp",5L);
+        Long accessExp = 3L;
+        Long refreshExp = 5L;
+        jwtTokenProvider = new JwtTokenProvider(key,accessExp,refreshExp,redisService);
     }
 
     @Test
