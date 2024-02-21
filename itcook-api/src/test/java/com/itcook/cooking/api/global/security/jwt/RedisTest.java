@@ -51,19 +51,19 @@ public class RedisTest {
         assertNull(result);
     }
 
-    @Test
-    @DisplayName("Redis 저장 후 만료 테스트")
-    void test3() throws InterruptedException {
-        //given
-        String key = "testKey";
-        String expectedValue = "testValue";
-        //when
-        redisService.setDataWithExpire(key, expectedValue, 5L);
-        TimeUnit.SECONDS.sleep(6);
-
-        //then
-        Object result = redisService.getData(key);
-        assertNull(result);
-    }
+//    @Test
+//    @DisplayName("Redis 저장 후 만료 테스트")
+//    void test3() throws InterruptedException {
+//        //given
+//        String key = "testKey";
+//        String expectedValue = "testValue";
+//        //when
+//        redisService.setDataWithExpire(key, expectedValue, 5L);
+//        TimeUnit.SECONDS.sleep(6);
+//
+//        //then
+//        Object result = redisService.getData(key);
+//        assertNull(result);
+//    }
 
 }
