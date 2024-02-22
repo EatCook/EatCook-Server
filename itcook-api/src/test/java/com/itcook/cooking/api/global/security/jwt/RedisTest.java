@@ -51,6 +51,20 @@ public class RedisTest {
         assertNull(result);
     }
 
+    @Test
+    @DisplayName("blackList 추가 테스트")
+    void test3() {
+        //given
+        //when
+        String testaccessToken = "testAccessToken";
+        redisService.addBlackList(testaccessToken,3000L);
+
+        //then
+        String value = (String) redisService.getData(testaccessToken);
+
+        assertEquals("logout", value);
+    }
+
 //    @Test
 //    @DisplayName("Redis 저장 후 만료 테스트")
 //    void test3() throws InterruptedException {

@@ -20,6 +20,7 @@ import com.itcook.cooking.api.global.dto.ErrorResponse;
 import com.itcook.cooking.api.global.errorcode.UserErrorCode;
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
+import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
@@ -63,6 +64,9 @@ public class JWTLoginTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -275,6 +279,25 @@ public class JWTLoginTest {
         assertEquals(UserErrorCode.NOT_EQUAL_REFRESH_TOKEN.getHttpStatusCode(), exception.getStatusCode().value());
         assertEquals(UserErrorCode.NOT_EQUAL_REFRESH_TOKEN.getErrorCode(), apiResponse.getCode());
         assertEquals(UserErrorCode.NOT_EQUAL_REFRESH_TOKEN.getDescription(), apiResponse.getMessage());
+    }
+
+    @Test
+    @DisplayName("logout 성공 테스트")
+    void testLogout() throws URISyntaxException, JsonProcessingException {
+        //given
+        String accessToken = getToken("hangs0908@test.com", "1234").getAccessToken();
+        HttpEntity httpEntity = getAuthAccessTokenHeaderEntity(accessToken);
+        //when
+        String replace = accessToken.replace(BEARER, "");
+        jwtTokenProvider.parseAccessToken(replace);
+        ResponseEntity<String> response = restTemplate.exchange(uri("/logout"), HttpMethod.GET,
+            httpEntity, String.class);
+
+        //then
+        String body = response.getBody();
+        ApiResponse apiResponse = objectMapper.readValue(body, ApiResponse.class);
+        assertEquals("200", apiResponse.getCode());
+        assertEquals("로그아웃 성공하였습니다.", apiResponse.getMessage());
     }
 
     private TokenDto getToken(String username, String password) throws URISyntaxException {

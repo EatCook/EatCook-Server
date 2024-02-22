@@ -24,5 +24,12 @@ public class RedisService {
         redisTemplate.delete(key);
     }
 
+    /**
+     * 로그아웃시 access token 블랙 리스트 추가 메소드
+     */
+    public void addBlackList(String accessToken, long time) {
+        redisTemplate.opsForValue()
+            .set(accessToken, "logout", time, TimeUnit.MILLISECONDS);
+    }
 
 }

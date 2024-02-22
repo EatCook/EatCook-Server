@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.global.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtCheckFilter;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtLoginFilter;
+import com.itcook.cooking.api.global.security.jwt.filter.JwtLogoutHandler;
+import com.itcook.cooking.api.global.security.jwt.filter.JwtLogoutSuccessHandler;
 import com.itcook.cooking.api.global.security.jwt.service.ItCookUserDetailsService;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,8 @@ public class SecurityConfig {
     private final ItCookUserDetailsService userDetailsService;
     private final JwtCheckFilter jwtCheckFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtLogoutHandler jwtLogoutHandler;
+    private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -64,6 +68,10 @@ public class SecurityConfig {
 //            .accessDeniedHandler(accessDeniedEntryPoint);
         ;
 
+        http.logout()
+            .addLogoutHandler(jwtLogoutHandler)
+            .logoutSuccessHandler(jwtLogoutSuccessHandler)
+        ;
 
         return http.build();
     }

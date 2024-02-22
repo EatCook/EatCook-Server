@@ -1,14 +1,12 @@
 package com.itcook.cooking.api.global.security.jwt.service;
 
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_SUBJECT;
-import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_SUBJECT;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ROLES_CLAIM;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.TOKEN_ISSUER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 import static io.jsonwebtoken.SignatureAlgorithm.*;
 
-import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.errorcode.CommonErrorCode;
 import com.itcook.cooking.api.global.errorcode.UserErrorCode;
 import com.itcook.cooking.api.global.exception.ApiException;
@@ -25,13 +23,6 @@ import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -115,7 +106,7 @@ public class JwtTokenProvider {
         //refresh token 검증
         isTokenValid(refreshTokenValue);
         // 만료된 access token에서 username, authorities 추출
-        Claims accessTokenClaims = getAccessTokenClaims(accessTokenValue);
+        Claims accessTokenClaims = parseAccessToken(accessTokenValue);
         String username = accessTokenClaims.get(USERNAME_CLAIM, String.class);
         List<String> authorities = accessTokenClaims.get(ROLES_CLAIM, List.class);
 
@@ -129,7 +120,7 @@ public class JwtTokenProvider {
         return generateAccessTokenAndRefreshToken(username, authorities);
     }
 
-    public Claims getAccessTokenClaims(String accessToken) {
+    public Claims parseAccessToken(String accessToken) {
         try {
             return Jwts.parserBuilder()
                 .setSigningKey(key)
