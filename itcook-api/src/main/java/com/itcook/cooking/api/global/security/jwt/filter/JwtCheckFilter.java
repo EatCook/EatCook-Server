@@ -3,6 +3,8 @@ package com.itcook.cooking.api.global.security.jwt.filter;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_HEADER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_HEADER;
+import static com.itcook.cooking.api.global.consts.ItCookConstants.ROLES_CLAIM;
+import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +14,7 @@ import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -100,9 +108,29 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             String accessTokenValue;
             accessTokenValue = accessTokenHeader.replace(BEARER, "");
             Claims accessTokenClaims = jwtTokenProvider.isTokenValid(accessTokenValue);
-            jwtTokenProvider.successAuthentication(accessTokenClaims);
+            successAuthentication(accessTokenClaims);
         } catch (ApiException e) {
             request.setAttribute("exception",e);
         }
+    }
+
+    private void successAuthentication(Claims tokenClaims) {
+        String username = tokenClaims.get(USERNAME_CLAIM, String.class);
+        List<String> roles = tokenClaims.get(ROLES_CLAIM, List.class);
+
+        List<SimpleGrantedAuthority> authorities = roles.stream()
+            .map(SimpleGrantedAuthority::new)
+            .toList();
+
+        UserDetails user = User.withUsername(username)
+            .password("")
+            .authorities(authorities)
+            .build();
+
+        UsernamePasswordAuthenticationToken authenticated
+            = UsernamePasswordAuthenticationToken.authenticated(
+            user, null, authorities);
+
+        SecurityContextHolder.getContext().setAuthentication(authenticated);
     }
 }

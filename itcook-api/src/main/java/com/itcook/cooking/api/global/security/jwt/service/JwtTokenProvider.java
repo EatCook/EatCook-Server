@@ -111,27 +111,6 @@ public class JwtTokenProvider {
         }
     }
 
-    // TODO JwtCheckFilter로 무빙
-    public void successAuthentication(Claims tokenClaims) {
-        String username = tokenClaims.get(USERNAME_CLAIM, String.class);
-        List<String> roles = tokenClaims.get(ROLES_CLAIM, List.class);
-
-        List<SimpleGrantedAuthority> authorities = roles.stream()
-            .map(SimpleGrantedAuthority::new)
-            .toList();
-
-        UserDetails user = User.withUsername(username)
-            .password("")
-            .authorities(authorities)
-            .build();
-
-        UsernamePasswordAuthenticationToken authenticated
-            = UsernamePasswordAuthenticationToken.authenticated(
-            user, null, authorities);
-
-        SecurityContextHolder.getContext().setAuthentication(authenticated);
-    }
-
     public TokenDto reissue(String accessTokenValue, String refreshTokenValue) {
         //refresh token 검증
         isTokenValid(refreshTokenValue);

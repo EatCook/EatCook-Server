@@ -27,9 +27,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException authException) throws IOException, ServletException {
-        log.error("jwt 토큰 검증 예외");
-
         Exception exception = (Exception) request.getAttribute("exception");
+        log.error("jwt 토큰 검증 예외");
+        log.error("",exception);
 
         if (exception instanceof ApiException) {
             sendErrorResponse(((ApiException) exception).getErrorCode(),response);
