@@ -10,8 +10,8 @@ spring:
 
 logging:
   config: classpath:logback-${spring.profiles.active}.xml
-  level:
-    org.hibernate.type: trace
+#  level:
+#    org.hibernate.type: trace
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
@@ -25,6 +25,17 @@ springdoc:
     disable-swagger-default-url: true
     doc-expansion: none
     display-request-duration: true
+
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}
+  access-exp: ${JWT_ACCESS_EXP:3600}
+  refresh-exp: ${JWT_ACCESS_EXP:3600}
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
 ---
 spring:
   config:
