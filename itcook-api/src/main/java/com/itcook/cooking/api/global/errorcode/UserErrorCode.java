@@ -13,6 +13,7 @@ public enum UserErrorCode implements ErrorCode{
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "U-003","유저를 찾을 수 없습니다."),
     TOKEN_NOT_EXIST(HttpStatus.UNAUTHORIZED.value(), "U-004", "토큰이 존재하지 않습니다."),
     NOT_EQUAL_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED.value(), "U-005", "리프레쉬 토큰이 일치하지 않습니다."),
+    IS_LOGOUT_TOKEN(HttpStatus.BAD_REQUEST.value(), "U-006", "이미 로그아웃된 토큰입니다."),
     ;
 
     private final Integer httpStatusCode;

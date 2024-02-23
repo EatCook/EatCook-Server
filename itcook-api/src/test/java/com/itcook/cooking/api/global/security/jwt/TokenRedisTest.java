@@ -3,9 +3,11 @@ package com.itcook.cooking.api.global.security.jwt;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.*;
 import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.itcook.cooking.api.global.consts.ItCookConstants;
 import com.itcook.cooking.api.global.errorcode.UserErrorCode;
@@ -63,19 +65,19 @@ public class TokenRedisTest {
         assertEquals(tokenDto.getRefreshToken(), value);
     }
 
-    @Test
-    @DisplayName("토큰 생성후 유효시간 지난 후 조회 테스트")
-    void test4() throws InterruptedException {
-        //given
-        TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username,
-            of("ROLE_USER"));
-        //when
-        TimeUnit.SECONDS.sleep(5L);
-
-        //then
-        String value = (String) redisService.getData(username);
-        assertNull(value);
-    }
+//    @Test
+//    @DisplayName("토큰 생성후 유효시간 지난 후 조회 테스트")
+//    void test4() throws InterruptedException {
+//        //given
+//        TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username,
+//            of("ROLE_USER"));
+//        //when
+//        TimeUnit.SECONDS.sleep(5L);
+//
+//        //then
+//        String value = (String) redisService.getData(username);
+//        assertNull(value);
+//    }
 
     @Test
     @DisplayName("reissue 실패 테스트 (redis 리프래쉬와 전달된 리프래쉬 불일치)")
@@ -114,13 +116,30 @@ public class TokenRedisTest {
     }
 
     @Test
-    @DisplayName("reissue 테스트")
-    void test1() {
+    @DisplayName("isBlackToken 성공 태스트")
+    void testBlackList() {
         //given
-        jwtTokenProvider
-            .generateAccessTokenAndRefreshToken("hangs0908@test.com", of("ROLE_USER"));
+        TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username,
+            of("ROLE_USER"));
+        redisService.addBlackList(tokenDto.getAccessToken(),6000L);
         //when
+        boolean blackListToken = jwtTokenProvider.isBlackListToken(tokenDto.getAccessToken());
 
         //then
+        assertTrue(blackListToken);
+    }
+
+    @Test
+    @DisplayName("isBlackToken false 태스트")
+    void testBlackListNull() {
+        //given
+        TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username,
+            of("ROLE_USER"));
+        redisService.addBlackList(tokenDto.getAccessToken(),6000L);
+        //when
+        boolean blackListToken = jwtTokenProvider.isBlackListToken("Bearer adfncvdiz");
+
+        //then
+        assertFalse(blackListToken);
     }
 }

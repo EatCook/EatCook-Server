@@ -133,4 +133,9 @@ public class JwtTokenProvider {
             throw new ApiException(UserErrorCode.TOKEN_NOT_VALID);
         }
     }
+
+
+    public boolean isBlackListToken(String accessToken) {
+        return redisService.getData(accessToken) != null;
+    }
 }

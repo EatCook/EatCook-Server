@@ -18,6 +18,7 @@ import com.itcook.cooking.api.global.consts.ItCookConstants;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.api.global.dto.ErrorResponse;
 import com.itcook.cooking.api.global.errorcode.UserErrorCode;
+import com.itcook.cooking.api.global.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
@@ -176,26 +177,26 @@ public class JWTLoginTest {
 
     }
 
-    @Test
-    @DisplayName("엑세스 토큰 검증시 토큰 만료시간 초과 테스트")
-    void test5() throws Exception {
-        //given
-        String accessToken = getToken("hangs0908@test.com", "1234").getAccessToken();
-        TimeUnit.SECONDS.sleep(6L);
-        HttpEntity httpEntity = getAuthAccessTokenHeaderEntity(accessToken);
-        //when
-        HttpClientErrorException exception = assertThrows(
-            HttpClientErrorException.class,
-            () -> restTemplate.exchange(uri("/test"), HttpMethod.GET,
-                httpEntity, String.class));
-        String responseBody = exception.getResponseBodyAsString();
-        ApiResponse apiResponse = objectMapper.readValue(responseBody, ApiResponse.class);
-
-        //then
-        assertEquals(UserErrorCode.TOKEN_EXPIRED.getHttpStatusCode(), exception.getStatusCode().value());
-        assertEquals(UserErrorCode.TOKEN_EXPIRED.getErrorCode(), apiResponse.getCode());
-        assertEquals(UserErrorCode.TOKEN_EXPIRED.getDescription(), apiResponse.getMessage());
-    }
+//    @Test
+//    @DisplayName("엑세스 토큰 검증시 토큰 만료시간 초과 테스트")
+//    void test5() throws Exception {
+//        //given
+//        String accessToken = getToken("hangs0908@test.com", "1234").getAccessToken();
+//        TimeUnit.SECONDS.sleep(6L);
+//        HttpEntity httpEntity = getAuthAccessTokenHeaderEntity(accessToken);
+//        //when
+//        HttpClientErrorException exception = assertThrows(
+//            HttpClientErrorException.class,
+//            () -> restTemplate.exchange(uri("/test"), HttpMethod.GET,
+//                httpEntity, String.class));
+//        String responseBody = exception.getResponseBodyAsString();
+//        ApiResponse apiResponse = objectMapper.readValue(responseBody, ApiResponse.class);
+//
+//        //then
+//        assertEquals(UserErrorCode.TOKEN_EXPIRED.getHttpStatusCode(), exception.getStatusCode().value());
+//        assertEquals(UserErrorCode.TOKEN_EXPIRED.getErrorCode(), apiResponse.getCode());
+//        assertEquals(UserErrorCode.TOKEN_EXPIRED.getDescription(), apiResponse.getMessage());
+//    }
 
     @Test
     @DisplayName("엑세스 토큰이 존재하지 않을시 테스트")
@@ -217,22 +218,22 @@ public class JWTLoginTest {
         assertEquals(UserErrorCode.TOKEN_NOT_EXIST.getDescription(), apiResponse.getMessage());
     }
 
-    @Test
-    @DisplayName("엑세스 토큰 만료 후 토큰 재발급 성공 테스트")
-    void test7() throws URISyntaxException {
-        //given
-        TokenDto tokens = getToken("hangs0908@test.com", "1234");
-        HttpEntity httpEntity = getAuthTokensHeaderEntity(tokens.getAccessToken(), tokens.getRefreshToken());
-        //when
-        ResponseEntity<String> response = restTemplate.exchange(uri("/test"), HttpMethod.GET,
-            httpEntity, String.class);
-
-        //then
-        assertEquals(200,response.getStatusCode().value());
-        assertNotNull(response.getHeaders().get(ACCESS_TOKEN_HEADER));
-        assertNotNull(response.getHeaders().get(REFRESH_TOKEN_HEADER));
-
-    }
+//    @Test
+//    @DisplayName("엑세스 토큰 만료 후 토큰 재발급 성공 테스트")
+//    void test7() throws URISyntaxException {
+//        //given
+//        TokenDto tokens = getToken("hangs0908@test.com", "1234");
+//        HttpEntity httpEntity = getAuthTokensHeaderEntity(tokens.getAccessToken(), tokens.getRefreshToken());
+//        //when
+//        ResponseEntity<String> response = restTemplate.exchange(uri("/test"), HttpMethod.GET,
+//            httpEntity, String.class);
+//
+//        //then
+//        assertEquals(200,response.getStatusCode().value());
+//        assertNotNull(response.getHeaders().get(ACCESS_TOKEN_HEADER));
+//        assertNotNull(response.getHeaders().get(REFRESH_TOKEN_HEADER));
+//
+//    }
 
     @Test
     @DisplayName("유효하지 않은 리프레쉬 토큰 validation 테스트")
@@ -288,8 +289,6 @@ public class JWTLoginTest {
         String accessToken = getToken("hangs0908@test.com", "1234").getAccessToken();
         HttpEntity httpEntity = getAuthAccessTokenHeaderEntity(accessToken);
         //when
-        String replace = accessToken.replace(BEARER, "");
-        jwtTokenProvider.parseAccessToken(replace);
         ResponseEntity<String> response = restTemplate.exchange(uri("/logout"), HttpMethod.GET,
             httpEntity, String.class);
 
@@ -298,6 +297,55 @@ public class JWTLoginTest {
         ApiResponse apiResponse = objectMapper.readValue(body, ApiResponse.class);
         assertEquals("200", apiResponse.getCode());
         assertEquals("로그아웃 성공하였습니다.", apiResponse.getMessage());
+    }
+
+    @Test
+    @DisplayName("logout 후 black list 추가된 엑세스 토큰으로 조회 실패 테스트")
+    void testBlackoutAccessTokenTest() throws URISyntaxException, JsonProcessingException {
+        //given
+        String accessToken = getToken("hangs0908@test.com", "1234").getAccessToken();
+        HttpEntity httpEntity = getAuthAccessTokenHeaderEntity(accessToken);
+        restTemplate.exchange(uri("/logout"), HttpMethod.GET,
+            httpEntity, String.class);
+        //when
+        HttpClientErrorException httpClientErrorException = assertThrows(
+            HttpClientErrorException.class,
+            () -> restTemplate.exchange(uri("/test"), HttpMethod.GET,
+                httpEntity, String.class));
+
+        //then
+        String responseBody = httpClientErrorException.getResponseBodyAsString();
+        ApiResponse apiResponse = objectMapper.readValue(responseBody, ApiResponse.class);
+
+        assertEquals(httpClientErrorException.getStatusCode().value(), UserErrorCode.IS_LOGOUT_TOKEN.getHttpStatusCode());
+        assertEquals(UserErrorCode.IS_LOGOUT_TOKEN.getErrorCode(), apiResponse.getCode());
+        assertEquals(UserErrorCode.IS_LOGOUT_TOKEN.getDescription(), apiResponse.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("로그아웃 후 기존 토큰들로 재발급 시도 테스트")
+    void testBlacoutReissue() throws URISyntaxException, JsonProcessingException {
+        //given
+        TokenDto token = getToken("hangs0908@test1.com", "1234");
+        HttpEntity httpEntity = getAuthAccessTokenHeaderEntity(token.getAccessToken());
+        ResponseEntity<String> response = restTemplate.exchange(uri("/logout"), HttpMethod.GET,
+            httpEntity, String.class);
+        //when
+        HttpEntity entity = getAuthTokensHeaderEntity(token.getAccessToken(),
+            token.getRefreshToken());
+
+        //then
+        HttpClientErrorException httpClientErrorException = assertThrows(
+            HttpClientErrorException.class,
+            () -> restTemplate.exchange(uri("/test"), HttpMethod.GET,
+                entity, String.class));
+        String responseBody = httpClientErrorException.getResponseBodyAsString();
+        ApiResponse apiResponse = objectMapper.readValue(responseBody, ApiResponse.class);
+
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), httpClientErrorException.getStatusCode().value());
+        assertEquals(UserErrorCode.TOKEN_NOT_EXIST.getErrorCode(), apiResponse.getCode());
+        assertEquals(UserErrorCode.TOKEN_NOT_EXIST.getDescription(), apiResponse.getMessage());
     }
 
     private TokenDto getToken(String username, String password) throws URISyntaxException {

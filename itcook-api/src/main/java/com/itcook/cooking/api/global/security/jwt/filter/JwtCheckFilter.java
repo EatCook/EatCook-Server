@@ -9,6 +9,7 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAI
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.global.dto.ApiResponse;
+import com.itcook.cooking.api.global.errorcode.UserErrorCode;
 import com.itcook.cooking.api.global.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
@@ -107,6 +108,9 @@ public class JwtCheckFilter extends OncePerRequestFilter {
         try {
             String accessTokenValue;
             accessTokenValue = accessTokenHeader.replace(BEARER, "");
+            if (jwtTokenProvider.isBlackListToken(accessTokenValue)) {
+                throw new ApiException(UserErrorCode.IS_LOGOUT_TOKEN);
+            }
             Claims accessTokenClaims = jwtTokenProvider.isTokenValid(accessTokenValue);
             successAuthentication(accessTokenClaims);
         } catch (ApiException e) {
