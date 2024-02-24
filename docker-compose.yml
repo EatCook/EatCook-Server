@@ -20,3 +20,14 @@ services:
       TZ: Asia/Seoul
     ports:
       - "6379:6379"
+#  server:
+#    build:
+#      context: ./itcook-api
+#      dockerfile: Dockerfile
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/itcook_local?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+#    depends_on:
+#      - mysql
+#      - redis
+#    ports:
+#      - "8080:8080"
