@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: ${ACTIVE:local}
+    active: local
     include:
       - domain
       - infra
