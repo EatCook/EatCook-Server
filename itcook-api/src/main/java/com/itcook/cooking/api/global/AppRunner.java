@@ -22,8 +22,8 @@ public class AppRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         ItCookUser user = ItCookUser.builder()
-            .email("hangs0908@user.com")
-            .nickName("hangjin")
+            .email("user@user.com")
+            .nickName("user1")
             .userRole(UserRole.USER)
             .providerType(ProviderType.COMMON)
             .password(passwordEncoder.encode("1234"))
@@ -31,8 +31,8 @@ public class AppRunner implements ApplicationRunner {
 
 
         ItCookUser admin = ItCookUser.builder()
-            .email("hangs0908@admin.com")
-            .nickName("hangjin")
+            .email("admin@admin.com")
+            .nickName("admina")
             .userRole(UserRole.ADMIN)
             .providerType(ProviderType.COMMON)
             .password(passwordEncoder.encode("1234"))
