@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
                 ),
                 @Server(
                     description = "Dev DEV",
-                    url = "13.209.47.36:8080"
+                    url = "http://13.209.47.36:8080"
                 )
         }
 )
