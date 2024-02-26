@@ -57,6 +57,7 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
+            .antMatchers("/test").permitAll()
             .anyRequest().hasRole("USER");
 
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
