@@ -43,10 +43,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().mvcMatchers(SWAGGER_PATTERNS);
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return web -> web.ignoring().mvcMatchers(SWAGGER_PATTERNS);
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,7 +57,7 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-            .antMatchers("/test").permitAll()
+            .antMatchers(SWAGGER_PATTERNS).permitAll()
             .anyRequest().hasRole("USER");
 
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
