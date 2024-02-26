@@ -16,6 +16,10 @@ import org.springframework.context.annotation.Configuration;
                 @Server(
                         description = "Local ENV",
                         url = "http://localhost:8080"
+                ),
+                @Server(
+                    description = "Dev DEV",
+                    url = "13.209.47.36:8080"
                 )
         }
 )
