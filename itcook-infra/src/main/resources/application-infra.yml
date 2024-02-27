@@ -1,3 +1,11 @@
+aws:
+  ses:
+    access-key: ${SES_ACCESS_KEY}
+    secret-key: ${SES_SECRET_KEY}
+#    region: ${SES_REGION}
+
+---
+
 spring:
   config:
     activate:

@@ -1,10 +1,9 @@
 package com.itcook.cooking.api.global.security.jwt.service;
 
-import static com.itcook.cooking.api.global.errorcode.UserErrorCode.USER_NOT_FOUND;
+import static com.itcook.cooking.domain.common.errorcode.UserErrorCode.USER_NOT_FOUND;
 
 import com.itcook.cooking.api.domains.security.CommonUser;
-import com.itcook.cooking.api.global.errorcode.UserErrorCode;
-import com.itcook.cooking.api.global.exception.ApiException;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

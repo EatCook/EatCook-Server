@@ -1,17 +1,13 @@
-package com.itcook.cooking.api.global.errorcode;
+package com.itcook.cooking.domain.common.errorcode;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
-
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Getter
 public enum CommonErrorCode implements ErrorCode {
 
-    BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "400", "잘못된 요청입니다."),
-    NULL_POINT(NOT_FOUND.value(), "404", "Null Point 에러입니다"),
-    SERVER_ERROR(INTERNAL_SERVER_ERROR.value(), "500", "서버 에러입니다."),
+    BAD_REQUEST(400, "400", "잘못된 요청입니다."),
+    NULL_POINT(404, "404", "Null Point 에러입니다"),
+    SERVER_ERROR(500, "500", "서버 에러입니다."),
 
     // 회원관련 에러코드 "M-001"
 

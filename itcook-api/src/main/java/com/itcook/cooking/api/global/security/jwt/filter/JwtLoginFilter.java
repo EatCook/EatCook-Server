@@ -9,9 +9,9 @@ import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.user.dto.request.UserLogin;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.api.global.dto.ErrorResponse;
-import com.itcook.cooking.api.global.errorcode.CommonErrorCode;
-import com.itcook.cooking.api.global.errorcode.UserErrorCode;
-import com.itcook.cooking.api.global.exception.ApiException;
+import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import java.io.IOException;
@@ -28,7 +28,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
