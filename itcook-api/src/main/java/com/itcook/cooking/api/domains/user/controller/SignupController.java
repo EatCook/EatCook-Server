@@ -5,6 +5,7 @@ import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.service.SignupUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class SignupController {
         return "테스트 성공";
     }
 
+    @Operation(summary = "이메일 인증 요청", description = "이메일 인증 요청")
     @PostMapping("/v1/emails/request")
     public ResponseEntity<ApiResponse> sendEmailAuthRequest(
         @RequestBody SendEmailAuthRequest sendEmailAuthRequest
@@ -40,6 +42,7 @@ public class SignupController {
     }
 
 
+    @Operation(summary = "이메일 검증 요청",description = "이메일 검증 요청")
     @PostMapping("/v1/emails/verify")
     public ResponseEntity<ApiResponse> verifyEmailAuth(
         @RequestBody VerifyEmailAuthRequest verifyEmailAuthRequest
