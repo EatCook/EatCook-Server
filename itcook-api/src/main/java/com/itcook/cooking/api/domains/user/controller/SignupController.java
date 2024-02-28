@@ -1,8 +1,10 @@
 package com.itcook.cooking.api.domains.user.controller;
 
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.service.SignupUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
-import com.itcook.cooking.domain.domains.user.service.UserService;
+import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/open-api")
 @Slf4j
-public class UserController {
+@Tag(name = "User")
+public class SignupController {
 
-    private final UserService userService;
+    private final SignupUseCase signupUseCase;
 
     @GetMapping("/test")
     public String userVerifyTest() {
@@ -28,7 +31,7 @@ public class UserController {
 
     @PostMapping("/v1/emails/request")
     public ResponseEntity<ApiResponse> sendEmailAuthRequest(@RequestBody SendEmailAuthRequest sendEmailAuthRequest) {
-        userService.sendAuthCode(sendEmailAuthRequest.toServiceRequest());
+        signupUseCase.sendAuthCode(sendEmailAuthRequest);
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("이메일 인증 요청 성공."));
     }

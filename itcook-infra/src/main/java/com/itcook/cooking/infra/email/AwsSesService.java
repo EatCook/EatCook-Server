@@ -27,8 +27,8 @@ public class AwsSesService implements AuthCodeService{
     @Async
     @TransactionalEventListener
     public void sentAuthCode(EmailSendEvent emailSendEvent) {
-        log.info("{}", TransactionSynchronizationManager.getCurrentTransactionName());
-        log.info("{}", TransactionSynchronizationManager.isSynchronizationActive());
+//        log.info("{}", TransactionSynchronizationManager.getCurrentTransactionName());
+//        log.info("{}", TransactionSynchronizationManager.isSynchronizationActive());
         try {
         SendEmailRequest sendEmailRequest = createSendEmailRequest(emailSendEvent);
         amazonSimpleEmailService.sendEmail(sendEmailRequest);

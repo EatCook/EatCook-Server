@@ -58,7 +58,7 @@ public class SecurityConfig {
 
         http.authorizeRequests()
             .antMatchers(SWAGGER_PATTERNS).permitAll()
-            .antMatchers("/api/v1/emails/request").permitAll()
+            .antMatchers("/open-api/**").permitAll()
             .anyRequest().hasRole("USER");
 
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
