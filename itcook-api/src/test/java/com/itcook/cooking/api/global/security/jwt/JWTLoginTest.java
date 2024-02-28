@@ -1,7 +1,6 @@
 package com.itcook.cooking.api.global.security.jwt;
 
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_HEADER;
-import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_HEADER;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,16 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.user.dto.request.UserLogin;
-import com.itcook.cooking.api.global.consts.ItCookConstants;
 import com.itcook.cooking.api.global.dto.ApiResponse;
-import com.itcook.cooking.api.global.dto.ErrorResponse;
-import com.itcook.cooking.api.global.errorcode.UserErrorCode;
-import com.itcook.cooking.api.global.exception.ApiException;
+import com.itcook.cooking.domain.common.UserErrorCode;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
@@ -28,9 +24,7 @@ import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

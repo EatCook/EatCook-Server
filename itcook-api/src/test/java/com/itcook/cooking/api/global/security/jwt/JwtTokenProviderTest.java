@@ -7,10 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.itcook.cooking.api.global.errorcode.CommonErrorCode;
-import com.itcook.cooking.api.global.errorcode.ErrorCode;
-import com.itcook.cooking.api.global.errorcode.UserErrorCode;
-import com.itcook.cooking.api.global.exception.ApiException;
+import com.itcook.cooking.domain.common.CommonErrorCode;
+import com.itcook.cooking.domain.common.ErrorCode;
+import com.itcook.cooking.domain.common.UserErrorCode;
+import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
+import com.itcook.cooking.domain.common.errorcode.ErrorCode;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.infra.redis.config.RedisService;

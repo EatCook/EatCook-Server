@@ -4,7 +4,9 @@ import com.itcook.cooking.domain.common.BaseTimeEntity;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.ResideType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,11 +54,11 @@ public class ItCookUser extends BaseTimeEntity {
     @ElementCollection
     @CollectionTable(name = "following", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "following_name")
-    private List<String> followings;
+    private List<Long> followings;
 
     @Builder
     public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
-        String profile, ProviderType providerType
+                      String profile, ProviderType providerType, List<Long> followings
     ) {
         this.id = id;
         this.email = email;
@@ -65,5 +67,6 @@ public class ItCookUser extends BaseTimeEntity {
         this.userRole = userRole;
         this.profile = profile;
         this.providerType = providerType;
+        this.followings = followings;
     }
 }

@@ -6,11 +6,10 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ROLES_CLAIM;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.global.dto.ApiResponse;
-import com.itcook.cooking.api.global.errorcode.UserErrorCode;
-import com.itcook.cooking.api.global.exception.ApiException;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import io.jsonwebtoken.Claims;

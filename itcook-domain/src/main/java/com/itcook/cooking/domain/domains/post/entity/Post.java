@@ -1,15 +1,10 @@
 package com.itcook.cooking.domain.domains.post.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
+
 import java.util.List;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,13 +35,14 @@ public class Post extends BaseTimeEntity {
 
     @Builder
     public Post(Long id, String recipeName, Integer recipeTime, String introduction,
-        Integer likeCount,
-        List<String> foodIngredients) {
+                Integer likeCount, Long userId,
+                List<String> foodIngredients) {
         this.id = id;
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
         this.introduction = introduction;
         this.likeCount = likeCount;
+        this.userId = userId;
         this.foodIngredients = foodIngredients;
     }
 }
