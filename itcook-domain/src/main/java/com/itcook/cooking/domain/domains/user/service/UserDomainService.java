@@ -2,6 +2,7 @@ package com.itcook.cooking.domain.domains.user.service;
 
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,21 +24,8 @@ public class UserDomainService {
             });
     }
 
-
-//    @Transactional
-//    public void sendAuthCode(EmailRequest emailRequest) {
-////        log.info("{}", TransactionSynchronizationManager.getCurrentTransactionName());
-////        log.info("{}", TransactionSynchronizationManager.isSynchronizationActive());
-//        userRepository.findByEmail(emailRequest.getEmail())
-//            .ifPresent(it -> {throw new ApiException(UserErrorCode.ALREADY_EXISTS_USER);});
-//        String authCode = RandomCodeUtils.generateRandomCode();
-//        eventPublisher.publishEvent(
-//            EmailSendEvent.builder()
-//                .subject(EmailTemplate.AUTH_EMAIL.getSub())
-//                .body(EmailTemplate.AUTH_EMAIL.formatBody(authCode))
-//                .to(emailRequest.getEmail())
-//                .build()
-//        );
-//        redisService.setDataWithExpire(emailRequest.getEmail(), authCode, 30L);
-//    }
+    @Transactional
+    public ItCookUser registerUser(ItCookUser user) {
+        return userRepository.save(user);
+    }
 }

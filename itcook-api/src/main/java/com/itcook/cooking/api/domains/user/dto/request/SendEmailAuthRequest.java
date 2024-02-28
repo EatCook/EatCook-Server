@@ -3,6 +3,7 @@ package com.itcook.cooking.api.domains.user.dto.request;
 import static com.itcook.cooking.domain.common.constant.UserConstant.EMAIL_REGEXP;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class SendEmailAuthRequest {
 
     @Schema(description = "이메일", example = "user@gmail.com")
-    @Pattern(message = "이메일 형식에 맞게 입력해주세요.", regexp = EMAIL_REGEXP)
+    @Email(message = "이메일 형식에 맞게 입력해주세요.")
     private String email;
 
 //

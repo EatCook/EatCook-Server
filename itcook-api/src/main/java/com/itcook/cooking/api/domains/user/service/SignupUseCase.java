@@ -1,21 +1,23 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.global.annotation.Business;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.email.EmailTemplate;
 import com.itcook.cooking.infra.redis.config.RedisService;
-import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 @Slf4j
@@ -26,6 +28,7 @@ public class SignupUseCase {
     private final UserDomainService userDomainService;
     private final RedisService redisService;
     private final ApplicationEventPublisher eventPublisher;
+    private final PasswordEncoder passwordEncoder;
 
 
     /**
@@ -42,7 +45,7 @@ public class SignupUseCase {
                 .to(sendEmailAuthRequest.getEmail())
                 .build()
         );
-        redisService.setDataWithExpire(sendEmailAuthRequest.getEmail(), authCode, 30L);
+        redisService.setDataWithExpire(sendEmailAuthRequest.getEmail(), authCode, 35L);
     }
 
     /**
@@ -61,5 +64,11 @@ public class SignupUseCase {
     }
 
 
-
+    @Transactional
+    public UserResponse signup(SignupRequest signupRequest) {
+        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        ItCookUser user = signupRequest.toDomain();
+        ItCookUser itCookUser = userDomainService.registerUser(user);
+        return UserResponse.of(itCookUser);
+    }
 }

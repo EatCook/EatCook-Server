@@ -1,12 +1,15 @@
 package com.itcook.cooking.api.domains.user.controller;
 
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.SignupUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +37,7 @@ public class SignupController {
     @Operation(summary = "이메일 인증 요청", description = "이메일 인증 요청")
     @PostMapping("/v1/emails/request")
     public ResponseEntity<ApiResponse> sendEmailAuthRequest(
-        @RequestBody SendEmailAuthRequest sendEmailAuthRequest
+        @RequestBody @Valid SendEmailAuthRequest sendEmailAuthRequest
     ) {
         signupUseCase.sendAuthCode(sendEmailAuthRequest);
         return ResponseEntity.status(200)
@@ -45,11 +48,20 @@ public class SignupController {
     @Operation(summary = "이메일 검증 요청",description = "이메일 검증 요청")
     @PostMapping("/v1/emails/verify")
     public ResponseEntity<ApiResponse> verifyEmailAuth(
-        @RequestBody VerifyEmailAuthRequest verifyEmailAuthRequest
+        @RequestBody @Valid VerifyEmailAuthRequest verifyEmailAuthRequest
     ) {
         signupUseCase.verifyAuthCode(verifyEmailAuthRequest);
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("이메일 인증 검증 성공."));
+    }
+
+    @Operation(summary = "회원가입 요청", description = "회원가입 요청")
+    @PostMapping("/v1/users")
+    public ResponseEntity<ApiResponse<UserResponse>> signup(
+        @RequestBody @Valid SignupRequest signupRequest
+    ) {
+        UserResponse userResponse = signupUseCase.signup(signupRequest);
+        return ResponseEntity.ok(ApiResponse.OK(userResponse));
     }
 
 }
