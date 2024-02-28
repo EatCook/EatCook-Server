@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.user.controller;
 
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.service.SignupUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
@@ -30,10 +31,22 @@ public class SignupController {
     }
 
     @PostMapping("/v1/emails/request")
-    public ResponseEntity<ApiResponse> sendEmailAuthRequest(@RequestBody SendEmailAuthRequest sendEmailAuthRequest) {
+    public ResponseEntity<ApiResponse> sendEmailAuthRequest(
+        @RequestBody SendEmailAuthRequest sendEmailAuthRequest
+    ) {
         signupUseCase.sendAuthCode(sendEmailAuthRequest);
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("이메일 인증 요청 성공."));
+    }
+
+
+    @PostMapping("/v1/emails/verify")
+    public ResponseEntity<ApiResponse> verifyEmailAuth(
+        @RequestBody VerifyEmailAuthRequest verifyEmailAuthRequest
+    ) {
+        signupUseCase.verifyAuthCode(verifyEmailAuthRequest);
+        return ResponseEntity.status(200)
+            .body(ApiResponse.OK("이메일 인증 검증 성공."));
     }
 
 }
