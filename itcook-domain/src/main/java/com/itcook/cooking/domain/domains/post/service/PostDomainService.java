@@ -21,28 +21,25 @@ public class PostDomainService {
 
     private final PostRepository postRepository;
 
-    public List<Post> findPostAllData() {
-        List<Post> findPostAll = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+    public List<Post> fetchFindAllByUserIdNotWithUsers(Long userId) {
+        List<Post> findPostAllData = postRepository.findAllByUserIdNot(userId, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
 
-        if (ObjectUtils.isEmpty(findPostAll)) {
+        if (ObjectUtils.isEmpty(findPostAllData)) {
             throw new ApiException(PostErrorCode.POST_NOT_FOUND);
         }
 
-        return findPostAll;
+        return findPostAllData;
     }
-/*
-    // followingSelectAll
-    public List<Post> fetchFollowingCookTalkData(List<Long> userId) {
-        log.info("fetchFollowingCookTalkData 접근함 = {}", userId);
-        List<Post> findFollowingCookTalk = postRepository.findByUserIdIn(userId);
-        log.info("findFollowingCookTalk 접근함 = {}", findFollowingCookTalk.size());
 
-        if (ObjectUtils.isEmpty(findFollowingCookTalk)) {
+    // followingSelectAll
+    public List<Post> fetchFindFollowingCookTalk(List<Long> userId) {
+        List<Post> findFollowingCookTalkData = postRepository.findByUserIdIn(userId, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+
+        if (ObjectUtils.isEmpty(findFollowingCookTalkData)) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
         }
 
-        return findFollowingCookTalk;
+        return findFollowingCookTalkData;
     }
- */
 
 }

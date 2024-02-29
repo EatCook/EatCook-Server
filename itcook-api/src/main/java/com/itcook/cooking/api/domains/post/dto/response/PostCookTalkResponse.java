@@ -1,13 +1,13 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Schema(description = "CookTalk response")
-public class CookTalkResponse {
+public class PostCookTalkResponse {
 
     @Schema(description = "레시피 id", example = "1")
     private Long id;
@@ -37,13 +37,13 @@ public class CookTalkResponse {
     @Schema(description = "유저 닉네임", example = "username")
     private String nickName;
     @Schema(description = "팔로우", example = "")
-    private List<Long> followings;
+    private Boolean followChk;
 
     //팔로우 여부
 
-    public static CookTalkResponse of(Post postAllData, CookTalkUserMapping userAllData) {
+    public static PostCookTalkResponse of(Post postAllData, CookTalkUserMapping userAllData, boolean check) {
 
-        return CookTalkResponse.builder()
+        return PostCookTalkResponse.builder()
                 .id(postAllData.getId())
                 .recipeName(postAllData.getRecipeName())
                 .introduction(postAllData.getIntroduction())
@@ -51,10 +51,9 @@ public class CookTalkResponse {
                 .lastModifiedAt(postAllData.getLastModifiedAt())
                 .userId(postAllData.getUserId())
                 .nickName(userAllData.getNickName())
-                .followings(userAllData.getFollowings())
+                .followChk(check)
                 .build();
 
     }
-
 
 }
