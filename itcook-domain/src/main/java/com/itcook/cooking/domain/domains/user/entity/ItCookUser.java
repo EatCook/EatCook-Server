@@ -2,7 +2,7 @@ package com.itcook.cooking.domain.domains.user.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
-import com.itcook.cooking.domain.domains.user.enums.ResideType;
+import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import java.util.List;
 import lombok.AccessLevel;
@@ -28,7 +28,6 @@ public class ItCookUser extends BaseTimeEntity {
 
     private String password;
 
-    @Column(nullable = false)
     private String nickName;
 
     @Enumerated(EnumType.STRING)
@@ -38,7 +37,7 @@ public class ItCookUser extends BaseTimeEntity {
     private String profile; //프로필 이미지
 
     @Enumerated(EnumType.STRING)
-    private ResideType resideType; // 거주 형태
+    private LifeType lifeType; // 거주 형태
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -56,7 +55,7 @@ public class ItCookUser extends BaseTimeEntity {
 
     @Builder
     public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
-        String profile, ProviderType providerType
+        String profile, ProviderType providerType, LifeType lifeType
     ) {
         this.id = id;
         this.email = email;
@@ -65,5 +64,21 @@ public class ItCookUser extends BaseTimeEntity {
         this.userRole = userRole;
         this.profile = profile;
         this.providerType = providerType;
+        this.lifeType = lifeType;
     }
+
+    public  void updateLifeType(LifeType lifeType) {
+        this.lifeType = lifeType;
+    }
+
+    public void updateItCookUser(ItCookUser user) {
+        this.nickName = user.getNickName();
+        this.lifeType = user.getLifeType();
+
+    }
+
+    public void updateProfile(String profile) {
+        this.profile = profile;
+    }
+
 }

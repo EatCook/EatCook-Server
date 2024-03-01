@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.global.dto;
 
-import com.itcook.cooking.api.global.errorcode.ErrorCode;
+import com.itcook.cooking.domain.common.errorcode.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;

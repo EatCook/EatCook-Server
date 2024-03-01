@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.global.exceptionhandler;
 
 import com.itcook.cooking.api.global.dto.ErrorResponse;
-import com.itcook.cooking.api.global.errorcode.CommonErrorCode;
+import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;

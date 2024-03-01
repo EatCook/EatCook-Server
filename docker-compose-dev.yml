@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  redis:
+    container_name: redis
+    image: redis:alpine
+    command: redis-server
+    environment:
+      TZ: Asia/Seoul
+    ports:
+      - "6379:6379"

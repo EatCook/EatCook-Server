@@ -1,4 +1,4 @@
-package com.itcook.cooking.api.global.errorcode;
+package com.itcook.cooking.domain.common.errorcode;
 
 public interface ErrorCode {
     Integer getHttpStatusCode();

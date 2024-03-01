@@ -66,6 +66,9 @@ project(':itcook-domain') {
     jar {
         enabled = true
     }
+    dependencies {
+        implementation project(':itcook-infra')
+    }
 }
 
 project(':itcook-infra') {

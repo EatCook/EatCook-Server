@@ -7,9 +7,9 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.TOKEN_ISSUER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 import static io.jsonwebtoken.SignatureAlgorithm.*;
 
-import com.itcook.cooking.api.global.errorcode.CommonErrorCode;
-import com.itcook.cooking.api.global.errorcode.UserErrorCode;
-import com.itcook.cooking.api.global.exception.ApiException;
+import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.infra.redis.config.RedisService;
 import io.jsonwebtoken.Claims;

@@ -1,6 +1,6 @@
-package com.itcook.cooking.api.global.exception;
+package com.itcook.cooking.domain.common.exception;
 
-import com.itcook.cooking.api.global.errorcode.ErrorCode;
+import com.itcook.cooking.domain.common.errorcode.ErrorCode;
 import lombok.Getter;
 
 @Getter
