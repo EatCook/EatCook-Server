@@ -16,6 +16,7 @@ public enum UserErrorCode implements ErrorCode{
     ALREADY_EXISTS_USER(400, "U-007", "이미 가입한 유저입니다."),
     EMAIL_VERIFY_FAIL(401, "U-008", "인증 코드가 일치하지 않습니다."),
     NO_VERIFY_CODE(401,"U-009" ,"인증 요청을 먼저 해주세요."),
+    ALREADY_EXISTS_NICKNAME(400, "U-010", "이미 존재하는 닉네임입니다."),
     ;
 
     private final Integer httpStatusCode;

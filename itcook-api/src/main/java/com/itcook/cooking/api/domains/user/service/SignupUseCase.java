@@ -3,16 +3,21 @@ package com.itcook.cooking.api.domains.user.service;
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.global.annotation.Business;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
+import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.email.EmailTemplate;
 import com.itcook.cooking.infra.redis.config.RedisService;
+import com.itcook.cooking.infra.s3.ImageUrlDto;
+import com.itcook.cooking.infra.s3.S3PresignedUrlService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,6 +34,7 @@ public class SignupUseCase {
     private final RedisService redisService;
     private final ApplicationEventPublisher eventPublisher;
     private final PasswordEncoder passwordEncoder;
+    private final S3PresignedUrlService s3PresignedUrlService;
 
 
     /**
@@ -70,5 +76,29 @@ public class SignupUseCase {
         ItCookUser user = signupRequest.toDomain();
         ItCookUser itCookUser = userDomainService.registerUser(user);
         return UserResponse.of(itCookUser);
+    }
+
+    @Transactional
+    public AddUserResponse addSignup(ItCookUser user, String fileExtension, List<CookingType> cookingTypes) {
+        ImageUrlDto imageUrlDto = ImageUrlDto.builder().build();
+        ItCookUser itCookUser = userDomainService.addSignup(user, cookingTypes);
+        // fileExension이 있을 경우 프로필 이미지 업로드
+        imageUrlDto = getImageUrlDto(fileExtension, imageUrlDto, itCookUser);
+
+        return AddUserResponse.builder()
+            .presignedUrl(imageUrlDto.getUrl())
+            .userId(itCookUser.getId())
+            .build()
+            ;
+    }
+
+    private ImageUrlDto getImageUrlDto(String fileExtension, ImageUrlDto imageUrlDto,
+        ItCookUser itCookUser) {
+        if (StringUtils.hasText(fileExtension)) {
+            imageUrlDto = s3PresignedUrlService.forUser(itCookUser.getId(),
+                fileExtension);
+            itCookUser.updateProfile(imageUrlDto.getKey());
+        }
+        return imageUrlDto;
     }
 }

@@ -1,8 +1,10 @@
 package com.itcook.cooking.api.domains.user.controller;
 
+import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.SignupUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SignupController {
 
     private final SignupUseCase signupUseCase;
+    private final UserDomainService userDomainService;
 
     @GetMapping("/test")
     public String userVerifyTest() {
@@ -62,6 +65,17 @@ public class SignupController {
     ) {
         UserResponse userResponse = signupUseCase.signup(signupRequest);
         return ResponseEntity.ok(ApiResponse.OK(userResponse));
+    }
+
+    @Operation(summary = "회원가입 추가 요청", description = "회원가입 추가 요청")
+    @PostMapping("/v1/users/add-signup")
+    public ResponseEntity<ApiResponse<AddUserResponse>> addSignup(
+        @RequestBody @Valid AddSignupRequest addSignupRequest
+    ) {
+        AddUserResponse addUserResponse = signupUseCase.addSignup(addSignupRequest.toEntity(),
+            addSignupRequest.getFileExtension(), addSignupRequest.toCookingTypes());
+        return ResponseEntity.status(200)
+            .body(ApiResponse.OK(addUserResponse));
     }
 
 }

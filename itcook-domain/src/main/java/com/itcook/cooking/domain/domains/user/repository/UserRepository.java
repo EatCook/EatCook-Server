@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<ItCookUser, Long> {
 
     Optional<ItCookUser> findByEmail(String email);
+    Optional<ItCookUser> findByNickName(String nickName);
 }
