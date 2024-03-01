@@ -23,6 +23,7 @@ public class S3PresignedUrlService {
     private String bucket;
     private String baseUrl = "image";
 
+    // TODO Post Image 업로드는 아래와 같이 forPost, getForImageFileName 메서드를 사용하면 됩니다.
     public ImageUrlDto forUser(Long userId, String fileExtension) {
 //        String fileExtension = imageFileExtension.getUploadExtension();
         String fileName = getForUserFileName(userId, fileExtension);
