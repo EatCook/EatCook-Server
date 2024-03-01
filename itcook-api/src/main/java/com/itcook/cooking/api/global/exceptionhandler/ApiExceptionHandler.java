@@ -22,8 +22,8 @@ public class ApiExceptionHandler {
         String errorDescription = apiException.getErrorDescription();
 
         return ResponseEntity.status(errorCode.getHttpStatusCode())
-            .body(ErrorResponse.ERROR(errorCode, errorDescription))
-            ;
+                .body(ErrorResponse.ERROR(errorCode, errorDescription))
+                ;
 
     }
 }

@@ -52,8 +52,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http
-            .formLogin().disable()
-            .httpBasic().disable();
+                .formLogin().disable()
+                .httpBasic().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
@@ -67,13 +67,13 @@ public class SecurityConfig {
 
         // todo
         http.exceptionHandling()
-            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
 //            .accessDeniedHandler(accessDeniedEntryPoint);
         ;
 
         http.logout()
-            .addLogoutHandler(jwtLogoutHandler)
-            .logoutSuccessHandler(jwtLogoutSuccessHandler)
+                .addLogoutHandler(jwtLogoutHandler)
+                .logoutSuccessHandler(jwtLogoutSuccessHandler)
         ;
 
         return http.build();
@@ -82,7 +82,7 @@ public class SecurityConfig {
     @Bean
     public JwtLoginFilter jwtLoginFilter() {
         JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(objectMapper,
-            jwtTokenProvider);
+                jwtTokenProvider);
         jwtLoginFilter.setAuthenticationManager(authenticationManager());
         return jwtLoginFilter;
     }

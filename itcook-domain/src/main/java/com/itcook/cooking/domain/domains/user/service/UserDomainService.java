@@ -7,26 +7,54 @@ import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.repository.CookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+
 import java.util.List;
+
+import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
+
+import java.util.Optional;
 
 @Service
-@Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class UserDomainService {
 
     private final UserRepository userRepository;
     private final CookingThemeRepository cookingThemeRepository;
 
+    public ItCookUser fetchFindByEmail(String email) {
+
+        Optional<ItCookUser> findByUserData = userRepository.findByEmail(email);
+        if (findByUserData.isEmpty()) {
+            throw new ApiException(UserErrorCode.USER_NOT_FOUND);
+        }
+
+        return findByUserData.get();
+    }
+
+    public List<CookTalkUserMapping> fetchFindUserByIdIn(List<Long> userId) {
+
+        List<CookTalkUserMapping> findUserAllData = userRepository.findByIdIn(userId);
+
+        if (ObjectUtils.isEmpty(findUserAllData)) {
+            throw new ApiException(UserErrorCode.USER_NOT_FOUND);
+        }
+
+        return findUserAllData;
+    }
+
     @Transactional(readOnly = true)
     public void findUserByEmail(String email) {
         userRepository.findByEmail(email)
-            .ifPresent(it -> {
-                throw new ApiException(UserErrorCode.ALREADY_EXISTS_USER);
-            });
+                .ifPresent(it -> {
+                    throw new ApiException(UserErrorCode.ALREADY_EXISTS_USER);
+                });
     }
 
     @Transactional
@@ -55,15 +83,15 @@ public class UserDomainService {
 
     private ItCookUser updateNickNameAndLifeType(ItCookUser user) {
         ItCookUser itCookUser = userRepository.findById(user.getId())
-            .orElseThrow(() -> new ApiException(UserErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(UserErrorCode.USER_NOT_FOUND));
         itCookUser.updateItCookUser(user);
         return itCookUser;
     }
 
     private void checkDuplicatedNicName(ItCookUser user) {
         userRepository.findByNickName(user.getNickName())
-            .ifPresent(it -> {
-                throw new ApiException(UserErrorCode.ALREADY_EXISTS_NICKNAME);
-            });
+                .ifPresent(it -> {
+                    throw new ApiException(UserErrorCode.ALREADY_EXISTS_NICKNAME);
+                });
     }
 }
