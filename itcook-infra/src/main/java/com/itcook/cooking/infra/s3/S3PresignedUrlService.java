@@ -37,7 +37,7 @@ public class S3PresignedUrlService {
             + "/user/"
             + userId.toString()
             + "/"
-            + UUID.randomUUID().toString()
+            + UUID.randomUUID()
             + "."
             + fileExtension;
     }
