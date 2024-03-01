@@ -7,9 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.itcook.cooking.domain.common.CommonErrorCode;
-import com.itcook.cooking.domain.common.ErrorCode;
-import com.itcook.cooking.domain.common.UserErrorCode;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import com.itcook.cooking.domain.common.errorcode.ErrorCode;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;

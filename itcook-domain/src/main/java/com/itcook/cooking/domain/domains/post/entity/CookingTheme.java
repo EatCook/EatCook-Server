@@ -2,12 +2,12 @@ package com.itcook.cooking.domain.domains.post.entity;
 
 import static javax.persistence.FetchType.LAZY;
 
-import com.itcook.cooking.domain.common.BaseTimeEntity;
+import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,9 +38,17 @@ public class CookingTheme {
     private Long userId;
 
     @Builder
-    public CookingTheme(Long id, CookingType cookingType, Post post) {
+    public CookingTheme(Long id, Long userId, CookingType cookingType, Post post) {
         this.id = id;
+        this.userId = userId;
         this.cookingType = cookingType;
         this.post = post;
+    }
+
+    public static CookingTheme createCookingTheme(Long userId, CookingType cookingType)  {
+        return CookingTheme.builder()
+            .userId(userId)
+            .cookingType(cookingType)
+            .build();
     }
 }

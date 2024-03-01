@@ -57,9 +57,10 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .antMatchers(SWAGGER_PATTERNS).permitAll()
-                .antMatchers("/test").permitAll()
-                .anyRequest().hasRole("USER");
+            .antMatchers(SWAGGER_PATTERNS).permitAll()
+            .antMatchers("/open-api/**").permitAll()
+            .antMatchers("/test").permitAll()
+            .anyRequest().hasRole("USER");
 
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class);

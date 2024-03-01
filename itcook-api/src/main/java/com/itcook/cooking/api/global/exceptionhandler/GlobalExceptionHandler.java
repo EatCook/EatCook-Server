@@ -17,7 +17,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> exception(Exception exception) {
         log.error("", exception);
 
-        ErrorResponse errorResponse = ErrorResponse.ERROR(CommonErrorCode.SERVER_ERROR);
+        ErrorResponse errorResponse = ErrorResponse.ERROR(CommonErrorCode.SERVER_ERROR,
+            exception.getMessage());
         return ResponseEntity.status(CommonErrorCode.SERVER_ERROR.getHttpStatusCode())
             .body(errorResponse)
             ;
