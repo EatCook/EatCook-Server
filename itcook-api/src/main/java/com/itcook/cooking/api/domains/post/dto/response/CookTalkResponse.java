@@ -1,7 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,14 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "CookTalk response")
-public class PostCookTalkResponse {
+@Schema(description = "cooktalk response")
+public class CookTalkResponse {
 
     @Schema(description = "레시피 id", example = "1")
     private Long id;
@@ -41,9 +39,9 @@ public class PostCookTalkResponse {
 
     //팔로우 여부
 
-    public static PostCookTalkResponse of(Post postAllData, CookTalkUserMapping userAllData, boolean check) {
+    public static CookTalkResponse of(Post postAllData, CookTalkUserMapping userAllData, boolean check) {
 
-        return PostCookTalkResponse.builder()
+        return CookTalkResponse.builder()
                 .id(postAllData.getId())
                 .recipeName(postAllData.getRecipeName())
                 .introduction(postAllData.getIntroduction())

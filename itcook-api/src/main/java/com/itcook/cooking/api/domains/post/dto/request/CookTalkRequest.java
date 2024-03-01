@@ -12,8 +12,8 @@ import javax.validation.constraints.Email;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "follower response")
-public class PostRequest {
+@Schema(description = "cooktalk request")
+public class CookTalkRequest {
 
     @Schema(description = "유저 email", example = "user@test.com")
     @Email(message = "이메일 형식에 맞게 입력해주세요")

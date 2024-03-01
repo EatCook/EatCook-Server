@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.post.service;
 
-import com.itcook.cooking.api.domains.post.dto.response.PostCookTalkResponse;
+import com.itcook.cooking.api.domains.post.dto.response.CookTalkResponse;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
@@ -25,7 +25,7 @@ public class PostFacadeService {
     private final PostDomainService postDomainService;
     private final UserDomainService userDomainService;
 
-    public List<PostCookTalkResponse> getCookTalk(String email) {
+    public List<CookTalkResponse> getCookTalk(String email) {
         // 이메일로 사용자 정보와 팔로우 목록을 한 번에 가져옵니다.
         ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(email);
 
@@ -35,7 +35,7 @@ public class PostFacadeService {
         return getPostAndResponses(findByUserEmail, postAllData);
     }
 
-    public List<PostCookTalkResponse> getFollowerTalk(String email) {
+    public List<CookTalkResponse> getFollowingTalk(String email) {
         // 유저 정보 검색
         ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(email);
 
@@ -47,7 +47,7 @@ public class PostFacadeService {
 
 
 
-    private List<PostCookTalkResponse> getPostAndResponses(ItCookUser findByUserEmail, List<Post> postData) {
+    private List<CookTalkResponse> getPostAndResponses(ItCookUser findByUserEmail, List<Post> postData) {
         //팔로우 여부 Set
         Set<Long> followingSet = new HashSet<>(findByUserEmail.getFollowings());
 
@@ -64,7 +64,7 @@ public class PostFacadeService {
                     boolean isFollowing = followingSet.contains(post.getUserId());
                     // post 작성자의 데이터
                     CookTalkUserMapping user = userMap.get(post.getUserId());
-                    return PostCookTalkResponse.of(post, user, isFollowing);
+                    return CookTalkResponse.of(post, user, isFollowing);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
