@@ -3,7 +3,7 @@ package com.itcook.cooking.api.domains.post.controller;
 
 import com.itcook.cooking.api.domains.post.dto.request.CookTalkRequest;
 import com.itcook.cooking.api.domains.post.dto.response.CookTalkResponse;
-import com.itcook.cooking.api.domains.post.service.PostFacadeService;
+import com.itcook.cooking.api.domains.post.service.CooktalkFacadeService;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 public class CookTalkController {
 
-    private final PostFacadeService postFacadeService;
+    private final CooktalkFacadeService cooktalkFacadeService;
 
     /**
      * Todo
@@ -42,7 +42,7 @@ public class CookTalkController {
     public ResponseEntity<ApiResponse<List<CookTalkResponse>>> retrieveAllCookTalk(@AuthenticationPrincipal AuthenticationUser authenticationUser,
                                                                                    @Valid @RequestBody CookTalkRequest cookTalkRequest
     ) {
-        List<CookTalkResponse> cookTalkData = postFacadeService.getCookTalk(cookTalkRequest.getEmail());
+        List<CookTalkResponse> cookTalkData = cooktalkFacadeService.getCookTalk(cookTalkRequest.getEmail());
 
         return ResponseEntity.ok(ApiResponse.OK(cookTalkData));
     }
@@ -51,7 +51,7 @@ public class CookTalkController {
     @PostMapping("/following")
     public ResponseEntity<ApiResponse<List<CookTalkResponse>>> retrieveAllFollowing(@AuthenticationPrincipal AuthenticationUser authenticationUser,
                                                                                     @Valid @RequestBody CookTalkRequest cookTalkRequest) {
-        List<CookTalkResponse> followerTalk = postFacadeService.getFollowingTalk(cookTalkRequest.getEmail());
+        List<CookTalkResponse> followerTalk = cooktalkFacadeService.getFollowingTalk(cookTalkRequest.getEmail());
         return ResponseEntity.ok(ApiResponse.OK(followerTalk));
     }
 

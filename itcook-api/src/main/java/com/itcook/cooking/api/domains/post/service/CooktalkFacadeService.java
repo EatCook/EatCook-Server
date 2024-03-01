@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class PostFacadeService {
+public class CooktalkFacadeService {
 
     private final PostDomainService postDomainService;
     private final UserDomainService userDomainService;
