@@ -42,4 +42,8 @@ public class PostDomainService {
         return findFollowingCookTalkData;
     }
 
+    public void fetchFindByMyRecipe(Long userId) {
+        postRepository.findByUserId(userId);
+    }
+
 }

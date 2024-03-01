@@ -31,7 +31,7 @@ public class Post extends BaseTimeEntity {
     @ElementCollection
     @CollectionTable(name = "food_ingredients", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "ingredient_name")
-    private List<String> foodIngredients;
+    private List<String> foodIngredients; //재료
 
     @Builder
     public Post(Long id, String recipeName, Integer recipeTime, String introduction,
