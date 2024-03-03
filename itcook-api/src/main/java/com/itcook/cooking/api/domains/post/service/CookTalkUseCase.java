@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.api.domains.post.dto.response.CookTalkResponse;
+import com.itcook.cooking.api.global.annotation.Business;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
@@ -8,7 +9,6 @@ import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMap
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -16,11 +16,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-@Service
+@Business
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class CooktalkFacadeService {
+public class CookTalkUseCase {
 
     private final PostDomainService postDomainService;
     private final UserDomainService userDomainService;
@@ -44,7 +44,6 @@ public class CooktalkFacadeService {
 
         return getPostAndResponses(findByUserEmail, postFollowingData);
     }
-
 
 
     private List<CookTalkResponse> getPostAndResponses(ItCookUser findByUserEmail, List<Post> postData) {
