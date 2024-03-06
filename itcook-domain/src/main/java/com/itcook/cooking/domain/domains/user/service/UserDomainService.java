@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
@@ -75,6 +76,10 @@ public class UserDomainService {
     }
 
     private void createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
+        if (CollectionUtils.isEmpty(cookingTypes)) {
+            return;
+        }
+
         cookingTypes.forEach(cookingType -> {
             UserCookingTheme cookingTheme = UserCookingTheme.createUserCookingTheme(user.getId(), cookingType);
             userCookingThemeRepository.save(cookingTheme);
