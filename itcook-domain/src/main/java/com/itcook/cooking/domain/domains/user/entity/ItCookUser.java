@@ -51,18 +51,13 @@ public class ItCookUser extends BaseTimeEntity {
     private List<Long> likeds;
 
     @ElementCollection
-    @CollectionTable(name = "follower", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "follower_name")
-    private List<Long> followers;
-
-    @ElementCollection
-    @CollectionTable(name = "following", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "following_name")
-    private List<Long> followings;
+    @CollectionTable(name = "follow", joinColumns = @JoinColumn(name = "from_user", referencedColumnName = "user_id"))
+    @Column(name = "to_user")
+    private List<Long> follow;
 
     @Builder
     public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
-                      String profile, ProviderType providerType, LifeType lifeType
+                      String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
     ) {
         this.id = id;
         this.email = email;
@@ -71,6 +66,7 @@ public class ItCookUser extends BaseTimeEntity {
         this.userRole = userRole;
         this.profile = profile;
         this.providerType = providerType;
+        this.follow = follow;
         this.lifeType = lifeType;
     }
 
