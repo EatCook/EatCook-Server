@@ -1,6 +1,5 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
-import com.itcook.cooking.domain.domains.post.entity.CookingTheme;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import javax.persistence.Column;
 import javax.persistence.Entity;

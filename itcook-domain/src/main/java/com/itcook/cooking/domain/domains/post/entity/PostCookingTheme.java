@@ -3,7 +3,7 @@ package com.itcook.cooking.domain.domains.post.entity;
 import static javax.persistence.FetchType.LAZY;
 
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
-import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CookingTheme {
+public class PostCookingTheme {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,17 +38,11 @@ public class CookingTheme {
     private Long userId;
 
     @Builder
-    public CookingTheme(Long id, Long userId, CookingType cookingType, Post post) {
+    public PostCookingTheme(Long id, Long userId, CookingType cookingType, Post post) {
         this.id = id;
         this.userId = userId;
         this.cookingType = cookingType;
         this.post = post;
     }
 
-    public static CookingTheme createCookingTheme(Long userId, CookingType cookingType)  {
-        return CookingTheme.builder()
-            .userId(userId)
-            .cookingType(cookingType)
-            .build();
-    }
 }
