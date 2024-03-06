@@ -69,13 +69,9 @@ public class ItCookUser extends BaseTimeEntity {
         this.lifeType = lifeType;
     }
 
-    public  void updateLifeType(LifeType lifeType) {
+    public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
+        this.nickName = nickName;
         this.lifeType = lifeType;
-    }
-
-    public void updateItCookUser(ItCookUser user) {
-        this.nickName = user.getNickName();
-        this.lifeType = user.getLifeType();
 
     }
 

@@ -2,10 +2,10 @@ package com.itcook.cooking.domain.domains.user.service;
 
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.post.entity.CookingTheme;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
-import com.itcook.cooking.domain.domains.post.repository.CookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class UserDomainService {
 
     private final UserRepository userRepository;
-    private final CookingThemeRepository cookingThemeRepository;
+    private final UserCookingThemeRepository userCookingThemeRepository;
 
     public ItCookUser fetchFindByEmail(String email) {
 
@@ -76,15 +76,15 @@ public class UserDomainService {
 
     private void createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
         cookingTypes.forEach(cookingType -> {
-            CookingTheme cookingTheme = CookingTheme.createCookingTheme(user.getId(), cookingType);
-            cookingThemeRepository.save(cookingTheme);
+            UserCookingTheme cookingTheme = UserCookingTheme.createUserCookingTheme(user.getId(), cookingType);
+            userCookingThemeRepository.save(cookingTheme);
         });
     }
 
     private ItCookUser updateNickNameAndLifeType(ItCookUser user) {
         ItCookUser itCookUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ApiException(UserErrorCode.USER_NOT_FOUND));
-        itCookUser.updateItCookUser(user);
+        itCookUser.updateNickNameAndLifeType(user.getNickName(), user.getLifeType());
         return itCookUser;
     }
 

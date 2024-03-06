@@ -30,7 +30,7 @@ public class AddSignupRequest {
     @NotEmpty
     @Schema(description = "닉네임", example = "닉네임")
     private String nickName;
-    @Size(min = 1, max = 3, message = "최소 1개 이상, 최대 3개까지 선택 가능합니다.")
+    @Size(max = 3, message = "최대 3개까지 선택 가능합니다.")
     @Schema(description = "요리 유형", example = "[한식, 중식, 일식]")
     private List<String> cookingType;
     @NotEmpty(message = "생활 유형을 선택해주세요")
