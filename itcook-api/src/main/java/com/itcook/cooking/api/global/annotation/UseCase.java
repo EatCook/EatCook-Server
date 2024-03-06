@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Service
-public @interface Business {
+public @interface UseCase {
 
     @AliasFor(annotation = Service.class)
     String value() default "";

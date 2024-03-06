@@ -1,5 +1,9 @@
 package com.itcook.cooking.domain.domains.user.service;
 
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.CHINESE_FOOD;
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.JAPANESE_FOOD;
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.KOREAN_FOOD;
+import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -64,8 +68,8 @@ class UserDomainServiceTest {
         //when
         ApiException apiException = assertThrows(ApiException.class,
             () -> userDomainService.addSignup(user,
-                List.of(CookingType.KOREAN_FOOD, CookingType.CHINESE_FOOD,
-                    CookingType.JAPANESE_FOOD)));
+                of(KOREAN_FOOD, CHINESE_FOOD,
+                    JAPANESE_FOOD)));
         //then
         ErrorCode errorCode = apiException.getErrorCode();
         assertEquals(UserErrorCode.ALREADY_EXISTS_NICKNAME, errorCode);
@@ -81,8 +85,8 @@ class UserDomainServiceTest {
             .lifeType(LifeType.DELIVERY_FOOD)
             .build()
             ;
-        List<CookingType> cookingTypes = List.of(CookingType.KOREAN_FOOD, CookingType.CHINESE_FOOD,
-            CookingType.JAPANESE_FOOD);
+        List<CookingType> cookingTypes = of(KOREAN_FOOD, CHINESE_FOOD,
+            JAPANESE_FOOD);
         given(userRepository.findById(1L)).willReturn(Optional.empty());
 
         //when
@@ -104,7 +108,7 @@ class UserDomainServiceTest {
             .lifeType(LifeType.DELIVERY_FOOD)
             .build()
             ;
-        List<CookingType> cookingTypes = List.of();
+        List<CookingType> cookingTypes = of();
 
         given(userRepository.findByNickName("test")).willReturn(Optional.empty());
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
@@ -125,8 +129,8 @@ class UserDomainServiceTest {
             .lifeType(LifeType.DELIVERY_FOOD)
             .build()
             ;
-        List<CookingType> cookingTypes = List.of(CookingType.KOREAN_FOOD, CookingType.CHINESE_FOOD,
-            CookingType.JAPANESE_FOOD);
+        List<CookingType> cookingTypes = of(KOREAN_FOOD, CHINESE_FOOD,
+            JAPANESE_FOOD);
         List<UserCookingTheme> cookingThemes = cookingTypes.stream()
             .map(cookingType -> UserCookingTheme.createUserCookingTheme(1L, cookingType))
             .toList();
@@ -137,6 +141,7 @@ class UserDomainServiceTest {
         given(userCookingThemeRepository.save(any())).willReturn(cookingThemes.get(0));
         given(userCookingThemeRepository.save(any())).willReturn(cookingThemes.get(1));
         given(userCookingThemeRepository.save(any())).willReturn(cookingThemes.get(2));
+
 
         //when
         ItCookUser itCookUser = userDomainService.addSignup(user, cookingTypes);
