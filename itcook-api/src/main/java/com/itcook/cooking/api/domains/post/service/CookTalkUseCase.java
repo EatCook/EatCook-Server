@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.api.domains.post.dto.response.CookTalkResponse;
-import com.itcook.cooking.api.global.annotation.Business;
+import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-@Business
+@UseCase
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
