@@ -45,10 +45,10 @@ public class RecipeController {
 
     @Operation(summary = "recipe 조회 요청", description = "recipe 조회 요청 설명")
     @PostMapping("/read")
-    public ResponseEntity<ApiResponse<List<RecipeResponse>>> readRecipe(@Valid @RequestBody RecipeReadRequest recipeReadRequest) {
+    public ResponseEntity<ApiResponse<RecipeResponse>> readRecipe(@Valid @RequestBody RecipeReadRequest recipeReadRequest) {
         log.info("readRecipe");
 
-        List<RecipeResponse> recipeResponses = recipeUseCase.getReadRecipe(recipeReadRequest);
+        RecipeResponse recipeResponses = recipeUseCase.getReadRecipe(recipeReadRequest);
         return ResponseEntity.status(200)
                 .body(ApiResponse.OK(recipeResponses));
     }

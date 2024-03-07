@@ -56,7 +56,7 @@ public class RecipeUseCase {
 
     }
 
-    public List<RecipeResponse> getReadRecipe(RecipeReadRequest recipeReadRequest) {
+    public RecipeResponse getReadRecipe(RecipeReadRequest recipeReadRequest) {
         List<RecipeDto> recipeDtos;
         Optional<Post> postData;
         ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(recipeReadRequest.getEmail());
@@ -78,11 +78,15 @@ public class RecipeUseCase {
         List<Archive> findByArchiveToItCookUser = archiveDomainService.getFindByItCookUserId(findByUserEmail.getId());
         boolean archiveValidation = postValidationUseCase.getArchiveValidation(findByArchiveToItCookUser, postData.get().getId());
 
-        recipeDtos.get(0).toRecipeDto(findRecipeProcesses, findAllPostCookingTheme, likedItCookUser, likedValidation,archiveValidation);
+        recipeDtos.get(0).toRecipeDto(findRecipeProcesses, findAllPostCookingTheme, likedItCookUser, likedValidation, archiveValidation);
+
+        RecipeDto recipeDto = recipeDtos.get(0);
 
         return recipeDtos.stream()
                 .map(RecipeResponse::of)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()).get(0);
+
+
     }
 
     @Transactional
