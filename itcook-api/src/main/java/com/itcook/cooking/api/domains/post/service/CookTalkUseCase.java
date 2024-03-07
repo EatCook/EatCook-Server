@@ -40,7 +40,7 @@ public class CookTalkUseCase {
         ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(email);
 
         // 게시글 정보 검색
-        List<Post> postFollowingData = postDomainService.fetchFindFollowingCookTalk(findByUserEmail.getFollowings());
+        List<Post> postFollowingData = postDomainService.fetchFindFollowingCookTalk(findByUserEmail.getFollow());
 
         return getPostAndResponses(findByUserEmail, postFollowingData);
     }
@@ -48,7 +48,7 @@ public class CookTalkUseCase {
 
     private List<CookTalkResponse> getPostAndResponses(ItCookUser findByUserEmail, List<Post> postData) {
         //팔로우 여부 Set
-        Set<Long> followingSet = new HashSet<>(findByUserEmail.getFollowings());
+        Set<Long> followingSet = new HashSet<>(findByUserEmail.getFollow());
 
         Map<Long, CookTalkUserMapping> userMap = userDomainService.fetchFindUserByIdIn(postData.stream()
                         .map(Post::getUserId)

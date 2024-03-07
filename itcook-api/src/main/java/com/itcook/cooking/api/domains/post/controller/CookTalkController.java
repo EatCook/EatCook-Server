@@ -7,6 +7,8 @@ import com.itcook.cooking.api.domains.post.service.CookTalkUseCase;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@Tag(name = "02. CookTalk")
+@SecurityRequirement(name = "access-token")
 @RequestMapping("/api/v1/cooktalk")
 @RequiredArgsConstructor
 @Slf4j
