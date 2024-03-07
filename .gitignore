@@ -6,6 +6,7 @@ build/
 
 application-local.yml
 application-test.yml
+generated/
 
 ### IntelliJ IDEA ###
 .idea
