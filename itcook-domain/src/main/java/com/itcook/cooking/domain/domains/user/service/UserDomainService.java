@@ -41,13 +41,17 @@ public class UserDomainService {
 
     public List<CookTalkUserMapping> fetchFindUserByIdIn(List<Long> userId) {
 
-        List<CookTalkUserMapping> findUserAllData = userRepository.findByIdIn(userId);
+        List<CookTalkUserMapping> findUserData = userRepository.findByIdIn(userId);
 
-        if (ObjectUtils.isEmpty(findUserAllData)) {
+        if (ObjectUtils.isEmpty(findUserData)) {
             throw new ApiException(UserErrorCode.USER_NOT_FOUND);
         }
 
-        return findUserAllData;
+        return findUserData;
+    }
+
+    public List<ItCookUser> findLiked(Long postId) {
+        return userRepository.findAllByLikedsContaining(postId);
     }
 
     @Transactional(readOnly = true)

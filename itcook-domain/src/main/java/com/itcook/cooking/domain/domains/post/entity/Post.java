@@ -33,10 +33,12 @@ public class Post extends BaseTimeEntity {
     @Column(name = "ingredient_name")
     private List<String> foodIngredients; //재료
 
+    private Byte postFlag;
+
     @Builder
     public Post(Long id, String recipeName, Integer recipeTime, String introduction,
                 Integer likeCount, Long userId,
-                List<String> foodIngredients) {
+                List<String> foodIngredients, Byte postFlag) {
         this.id = id;
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
@@ -44,5 +46,20 @@ public class Post extends BaseTimeEntity {
         this.likeCount = likeCount;
         this.userId = userId;
         this.foodIngredients = foodIngredients;
+        this.postFlag = postFlag;
     }
+
+    public void updatePost(Post updateData) {
+        this.recipeName = updateData.getRecipeName();
+        this.recipeTime = updateData.getRecipeTime();
+        this.introduction = updateData.getIntroduction();
+        this.userId = updateData.getUserId();
+        this.likeCount = updateData.getLikeCount();
+        this.foodIngredients = updateData.getFoodIngredients();
+    }
+
+    public void deletePost() {
+        this.postFlag = (byte) 1;
+    }
+
 }

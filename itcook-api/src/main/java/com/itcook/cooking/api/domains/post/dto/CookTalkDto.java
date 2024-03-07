@@ -1,6 +1,7 @@
-package com.itcook.cooking.api.domains.post.dto.response;
+package com.itcook.cooking.api.domains.post.dto;
 
-import com.itcook.cooking.api.domains.post.dto.CookTalkDto;
+import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "cooktalk response")
-public class CookTalkResponse {
+@Schema(description = "cooktalk feed response")
+public class CookTalkDto {
 
     @Schema(description = "레시피 id", example = "1")
     private Long id;
@@ -32,20 +33,16 @@ public class CookTalkResponse {
     private Long userId;
     @Schema(description = "유저 닉네임", example = "username")
     private String nickName;
-    @Schema(description = "팔로우 여부", example = "")
+    @Schema(description = "팔로우 여부", example = "true")
     private Boolean followChk;
 
-    public static CookTalkResponse of(CookTalkDto cookTalkDto) {
-        return CookTalkResponse.builder()
-                .id(cookTalkDto.getId())
-                .recipeName(cookTalkDto.getRecipeName())
-                .introduction(cookTalkDto.getIntroduction())
-                .createdAt(cookTalkDto.getCreatedAt())
-                .lastModifiedAt(cookTalkDto.getLastModifiedAt())
-                .userId(cookTalkDto.getUserId())
-                .nickName(cookTalkDto.getNickName())
-                .followChk(cookTalkDto.getFollowChk())
-                .build();
+    public CookTalkDto(Post post, CookTalkUserMapping user) {
+        this.id = post.getId();
+        this.recipeName = post.getRecipeName();
+        this.introduction = post.getIntroduction();
+        this.createdAt = post.getCreatedAt();
+        this.lastModifiedAt = post.getLastModifiedAt();
+        this.userId = post.getUserId();
+        this.nickName = user.getNickName();
     }
-
 }

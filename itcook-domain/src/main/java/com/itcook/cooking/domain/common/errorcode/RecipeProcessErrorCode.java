@@ -5,10 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum PostErrorCode implements ErrorCode {
+public enum RecipeProcessErrorCode implements ErrorCode {
 
-    POST_NOT_EXIST(401, "P-001", "조회된 레시피가 없습니다."),
-    POST_REQUEST_ERROR(400, "P-002", "요청된 데이터에 문제가 있습니다"),
+    RECIPE_PROCESS_REQUEST_ERROR(401, "RP-001", "요청된 조리 과정 데이터에 문제가 있습니다."),
     ;
 
     private final Integer httpStatusCode;

@@ -7,6 +7,7 @@ import com.itcook.cooking.api.domains.post.service.CookTalkUseCase;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,34 +21,28 @@ import java.util.List;
 @RequestMapping("/api/v1/cooktalk")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "CookTalk")
 public class CookTalkController {
 
     private final CookTalkUseCase cooktalkUseCase;
 
-    /**
-     * Todo
-     * create ?
-     * read 완료
-     * update ?
-     * delete ?
-     */
     @GetMapping("/test")
     public String cookTalkVerifyTest() {
         log.info("테스트 cookTalkVerifyTest");
         return "/api/cooktalk/test 접근";
     }
 
-    @Operation(summary = "cooktalk 요청")
-    @PostMapping("/cooks")
+    @Operation(summary = "cooktalk 요청", description = "cooktalk 요청 설명")
+    @PostMapping("/feed")
     public ResponseEntity<ApiResponse<List<CookTalkResponse>>> retrieveAllCookTalk(@AuthenticationPrincipal AuthenticationUser authenticationUser,
                                                                                    @Valid @RequestBody CookTalkRequest cookTalkRequest
     ) {
-        List<CookTalkResponse> cookTalkData = cooktalkUseCase.getCookTalk(cookTalkRequest.getEmail());
+        List<CookTalkResponse> cookTalkData = cooktalkUseCase.getCookTalkFeed(cookTalkRequest.getEmail());
 
         return ResponseEntity.ok(ApiResponse.OK(cookTalkData));
     }
 
-    @Operation(summary = "follower 요청", description = "유저정보 - email")
+    @Operation(summary = "follower 요청", description = "follower 요청 설명")
     @PostMapping("/following")
     public ResponseEntity<ApiResponse<List<CookTalkResponse>>> retrieveAllFollowing(@AuthenticationPrincipal AuthenticationUser authenticationUser,
                                                                                     @Valid @RequestBody CookTalkRequest cookTalkRequest) {
