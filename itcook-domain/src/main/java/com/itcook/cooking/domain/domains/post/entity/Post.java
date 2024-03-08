@@ -23,7 +23,8 @@ public class Post extends BaseTimeEntity {
     private String recipeName; // 요리 제목
     private Integer recipeTime; // 요리 시간
     private String introduction; // 요리 소개글
-    private Integer likeCount; // 좋아요수
+
+    private String postImagePath; // 메인 이미지
 
     @Column(nullable = false)
     private Long userId;
@@ -36,16 +37,15 @@ public class Post extends BaseTimeEntity {
     private Byte postFlag;
 
     @Builder
-    public Post(Long id, String recipeName, Integer recipeTime, String introduction,
-                Integer likeCount, Long userId,
-                List<String> foodIngredients, Byte postFlag) {
+    public Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImgPath,
+                Long userId, List<String> foodIngredients, String postImagePath, Byte postFlag) {
         this.id = id;
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
         this.introduction = introduction;
-        this.likeCount = likeCount;
         this.userId = userId;
         this.foodIngredients = foodIngredients;
+        this.postImagePath = postImagePath;
         this.postFlag = postFlag;
     }
 
@@ -54,7 +54,6 @@ public class Post extends BaseTimeEntity {
         this.recipeTime = updateData.getRecipeTime();
         this.introduction = updateData.getIntroduction();
         this.userId = updateData.getUserId();
-        this.likeCount = updateData.getLikeCount();
         this.foodIngredients = updateData.getFoodIngredients();
     }
 

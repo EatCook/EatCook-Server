@@ -20,13 +20,7 @@ public class ArchiveDomainService {
     private final ArchiveRepository archiveRepository;
 
     public List<Archive> getFindByItCookUserId(Long userId) {
-        List<Archive> findArchiveData = archiveRepository.findByItCookUserId(userId);
-
-        if (findArchiveData.isEmpty()) {
-            throw new ApiException(ArchiveErrorCode.ARCHIVE_NOT_EXIST);
-        }
-
-        return findArchiveData;
+        return archiveRepository.findByItCookUserId(userId);
     }
 
 }

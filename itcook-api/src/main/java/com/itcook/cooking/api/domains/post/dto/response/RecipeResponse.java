@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
 import com.itcook.cooking.api.domains.post.dto.RecipeDto;
+import com.itcook.cooking.api.domains.post.dto.RecipeProcessDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -33,8 +33,11 @@ public class RecipeResponse {
     @Schema(description = "테마", example = "[\"한식\",\"중식\"]")
     private List<String> cookingType;
 
-    @Schema(description = "조리 과정", example = "{\"1\": \"밥을 준비해 주세요\",\"2\": \"밥을 한 주먹 ~\"}")
-    private Map<Integer, String> recipeProcess;
+    @Schema(description = "조리 과정",
+            example = "[\n {\n \"stepNum\": 1,\n \"recipeWriting\": \"밥을 준비해 주세요\",\n \"recipeProcessImagePath\": \"step1Image.jpeg\"\n},\n" +
+                    "{\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"recipeProcessImagePath\": \"step2Image.jpeg\"\n}\n" +
+                    "  ]")
+    private List<RecipeProcessDto> recipeProcess;
 
     @Schema(description = "생성 날짜", example = "2024-02-29T03:31:29.784088")
     private LocalDateTime createdAt;

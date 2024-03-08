@@ -1,5 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.request;
 
+import com.itcook.cooking.api.domains.post.dto.RecipeProcessDto;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
@@ -50,9 +50,12 @@ public class RecipeUpdateRequest {
     @NotNull(message = "테마 입력해 주세요")
     private List<String> cookingType;
 
-    @Schema(description = "조리 과정", example = "{\"1\": \"밥을 준비해 주세요\",\"2\": \"밥을 한 주먹 ~\"}")
-    @NotNull(message = "조리 과정 입력해 주세요")
-    private Map<Integer, String> recipeProcess;
+    @Schema(description = "조리 과정",
+            example = "[\n {\n \"stepNum\": 1,\n \"recipeWriting\": \"밥을 준비해 주세요\",\n \"recipeProcessImagePath\": \"step1Image.jpeg\"\n},\n" +
+                    "{\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"recipeProcessImagePath\": \"step2Image.jpeg\"\n}\n" +
+                    "  ]")
+    @NotNull(message = "조리 과정을 입력해 주세요")
+    private List<RecipeProcessDto> recipeProcess;
 
     public Post toPostDomain() {
         return Post.builder()
@@ -60,19 +63,20 @@ public class RecipeUpdateRequest {
                 .recipeName(recipeName)
                 .recipeTime(recipeTime)
                 .introduction(introduction)
-                .likeCount(0)
                 .userId(userId)
                 .foodIngredients(foodIngredients)
                 .postFlag((byte) 0).build();
     }
 
     public List<RecipeProcess> toRecipeProcessDomain(Post post) {
-        return recipeProcess.entrySet().stream()
-                .map(entry -> RecipeProcess.builder()
-                        .stepNum(entry.getKey())
-                        .recipeWriting(entry.getValue())
+        return recipeProcess.stream()
+                .map(process -> RecipeProcess.builder()
+                        .stepNum(process.getStepNum())
+                        .recipeWriting(process.getRecipeWriting())
+                        .recipeProcessImagePath(process.getRecipeProcessImagePath())
                         .post(post)
                         .build())
                 .collect(Collectors.toList());
     }
+
 }

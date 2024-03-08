@@ -32,7 +32,7 @@ public class CookTalkResponse {
     private Long userId;
     @Schema(description = "유저 닉네임", example = "username")
     private String nickName;
-    @Schema(description = "팔로우 여부", example = "")
+    @Schema(description = "팔로우 여부", example = "true")
     private Boolean followChk;
 
     public static CookTalkResponse of(CookTalkDto cookTalkDto) {

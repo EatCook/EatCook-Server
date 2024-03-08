@@ -23,6 +23,10 @@ public class RecipeProcessDomainService {
     private final RecipeProcessRepository recipeProcessRepository;
 
     public void createRecipeProcess(List<RecipeProcess> recipeProcess) {
+        if (recipeProcess.isEmpty()) {
+            throw new ApiException(RecipeProcessErrorCode.RECIPE_PROCESS_REQUEST_ERROR);
+        }
+
         recipeProcessRepository.saveAll(recipeProcess);
     }
 
@@ -53,11 +57,19 @@ public class RecipeProcessDomainService {
 
         updateRecipeProcess.forEach(newProcess -> {
             existingRecipeProcess.stream()
-                    .filter(oldProcess -> newProcess.getStepNum().equals(oldProcess.getStepNum()) && !newProcess.getRecipeWriting().equals(oldProcess.getRecipeWriting()))
+                    .filter(oldProcess -> newProcess.getStepNum().equals(oldProcess.getStepNum()))
                     .findFirst()
-                    .ifPresent(oldProcess -> oldProcess.updateRecipeProcess(newProcess));
+                    .ifPresent(oldProcess -> {
+                        boolean writingChanged = !newProcess.getRecipeWriting().equals(oldProcess.getRecipeWriting());
+                        boolean imagePathChanged = !newProcess.getRecipeProcessImagePath().equals(oldProcess.getRecipeProcessImagePath());
+
+                        if (writingChanged || imagePathChanged) {
+                            oldProcess.updateRecipeProcess(newProcess);
+                        }
+                    });
         });
 
+        // 새로운 레시피 과정이 추가되거나 삭제된 경우에 대한 처리
         List<RecipeProcess> recipeProcesses;
         if (updateRecipeProcess.size() > existingRecipeProcess.size()) {
             recipeProcesses = updateRecipeProcess.stream()
@@ -71,6 +83,5 @@ public class RecipeProcessDomainService {
             deleteRecipeProcess(postData, recipeProcesses);
         }
     }
-
 
 }

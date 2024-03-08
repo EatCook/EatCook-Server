@@ -2,7 +2,6 @@ package com.itcook.cooking.api.domains.post.dto;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
-import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
@@ -47,7 +45,7 @@ public class RecipeDto {
     private List<String> cookingType;
 
     @Schema(description = "조리 과정", example = "{\"1\": \"밥을 준비해 주세요\",\"2\": \"밥을 한 주먹 ~\"}")
-    private Map<Integer, String> recipeProcess;
+    private List<RecipeProcessDto> recipeProcess;
 
     @Schema(description = "유저 id", example = "1")
     private Long userId;
@@ -81,15 +79,15 @@ public class RecipeDto {
         this.foodIngredients = post.getFoodIngredients();
     }
 
-    public void toRecipeDto(List<RecipeProcess> findRecipeProcesses, List<PostCookingTheme> findAllPostCookingTheme, List<ItCookUser> liked, boolean likedValidation, boolean archiveValidation) {
-        this.recipeProcess = findRecipeProcesses.stream()
-                .collect(Collectors.toMap(RecipeProcess::getStepNum, RecipeProcess::getRecipeWriting));
-
+    public void toRecipeDto(List<RecipeProcessDto> findRecipeProcesses, List<PostCookingTheme> findAllPostCookingTheme, List<ItCookUser> liked, boolean likedValidation, boolean archiveValidation) {
         this.cookingType = findAllPostCookingTheme.stream().map(PostCookingTheme::getCookingType)
                 .map(CookingType::getCookingTypeName)
                 .collect(Collectors.toList());
+
         this.likedCount = liked.size();
         this.lickedCheck = likedValidation;
         this.archiveCheck = archiveValidation;
+        this.recipeProcess = findRecipeProcesses;
     }
+
 }
