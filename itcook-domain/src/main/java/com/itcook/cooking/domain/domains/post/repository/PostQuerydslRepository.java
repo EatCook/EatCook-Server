@@ -38,7 +38,20 @@ public class PostQuerydslRepository {
     }
 
     private BooleanExpression containsIngredientNames(List<String> ingredientNames) {
-        return CollectionUtils.isEmpty(ingredientNames) ?  null : post.foodIngredients.any().in(ingredientNames);
+        if (CollectionUtils.isEmpty(ingredientNames)) {
+            return null;
+        } else {
+            BooleanExpression expr = null;
+            for (String ingredientName : ingredientNames) {
+                BooleanExpression currentExpr = post.foodIngredients.any().contains(ingredientName);
+                if (expr == null) {
+                    expr = currentExpr;
+                } else {
+                    expr = expr.or(currentExpr);
+                }
+            }
+            return expr;
+        }
     }
 
 }
