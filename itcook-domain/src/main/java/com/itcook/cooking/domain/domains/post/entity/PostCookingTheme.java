@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,14 +36,13 @@ public class PostCookingTheme {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private Long userId;
-
     @Builder
-    public PostCookingTheme(Long id, Long userId, CookingType cookingType, Post post) {
+    public PostCookingTheme(Long id, CookingType cookingType, Post post) {
         this.id = id;
-        this.userId = userId;
         this.cookingType = cookingType;
         this.post = post;
     }
+
+
 
 }

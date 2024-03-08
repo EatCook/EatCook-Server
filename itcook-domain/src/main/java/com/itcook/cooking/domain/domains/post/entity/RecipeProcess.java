@@ -28,16 +28,27 @@ public class RecipeProcess {
     private String recipeWriting;
 
     @Column(nullable = false)
-    private Long stepNum;
+    private Integer stepNum;
+
+    private String recipeProcessImagePath;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
     @Builder
-    public RecipeProcess(Long id, String recipeWriting, Post post) {
+    public RecipeProcess(Long id, String recipeWriting, Integer stepNum, String recipeProcessImagePath, Post post) {
         this.id = id;
         this.recipeWriting = recipeWriting;
+        this.stepNum = stepNum;
+        this.recipeProcessImagePath = recipeProcessImagePath;
         this.post = post;
+    }
+
+    public void updateRecipeProcess(RecipeProcess recipeProcess) {
+        this.recipeWriting = recipeProcess.getRecipeWriting();
+        this.stepNum = recipeProcess.getStepNum();
+        this.recipeProcessImagePath = recipeProcess.getRecipeProcessImagePath();
+        this.post = recipeProcess.getPost();
     }
 }

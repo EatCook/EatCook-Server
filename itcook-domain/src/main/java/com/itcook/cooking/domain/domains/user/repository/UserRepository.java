@@ -13,5 +13,8 @@ public interface UserRepository extends JpaRepository<ItCookUser, Long> {
     Optional<ItCookUser> findByEmail(String email);
 
     List<CookTalkUserMapping> findByIdIn(List<Long> id);
+
     Optional<ItCookUser> findByNickName(String nickName);
+
+    List<ItCookUser> findAllByLikedsContaining(Long likedId);
 }
