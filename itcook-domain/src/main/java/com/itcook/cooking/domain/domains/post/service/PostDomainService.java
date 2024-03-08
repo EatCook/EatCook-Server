@@ -2,7 +2,9 @@ package com.itcook.cooking.domain.domains.post.service;
 
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.post.dto.response.SearchResponse;
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import java.util.List;
 public class PostDomainService {
 
     private final PostRepository postRepository;
+    private final PostQuerydslRepository postQuerydslRepository;
 
     public List<Post> fetchFindAllByUserIdNotWithUsers(Long userId) {
         List<Post> findPostAllData = postRepository.findAllByUserIdNot(userId, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
@@ -44,6 +47,15 @@ public class PostDomainService {
 
     public void fetchFindByMyRecipe(Long userId) {
         postRepository.findByUserId(userId);
+    }
+
+    public List<SearchResponse> searchByRecipeNameOrIngredients(
+        Long lastId, String recipeName, List<String> ingredientNames, Long size
+    ) {
+        List<Post> posts = postQuerydslRepository.findAllWithPagination(lastId, recipeName,
+            ingredientNames, size);
+
+        return posts.stream().map(SearchResponse::of).toList();
     }
 
 }
