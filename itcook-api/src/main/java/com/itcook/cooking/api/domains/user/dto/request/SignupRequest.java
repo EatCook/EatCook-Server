@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "회원가입")
+@Schema(name = "회원가입")
 public class SignupRequest {
 
     @Schema(description = "이메일", example = "user@gmail.com")

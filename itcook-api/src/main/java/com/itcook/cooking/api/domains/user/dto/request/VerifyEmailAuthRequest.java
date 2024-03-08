@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "이메일 검증")
+@Schema(name = "이메일 검증")
 public class VerifyEmailAuthRequest {
 
     @Schema(description = "이메일", example = "user@test.com")

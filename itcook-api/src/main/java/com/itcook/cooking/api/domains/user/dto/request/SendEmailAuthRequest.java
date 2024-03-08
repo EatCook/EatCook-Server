@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "이메일 인증 요청")
+@Schema(name = "이메일 인증 요청")
 public class SendEmailAuthRequest {
 
     @Schema(description = "이메일", example = "user@gmail.com")
