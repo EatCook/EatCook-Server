@@ -26,6 +26,8 @@ springdoc:
     doc-expansion: none
     display-request-duration: true
 
+swagger-server:
+  host: ${SWAGGER_DEV_HOST}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}

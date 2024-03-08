@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/open-api")
 @Slf4j
-@Tag(name = "User")
+@Tag(name = "01. User")
 public class SignupController {
 
     private final SignupUseCase signupUseCase;

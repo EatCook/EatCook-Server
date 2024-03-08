@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @UseCase
@@ -49,16 +48,23 @@ public class CookTalkUseCase {
 
     private List<CookTalkResponse> getCookTalkResponse(List<Post> postFollowingData, ItCookUser findByUserEmail) {
         List<CookTalkDto> cookTalkDtos = postValidationUseCase.postUserMatchingValidation(postFollowingData, CookTalkDto::new);
-
-        Set<Long> followingSet = new HashSet<>(findByUserEmail.getFollow());
-
-        cookTalkDtos.forEach(cookTalkDto -> postValidationUseCase.getFollowingCheck(cookTalkDto, followingSet));
-
         // 변환 및 반환
         return cookTalkDtos.stream()
-                .map(CookTalkResponse::of)
-                .collect(Collectors.toList());
+                .map(CookTalkResponse::of).toList();
     }
+
+//    private List<CookTalkResponse> getPostAndResponses(ItCookUser findByUserEmail, List<Post> postData) {
+//        //팔로우 여부 Set
+//
+//        Set<Long> followingSet = new HashSet<>(findByUserEmail.getFollow());
+//
+//        cookTalkDtos.forEach(cookTalkDto -> postValidationUseCase.getFollowingCheck(cookTalkDto, followingSet));
+//
+//        // 변환 및 반환
+//        return cookTalkDtos.stream()
+//                .map(CookTalkResponse::of)
+//                .collect(Collectors.toList());
+//    }
 
 
 }

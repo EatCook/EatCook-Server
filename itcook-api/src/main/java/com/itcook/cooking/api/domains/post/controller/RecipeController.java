@@ -8,6 +8,7 @@ import com.itcook.cooking.api.domains.post.dto.response.RecipeResponse;
 import com.itcook.cooking.api.domains.post.service.RecipeUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,11 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@Tag(name = "03. Recipe")
+@SecurityRequirement(name = "access-token")
 @RequestMapping("/api/v1/recipe")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Recipe")
 public class RecipeController {
 
     private final RecipeUseCase recipeUseCase;
