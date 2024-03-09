@@ -4,7 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.itcook.cooking.DomainTestQuerydslConfiguration;
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import java.util.Arrays;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,9 +28,20 @@ class PostQuerydslRepositoryTest {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
+
+    @AfterEach
+    void tearDown() {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        em.createNativeQuery("ALTER TABLE post ALTER COLUMN post_id RESTART WITH 1").executeUpdate();
+        em.getTransaction().commit();
+    }
+
     @BeforeEach
     void setUp() {
-        postRepository.deleteAll();
+//        postRepository.deleteAll();
         for (int i = 1; i <= 30; i++) {
             postRepository.save(
                 Post.builder()
@@ -43,9 +58,10 @@ class PostQuerydslRepositoryTest {
     void nooffset_firstPage_test() {
         //given
 
+
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, "test", null, 10L);
+            .findAllWithPagination(null, List.of("test"),10L);
 
         //then
         assertEquals(10, posts.size());
@@ -54,32 +70,67 @@ class PostQuerydslRepositoryTest {
     }
 
     @Test
-    @DisplayName("nooffset 두번째 페이지 테스트")
-    void nooffset_secondePage_test() {
+    @DisplayName("nooffset 첫번쨰 페이지 제목 contains 테스트")
+    void nooffset_recipenNames_test() {
         //given
+
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(21L, "test", null, 10L);
+            .findAllWithPagination(null, List.of("test1"),10L);
+
+        //then
+        assertEquals(10, posts.size());
+        assertEquals("test19", posts.get(0).getRecipeName());
+        assertEquals("test10", posts.get(9).getRecipeName());
+    }
+
+    @Test
+    @DisplayName("nooffset 첫번쨰 페이지 재료 contains 테스트")
+    void nooffset_ingredients_test() {
+        //given
+
+
+        //when
+        List<Post> posts = postQuerydslRepository
+            .findAllWithPagination(null, List.of("ingredient2"),10L);
+
+        //then
+        assertEquals(10, posts.size());
+        assertEquals("test29", posts.get(0).getRecipeName());
+        assertEquals("test20", posts.get(9).getRecipeName());
+    }
+
+    @Test
+    @DisplayName("nooffset 두번째 페이지 제목 contains 테스트")
+    void nooffset_second_recipenNames_test() {
+        //given
+        List<Post> all = postRepository.findAll();
+        all.forEach(post -> System.out.println("post = " + post.getId()));
+
+        //when
+        List<Post> posts = postQuerydslRepository
+            .findAllWithPagination(10L, List.of("test1"),10L);
+
+        //then
+        assertEquals(1, posts.size());
+        assertEquals("test1", posts.get(0).getRecipeName());
+    }
+
+    @Test
+    @DisplayName("nooffset 두번째 페이지 테스트")
+    void nooffset_secondePage_test() {
+        //given
+        List<Post> all = postRepository.findAll();
+        all.forEach(post -> System.out.println("post = " + post.getId()));
+
+        //when
+        List<Post> posts = postQuerydslRepository
+            .findAllWithPagination(21L, List.of("test"), 10L);
 
         //then
         assertEquals(10, posts.size());
         assertEquals("test20", posts.get(0).getRecipeName());
         assertEquals("test11", posts.get(9).getRecipeName());
-    }
-
-    @Test
-    @DisplayName("재료 검색 테스트")
-    void searchIngredientsTest() {
-        //given
-
-        //when
-        List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, null, List.of("ingredient3", "ingredient2"), 10L);
-
-        //then
-        assertEquals(3, posts.size());
-        assertEquals("test3", posts.get(0).getRecipeName());
-        assertEquals("test1", posts.get(2).getRecipeName());
     }
 }

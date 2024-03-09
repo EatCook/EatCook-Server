@@ -50,10 +50,9 @@ public class PostDomainService {
     }
 
     public List<SearchResponse> searchByRecipeNameOrIngredients(
-        Long lastId, String recipeName, List<String> ingredientNames, Long size
+        Long lastId, List<String> names, Long size
     ) {
-        List<Post> posts = postQuerydslRepository.findAllWithPagination(lastId, recipeName,
-            ingredientNames, size);
+        List<Post> posts = postQuerydslRepository.findAllWithPagination(lastId, names, size);
 
         return posts.stream().map(SearchResponse::of).toList();
     }

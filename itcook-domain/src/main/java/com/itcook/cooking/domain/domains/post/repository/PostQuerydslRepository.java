@@ -18,12 +18,12 @@ public class PostQuerydslRepository {
 
     // TODO
     public List<Post> findAllWithPagination(Long lastId
-        , String recipeName, List<String> ingredientNames, Long size) {
+        , List<String> names, Long size) {
 
         return jpaQueryFactory.selectFrom(post)
+            .distinct()
             .where(lessThanId(lastId)
-                , containsRecipeName(recipeName)
-                , containsIngredientNames(ingredientNames))
+                , containsRecipeName(names).or(containsIngredientNames(names)))
             .orderBy(post.createdAt.desc())
             .limit(size)
             .fetch();
@@ -33,25 +33,35 @@ public class PostQuerydslRepository {
         return lastId != null ? post.id.lt(lastId) : null;
     }
 
-    private BooleanExpression containsRecipeName(String recipeName) {
-        return recipeName != null ? post.recipeName.contains(recipeName) : null;
+    private BooleanExpression containsRecipeName(List<String> recipeNames) {
+//        return recipeName != null ? post.recipeName.contains(recipeName) : null;
+        BooleanExpression expr = null;
+        for (String name : recipeNames) {
+            BooleanExpression currentExpr = post.recipeName.containsIgnoreCase(name);
+            if (expr == null) {
+                expr = currentExpr;
+            } else {
+                expr = expr.or(currentExpr);
+            }
+        }
+        return expr;
     }
 
     private BooleanExpression containsIngredientNames(List<String> ingredientNames) {
-        if (CollectionUtils.isEmpty(ingredientNames)) {
-            return null;
-        } else {
-            BooleanExpression expr = null;
-            for (String ingredientName : ingredientNames) {
-                BooleanExpression currentExpr = post.foodIngredients.any().contains(ingredientName);
-                if (expr == null) {
-                    expr = currentExpr;
-                } else {
-                    expr = expr.or(currentExpr);
-                }
+//        if (CollectionUtils.isEmpty(ingredientNames)) {
+//            return null;
+//        } else {
+        BooleanExpression expr = null;
+        for (String ingredientName : ingredientNames) {
+            BooleanExpression currentExpr = post.foodIngredients.any().contains(ingredientName);
+            if (expr == null) {
+                expr = currentExpr;
+            } else {
+                expr = expr.or(currentExpr);
             }
-            return expr;
         }
+        return expr;
+//        }
     }
 
 }
