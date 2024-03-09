@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "cooktalk response")
+@Schema(name = "cooktalk response")
 public class CookTalkResponse {
 
     @Schema(description = "레시피 id", example = "1")

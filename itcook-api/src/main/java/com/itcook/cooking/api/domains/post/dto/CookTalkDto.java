@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "cooktalk feed response")
+@Schema(name = "cooktalk feed response")
 public class CookTalkDto {
 
     @Schema(description = "레시피 id", example = "1")

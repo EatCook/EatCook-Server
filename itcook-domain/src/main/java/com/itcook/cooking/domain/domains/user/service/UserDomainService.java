@@ -50,10 +50,6 @@ public class UserDomainService {
         return findUserData;
     }
 
-    public List<ItCookUser> findLiked(Long postId) {
-        return userRepository.findAllByLikedsContaining(postId);
-    }
-
     @Transactional(readOnly = true)
     public void findUserByEmail(String email) {
         userRepository.findByEmail(email)

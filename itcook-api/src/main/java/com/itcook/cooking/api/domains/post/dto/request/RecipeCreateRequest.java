@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "recipe create request")
+@Schema(name = "recipe create request")
 public class RecipeCreateRequest {
 
     @Schema(description = "email", example = "user@test.com")
@@ -38,6 +38,7 @@ public class RecipeCreateRequest {
     private String introduction;
 
     @Schema(description = "메인 이미지", example = "imagePath")
+    @NotNull(message = "본문을 입력해 주세요")
     private String postImagePath;
 
     @Schema(description = "재료", example = "[\"김밥\",\"밥\"]")

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Builder
-@Schema(description = "recipe process dto")
+@Schema(name = "recipe process dto")
 public class RecipeProcessDto {
 
     private Integer stepNum;

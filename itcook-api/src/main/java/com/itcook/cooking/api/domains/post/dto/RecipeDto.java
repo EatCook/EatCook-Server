@@ -1,9 +1,9 @@
 package com.itcook.cooking.api.domains.post.dto;
 
+import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "recipe dto")
+@Schema(name = "recipe dto")
 public class RecipeDto {
 
     @Schema(description = "레시피 id", example = "1")
@@ -79,12 +79,12 @@ public class RecipeDto {
         this.foodIngredients = post.getFoodIngredients();
     }
 
-    public void toRecipeDto(List<RecipeProcessDto> findRecipeProcesses, List<PostCookingTheme> findAllPostCookingTheme, List<ItCookUser> liked, boolean likedValidation, boolean archiveValidation) {
+    public void toRecipeDto(List<RecipeProcessDto> findRecipeProcesses, List<PostCookingTheme> findAllPostCookingTheme, List<Liked> findAllLiked,boolean likedValidation, boolean archiveValidation) {
         this.cookingType = findAllPostCookingTheme.stream().map(PostCookingTheme::getCookingType)
                 .map(CookingType::getCookingTypeName)
                 .collect(Collectors.toList());
 
-        this.likedCount = liked.size();
+        this.likedCount = findAllLiked.size();
         this.lickedCheck = likedValidation;
         this.archiveCheck = archiveValidation;
         this.recipeProcess = findRecipeProcesses;

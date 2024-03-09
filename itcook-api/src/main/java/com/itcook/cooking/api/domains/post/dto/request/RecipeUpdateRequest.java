@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "recipe update request")
+@Schema(name = "recipe update request")
 public class RecipeUpdateRequest {
 
     @Schema(description = "email", example = "user@test.com")
@@ -40,6 +40,7 @@ public class RecipeUpdateRequest {
     private String introduction;
 
     @Schema(description = "유저 id", example = "1")
+    @NotNull(message = "유저 정보가 없습니다.")
     private Long userId;
 
     @Schema(description = "재료", example = "[\"김밥\",\"밥\"]")
