@@ -46,18 +46,13 @@ public class ItCookUser extends BaseTimeEntity {
     private ProviderType providerType;
 
     @ElementCollection
-    @CollectionTable(name = "liked", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "liked_id")
-    private List<Long> likeds;
-
-    @ElementCollection
     @CollectionTable(name = "follow", joinColumns = @JoinColumn(name = "from_user", referencedColumnName = "user_id"))
     @Column(name = "to_user")
     private List<Long> follow;
 
     @Builder
     public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
-                      String profile, ProviderType providerType, LifeType lifeType, List<Long> follow, List<Long> likeds
+                      String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
     ) {
         this.id = id;
         this.email = email;
@@ -68,7 +63,6 @@ public class ItCookUser extends BaseTimeEntity {
         this.providerType = providerType;
         this.follow = follow;
         this.lifeType = lifeType;
-        this.likeds = likeds;
     }
 
     public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
