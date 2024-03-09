@@ -3,6 +3,7 @@ package com.itcook.cooking.api.domains.post.service;
 import com.itcook.cooking.api.domains.post.dto.CookTalkDto;
 import com.itcook.cooking.api.domains.post.dto.RecipeDto;
 import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.user.entity.Archive;
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
@@ -60,9 +61,11 @@ public class PostValidationUseCase {
     }
 
     //좋아요 여부
-    public boolean getLikedValidation(List<Long> itCookUserLikedData, Long postId) {
-        return itCookUserLikedData.contains(postId);
+    public boolean getLikedValidation(List<Liked> findAllLikedData, Long userId, Long postId) {
+        return findAllLikedData.stream()
+                .anyMatch(liked -> liked.getPostId().equals(postId) && liked.getItCookUserId().equals(userId));
     }
+
 
     //보관함 여부
     public boolean getArchiveValidation(List<Archive> itCookUserLikedData, Long postId) {

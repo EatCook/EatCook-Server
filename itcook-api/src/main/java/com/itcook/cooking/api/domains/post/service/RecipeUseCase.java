@@ -8,9 +8,11 @@ import com.itcook.cooking.api.domains.post.dto.request.RecipeReadRequest;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeUpdateRequest;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeResponse;
 import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
+import com.itcook.cooking.domain.domains.post.service.LikedDomainService;
 import com.itcook.cooking.domain.domains.post.service.PostCookingThemeDomainService;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.domain.domains.post.service.RecipeProcessDomainService;
@@ -36,6 +38,7 @@ public class RecipeUseCase {
     private final PostDomainService postDomainService;
     private final RecipeProcessDomainService recipeProcessDomainService;
     private final PostCookingThemeDomainService postCookingThemeDomainService;
+    private final LikedDomainService likedDomainService;
     private final ArchiveDomainService archiveDomainService;
 
     private final PostValidationUseCase postValidationUseCase;
@@ -75,12 +78,15 @@ public class RecipeUseCase {
                 .toList();
 
         List<PostCookingTheme> findAllPostCookingTheme = postCookingThemeDomainService.findAllPostCookingTheme(postData.get());
-        List<ItCookUser> likedItCookUser = userDomainService.findLiked(postData.get().getId());
 
-        boolean likedValidation = postValidationUseCase.getLikedValidation(findByUserEmail.getLikeds(), postData.get().getId());
+
+        List<Liked> findAllLiked = likedDomainService.getFindLiked(postData.get().getId());
+
+        boolean likedValidation = postValidationUseCase.getLikedValidation(findAllLiked, findByUserEmail.getId(), postData.get().getId());
+
         boolean archiveValidation = postValidationUseCase.getArchiveValidation(archiveDomainService.getFindByItCookUserId(findByUserEmail.getId()), postData.get().getId());
 
-        recipeDtos.get(0).toRecipeDto(recipeProcessDtos, findAllPostCookingTheme, likedItCookUser, likedValidation, archiveValidation);
+        recipeDtos.get(0).toRecipeDto(recipeProcessDtos, findAllPostCookingTheme, findAllLiked, likedValidation, archiveValidation);
 
         return RecipeResponse.of(recipeDtos.get(0));
     }

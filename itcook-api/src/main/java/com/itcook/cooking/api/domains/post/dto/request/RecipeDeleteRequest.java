@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "recipe delete request")
+@Schema(name = "recipe delete request")
 public class RecipeDeleteRequest {
 
     @Schema(description = "email", example = "user@test.com")

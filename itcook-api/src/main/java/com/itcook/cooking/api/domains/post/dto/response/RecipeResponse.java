@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "recipe response")
+@Schema(name = "recipe response")
 public class RecipeResponse {
 
     @Schema(description = "레시피 id", example = "1")

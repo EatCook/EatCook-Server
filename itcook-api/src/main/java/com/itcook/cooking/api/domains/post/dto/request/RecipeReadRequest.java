@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "recipe read request")
+@Schema(name = "recipe read request")
 public class RecipeReadRequest {
 
     @Schema(description = "email", example = "user@test.com")
