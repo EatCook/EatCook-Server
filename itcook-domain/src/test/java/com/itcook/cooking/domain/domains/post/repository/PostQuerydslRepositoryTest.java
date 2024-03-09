@@ -41,7 +41,6 @@ class PostQuerydslRepositoryTest {
 
     @BeforeEach
     void setUp() {
-//        postRepository.deleteAll();
         for (int i = 1; i <= 30; i++) {
             postRepository.save(
                 Post.builder()

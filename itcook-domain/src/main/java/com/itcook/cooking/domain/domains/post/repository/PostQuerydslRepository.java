@@ -34,7 +34,6 @@ public class PostQuerydslRepository {
     }
 
     private BooleanExpression containsRecipeName(List<String> recipeNames) {
-//        return recipeName != null ? post.recipeName.contains(recipeName) : null;
         BooleanExpression expr = null;
         for (String name : recipeNames) {
             BooleanExpression currentExpr = post.recipeName.containsIgnoreCase(name);
@@ -48,9 +47,6 @@ public class PostQuerydslRepository {
     }
 
     private BooleanExpression containsIngredientNames(List<String> ingredientNames) {
-//        if (CollectionUtils.isEmpty(ingredientNames)) {
-//            return null;
-//        } else {
         BooleanExpression expr = null;
         for (String ingredientName : ingredientNames) {
             BooleanExpression currentExpr = post.foodIngredients.any().contains(ingredientName);
