@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface PostCookingThemeRepository extends JpaRepository<PostCookingTheme, Long> {
     List<PostCookingTheme> findAllByPost(Post post);
 
+    void deleteAllByIdIn(List<Long> postCookingThemeIds);
 }

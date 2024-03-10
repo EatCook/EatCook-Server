@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.request;
 
-import com.itcook.cooking.api.domains.post.dto.RecipeProcessDto;
+import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessDto;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,37 +25,35 @@ import java.util.stream.Collectors;
 public class RecipeCreateRequest {
 
     @Schema(description = "email", example = "user@test.com")
-    @NotNull(message = "이메일을 입력해 주세요")
+    @NotBlank(message = "이메일을 입력해 주세요")
     private String email;
 
     @Schema(description = "제목", example = "김밥 만들기")
-    @NotNull(message = "제목을 입력해주세요")
+    @NotBlank(message = "제목을 입력해주세요")
     private String recipeName;
     @Schema(description = "조리 시간", example = "10")
     @NotNull(message = "조리 시간을 입력해 주세요")
     private Integer recipeTime;
 
     @Schema(description = "본문", example = "간단하게 만들 수 있어요")
-    @NotNull(message = "본문을 입력해 주세요")
+    @NotBlank(message = "본문을 입력해 주세요")
     private String introduction;
-
-    @Schema(description = "메인 이미지", example = "imagePath")
-    @NotNull(message = "본문을 입력해 주세요")
-    private String postImagePath;
+    @Schema(description = "메인 이미지 확장자명", example = "jpg")
+    @NotBlank(message = "메인 이미지 확장자 명이 빈 값입니다.")
+    private String mainFileExtension;
 
     @Schema(description = "재료", example = "[\"김밥\",\"밥\"]")
-    @NotNull(message = "재료를 입력해 주세요")
+    @NotEmpty(message = "재료를 입력해 주세요")
     private List<String> foodIngredients;
 
     @Schema(description = "테마", example = "[\"한식\",\"중식\"]")
-    @NotNull(message = "테마를 선택해 주세요")
+    @NotEmpty(message = "테마를 선택해 주세요")
     private List<String> cookingType;
 
-    @Schema(description = "조리 과정",
-            example = "[\n {\n \"stepNum\": 1,\n \"recipeWriting\": \"밥을 준비해 주세요\",\n \"recipeProcessImagePath\": \"step1Image.jpeg\"\n},\n" +
-                    "{\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"recipeProcessImagePath\": \"step2Image.jpeg\"\n}\n" +
-                    "  ]")
-    @NotNull(message = "조리 과정을 입력해 주세요")
+    @Schema(description = "조리 과정", example = "[ {\n \"stepNum\": 1,\n \"recipeWriting\": \"밥을 준비해 주세요\",\n \"fileExtension\": \"jpeg\"\n },\n" +
+            "    {\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"fileExtension\": \"jpeg\"\n }\n" +
+            "  ]")
+    @NotEmpty(message = "조리 과정을 입력해 주세요")
     private List<RecipeProcessDto> recipeProcess;
 
     public Post toPostDomain(Long userId) {
@@ -62,7 +62,6 @@ public class RecipeCreateRequest {
                 .recipeTime(recipeTime)
                 .introduction(introduction)
                 .userId(userId)
-                .postImagePath(postImagePath)
                 .foodIngredients(foodIngredients)
                 .postFlag((byte) 0).build();
     }
@@ -72,7 +71,6 @@ public class RecipeCreateRequest {
                 .map(process -> RecipeProcess.builder()
                         .stepNum(process.getStepNum())
                         .recipeWriting(process.getRecipeWriting())
-                        .recipeProcessImagePath(process.getRecipeProcessImagePath())
                         .post(post)
                         .build())
                 .collect(Collectors.toList());

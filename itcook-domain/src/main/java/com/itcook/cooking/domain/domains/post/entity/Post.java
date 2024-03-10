@@ -37,8 +37,8 @@ public class Post extends BaseTimeEntity {
     private Byte postFlag;
 
     @Builder
-    public Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImgPath,
-                Long userId, List<String> foodIngredients, String postImagePath, Byte postFlag) {
+    public Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImagePath,
+                Long userId, List<String> foodIngredients, Byte postFlag) {
         this.id = id;
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
@@ -55,6 +55,11 @@ public class Post extends BaseTimeEntity {
         this.introduction = updateData.getIntroduction();
         this.userId = updateData.getUserId();
         this.foodIngredients = updateData.getFoodIngredients();
+        this.postImagePath = updateData.postImagePath;
+    }
+
+    public void updateFileExtension(String postImagePath) {
+        this.postImagePath = postImagePath;
     }
 
     public void deletePost() {

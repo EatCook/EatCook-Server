@@ -37,11 +37,10 @@ public class RecipeProcess {
     private Post post;
 
     @Builder
-    public RecipeProcess(Long id, String recipeWriting, Integer stepNum, String recipeProcessImagePath, Post post) {
+    public RecipeProcess(Long id, String recipeWriting, Integer stepNum, Post post) {
         this.id = id;
         this.recipeWriting = recipeWriting;
         this.stepNum = stepNum;
-        this.recipeProcessImagePath = recipeProcessImagePath;
         this.post = post;
     }
 
@@ -50,5 +49,9 @@ public class RecipeProcess {
         this.stepNum = recipeProcess.getStepNum();
         this.recipeProcessImagePath = recipeProcess.getRecipeProcessImagePath();
         this.post = recipeProcess.getPost();
+    }
+
+    public void updateFileExtension(String recipeProcessImagePath) {
+        this.recipeProcessImagePath = recipeProcessImagePath;
     }
 }

@@ -1,4 +1,4 @@
-package com.itcook.cooking.api.domains.post.dto;
+package com.itcook.cooking.api.domains.post.dto.recipe;
 
 import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
@@ -79,7 +79,7 @@ public class RecipeDto {
         this.foodIngredients = post.getFoodIngredients();
     }
 
-    public void toRecipeDto(List<RecipeProcessDto> findRecipeProcesses, List<PostCookingTheme> findAllPostCookingTheme, List<Liked> findAllLiked,boolean likedValidation, boolean archiveValidation) {
+    public void toRecipeDto(List<RecipeProcessDto> findRecipeProcesses, List<PostCookingTheme> findAllPostCookingTheme, List<Liked> findAllLiked, boolean likedValidation, boolean archiveValidation) {
         this.cookingType = findAllPostCookingTheme.stream().map(PostCookingTheme::getCookingType)
                 .map(CookingType::getCookingTypeName)
                 .collect(Collectors.toList());

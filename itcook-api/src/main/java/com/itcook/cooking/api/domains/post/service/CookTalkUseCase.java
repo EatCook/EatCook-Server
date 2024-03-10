@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.post.service;
 
-import com.itcook.cooking.api.domains.post.dto.CookTalkDto;
+import com.itcook.cooking.api.domains.post.dto.cooktalk.CookTalkDto;
 import com.itcook.cooking.api.domains.post.dto.response.CookTalkResponse;
 import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.domains.post.entity.Post;

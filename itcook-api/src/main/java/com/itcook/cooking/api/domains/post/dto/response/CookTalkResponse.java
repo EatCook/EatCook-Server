@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
-import com.itcook.cooking.api.domains.post.dto.CookTalkDto;
+import com.itcook.cooking.api.domains.post.dto.cooktalk.CookTalkDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +22,8 @@ public class CookTalkResponse {
     private String recipeName;
     @Schema(description = "본문", example = "간단하게 만들 수 있어요")
     private String introduction;
+    @Schema(description = "메인 이미지", example = "/image/{UUID}")
+    private String postImagePath;
 
     @Schema(description = "생성 날짜", example = "2024-02-29T03:31:29.784088")
     private LocalDateTime createdAt;
@@ -40,6 +42,7 @@ public class CookTalkResponse {
                 .id(cookTalkDto.getId())
                 .recipeName(cookTalkDto.getRecipeName())
                 .introduction(cookTalkDto.getIntroduction())
+                .postImagePath(cookTalkDto.getPostImagePath())
                 .createdAt(cookTalkDto.getCreatedAt())
                 .lastModifiedAt(cookTalkDto.getLastModifiedAt())
                 .userId(cookTalkDto.getUserId())
