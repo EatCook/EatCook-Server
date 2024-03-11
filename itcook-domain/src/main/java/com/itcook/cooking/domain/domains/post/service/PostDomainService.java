@@ -3,6 +3,7 @@ package com.itcook.cooking.domain.domains.post.service;
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class PostDomainService {
     }
 
     public Optional<Post> fetchFindPost(Long postId) {
-        Optional<Post> findPostData = postRepository.findByIdAndPostFlag(postId, (byte) 0);
+        Optional<Post> findPostData = postRepository.findByIdAndPostFlag(postId, PostFlag.ACTIVATE);
 
         if (findPostData.isEmpty()) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);

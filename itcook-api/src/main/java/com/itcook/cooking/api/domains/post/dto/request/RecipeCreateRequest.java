@@ -5,6 +5,7 @@ import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,7 +64,7 @@ public class RecipeCreateRequest {
                 .introduction(introduction)
                 .userId(userId)
                 .foodIngredients(foodIngredients)
-                .postFlag((byte) 0).build();
+                .postFlag(PostFlag.ACTIVATE).build();
     }
 
     public List<RecipeProcess> toRecipeProcessDomain(Post post) {
