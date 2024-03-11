@@ -6,6 +6,7 @@ import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
 import com.itcook.cooking.domain.domains.post.repository.RecipeProcessRepository;
+import com.itcook.cooking.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,19 @@ public class RecipeProcessDomainService {
 
     private final RecipeProcessRepository recipeProcessRepository;
 
-    public void createRecipeProcess(List<RecipeProcess> recipeProcess) {
+    public List<RecipeProcess> createRecipeProcess(List<RecipeProcess> recipeProcess) {
+        recipeProcess.forEach((step) -> {
+            int index = recipeProcess.indexOf(step) + 1;
+            if (step.getStepNum() != index) {
+                throw new ApiException(PostErrorCode.POST_REQUEST_ERROR);
+            }
+        });
+
         if (recipeProcess.isEmpty()) {
             throw new ApiException(RecipeProcessErrorCode.RECIPE_PROCESS_REQUEST_ERROR);
         }
 
-        recipeProcessRepository.saveAll(recipeProcess);
+        return recipeProcessRepository.saveAll(recipeProcess);
     }
 
     public List<RecipeProcess> readRecipeProcess(Post post) {
@@ -48,12 +56,26 @@ public class RecipeProcessDomainService {
 
     public void updateRecipeProcess(List<RecipeProcess> updateRecipeProcess, Post postData) {
         updateRecipeProcess.forEach(newProcess -> {
+            if (newProcess.getStepNum() == null || newProcess.getRecipeWriting() == null) {
+                throw new ApiException(RecipeProcessErrorCode.RECIPE_PROCESS_REQUEST_ERROR);
+            }
             if (newProcess.getStepNum() != updateRecipeProcess.indexOf(newProcess) + 1) {
                 throw new ApiException(RecipeProcessErrorCode.RECIPE_PROCESS_REQUEST_ERROR);
             }
         });
 
         List<RecipeProcess> existingRecipeProcess = recipeProcessRepository.findByPost(postData);
+
+        for (RecipeProcess updateRecipeProcessData : updateRecipeProcess) {
+            if (updateRecipeProcessData.getRecipeProcessImagePath() == null) {
+
+                for (RecipeProcess existingRecipeProcessData : existingRecipeProcess) {
+                    if (existingRecipeProcessData.getStepNum() == updateRecipeProcessData.getStepNum()) {
+                        updateRecipeProcessData.updateFileExtension(existingRecipeProcessData.getRecipeProcessImagePath());
+                    }
+                }
+            }
+        }
 
         updateRecipeProcess.forEach(newProcess -> {
             existingRecipeProcess.stream()

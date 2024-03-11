@@ -19,9 +19,11 @@ import java.util.List;
 public class PostCookingThemeDomainService {
 
     private final PostCookingThemeRepository postCookingThemeRepository;
+
     public void createPostCookingTheme(List<PostCookingTheme> postCookingTheme) {
         postCookingThemeRepository.saveAll(postCookingTheme);
     }
+
     public List<PostCookingTheme> findAllPostCookingTheme(Post post) {
         List<PostCookingTheme> findAllPostCookingTheme = postCookingThemeRepository.findAllByPost(post);
 
@@ -31,4 +33,15 @@ public class PostCookingThemeDomainService {
 
         return findAllPostCookingTheme;
     }
+
+    public void updatePostCookingTheme(List<PostCookingTheme> updatePostCookingThemeData, Post postEntityData) {
+        List<PostCookingTheme> allPostCookingTheme = findAllPostCookingTheme(postEntityData);
+
+        List<Long> postCookingThemeIds = allPostCookingTheme.stream().map(PostCookingTheme::getId).toList();
+
+        postCookingThemeRepository.deleteAllByIdIn(postCookingThemeIds);
+
+        createPostCookingTheme(updatePostCookingThemeData);
+    }
+
 }

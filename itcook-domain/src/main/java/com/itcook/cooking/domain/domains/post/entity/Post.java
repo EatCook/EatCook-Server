@@ -5,6 +5,7 @@ import com.itcook.cooking.domain.common.BaseTimeEntity;
 import java.util.List;
 import javax.persistence.*;
 
+import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,11 +35,12 @@ public class Post extends BaseTimeEntity {
     @Column(name = "ingredient_name")
     private List<String> foodIngredients; //재료
 
-    private Byte postFlag;
+    @Enumerated(EnumType.STRING)
+    private PostFlag postFlag;
 
     @Builder
-    public Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImgPath,
-                Long userId, List<String> foodIngredients, String postImagePath, Byte postFlag) {
+    public Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImagePath,
+                Long userId, List<String> foodIngredients, PostFlag postFlag) {
         this.id = id;
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
@@ -55,10 +57,15 @@ public class Post extends BaseTimeEntity {
         this.introduction = updateData.getIntroduction();
         this.userId = updateData.getUserId();
         this.foodIngredients = updateData.getFoodIngredients();
+        this.postImagePath = updateData.postImagePath;
+    }
+
+    public void updateFileExtension(String postImagePath) {
+        this.postImagePath = postImagePath;
     }
 
     public void deletePost() {
-        this.postFlag = (byte) 1;
+        this.postFlag = PostFlag.DISABLED;
     }
 
 }

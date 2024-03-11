@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
-import com.itcook.cooking.api.domains.post.dto.RecipeDto;
-import com.itcook.cooking.api.domains.post.dto.RecipeProcessDto;
+import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessReadDto;
+import com.itcook.cooking.api.domains.post.dto.recipe.RecipeReadDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,9 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "recipe response")
-public class RecipeResponse {
-
+@Schema(name = "recipe read response")
+public class RecipeReadResponse {
     @Schema(description = "레시피 id", example = "1")
     private Long id;
     @Schema(description = "제목", example = "김밥 만들기")
@@ -33,11 +32,10 @@ public class RecipeResponse {
     @Schema(description = "테마", example = "[\"한식\",\"중식\"]")
     private List<String> cookingType;
 
-    @Schema(description = "조리 과정",
-            example = "[\n {\n \"stepNum\": 1,\n \"recipeWriting\": \"밥을 준비해 주세요\",\n \"recipeProcessImagePath\": \"step1Image.jpeg\"\n},\n" +
-                    "{\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"recipeProcessImagePath\": \"step2Image.jpeg\"\n}\n" +
-                    "  ]")
-    private List<RecipeProcessDto> recipeProcess;
+    @Schema(description = "조리 과정", example = "[ {\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 준비해 주세요\",\n \"fileExtension\": \"jpeg\"\n },\n" +
+            "    {\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"fileExtension\": \"jpeg\"\n }\n" +
+            "  ]")
+    private List<RecipeProcessReadDto> recipeProcess;
 
     @Schema(description = "생성 날짜", example = "2024-02-29T03:31:29.784088")
     private LocalDateTime createdAt;
@@ -61,8 +59,8 @@ public class RecipeResponse {
     @Schema(description = "보관함 여부", example = "true")
     private Boolean archiveCheck;
 
-    public static RecipeResponse of(RecipeDto recipeDto) {
-        return RecipeResponse.builder()
+    public static RecipeReadResponse of(RecipeReadDto recipeDto) {
+        return RecipeReadResponse.builder()
                 .id(recipeDto.getId())
                 .recipeName(recipeDto.getRecipeName())
                 .recipeTime(recipeDto.getRecipeTime())

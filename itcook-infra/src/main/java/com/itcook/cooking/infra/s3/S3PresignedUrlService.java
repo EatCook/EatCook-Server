@@ -5,9 +5,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,38 +25,92 @@ public class S3PresignedUrlService {
     private String bucket;
     private String baseUrl = "image";
 
-    // TODO Post Image 업로드는 아래와 같이 forPost, getForImageFileName 메서드를 사용하면 됩니다.
+    public ImageUrlDto forPost(Long userId, Long postId, String fileExtension) {
+        String fileName = getForPostImageFileName(userId, postId, fileExtension);
+        log.info("fileName: {}", fileName);
+        URL url = amazonS3
+                .generatePresignedUrl(getGeneratePresignedUrlRequest(bucket, fileName, fileExtension));
+        return ImageUrlDto.of(url.toString(), fileName);
+    }
+
+    private String getForPostImageFileName(Long userId, Long postId, String fileExtension) {
+        return baseUrl
+                + "/post/"
+                + userId.toString()
+                + "/"
+                + postId.toString()
+                + "/"
+                + UUID.randomUUID()
+                + "."
+                + fileExtension;
+    }
+
+    public ImageUrlDto forRecipeProcess(Long userId, Long postId, String fileExtension) {
+        String fileName = getForRecipeProcessImageFileName(userId, postId, fileExtension);
+        log.info("fileName: {}", fileName);
+        URL url = amazonS3
+                .generatePresignedUrl(getGeneratePresignedUrlRequest(bucket, fileName, fileExtension));
+        return ImageUrlDto.of(url.toString(), fileName);
+    }
+
+    private String getForRecipeProcessImageFileName(Long userId, Long postId, String fileExtension) {
+        return baseUrl
+                + "/post/"
+                + userId.toString()
+                + "/"
+                + postId.toString()
+                + "/"
+                + "recipeprcess"
+                + "/"
+                + UUID.randomUUID()
+                + "."
+                + fileExtension;
+    }
+
+    public ImageFileExtension fileExtensionValidation(String fileExtension) {
+        if (fileExtension.equalsIgnoreCase("jpg")) {
+            return ImageFileExtension.JPG;
+        } else if (fileExtension.equalsIgnoreCase("jpeg")) {
+            return ImageFileExtension.JPEG;
+        } else if (fileExtension.equalsIgnoreCase("png")) {
+            return ImageFileExtension.PNG;
+        } else {
+            //허용되지 않은 확장자명
+            return null;
+        }
+    }
+
     public ImageUrlDto forUser(Long userId, String fileExtension) {
 //        String fileExtension = imageFileExtension.getUploadExtension();
         String fileName = getForUserFileName(userId, fileExtension);
         log.info("fileName: {}", fileName);
         URL url = amazonS3
-            .generatePresignedUrl(getGeneratePresignedUrlRequest(bucket, fileName, fileExtension));
+                .generatePresignedUrl(getGeneratePresignedUrlRequest(bucket, fileName, fileExtension));
         return ImageUrlDto.of(url.toString(), fileName);
     }
 
     private String getForUserFileName(Long userId, String fileExtension) {
         return baseUrl
-            + "/user/"
-            + userId.toString()
-            + "/"
-            + UUID.randomUUID()
-            + "."
-            + fileExtension;
+                + "/user/"
+                + userId.toString()
+                + "/"
+                + UUID.randomUUID()
+                + "."
+                + fileExtension;
     }
 
 
     private GeneratePresignedUrlRequest getGeneratePresignedUrlRequest(
-        String bucket, String fileName, String fileExtension
+            String bucket, String fileName, String fileExtension
     ) {
         GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(
-            bucket, fileName)
-            .withMethod(HttpMethod.PUT)
-            .withKey(fileName)
-            .withContentType("image/" + fileExtension)
-            .withExpiration(getExpirationDate());
+                bucket, fileName)
+                .withMethod(HttpMethod.PUT)
+                .withKey(fileName)
+                .withContentType("image/" + fileExtension)
+                .withExpiration(getExpirationDate());
         generatePresignedUrlRequest.addRequestParameter(
-            Headers.S3_CANNED_ACL, CannedAccessControlList.PublicRead.toString()
+                Headers.S3_CANNED_ACL, CannedAccessControlList.PublicRead.toString()
         );
         return generatePresignedUrlRequest;
     }
@@ -67,5 +123,6 @@ public class S3PresignedUrlService {
         expiration.setTime(expTimeMillis);
         return expiration;
     }
+
 
 }

@@ -3,7 +3,9 @@ package com.itcook.cooking.domain.domains.post.service;
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
+import com.itcook.cooking.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -41,10 +43,11 @@ public class PostDomainService {
 
         return findFollowingCookTalkData;
     }
-    public Optional<Post> fetchFindPost(Long userId) {
-        Optional<Post> findPostData = postRepository.findById(userId);
 
-        if (ObjectUtils.isEmpty(findPostData)) {
+    public Optional<Post> fetchFindPost(Long postId) {
+        Optional<Post> findPostData = postRepository.findByIdAndPostFlag(postId, PostFlag.ACTIVATE);
+
+        if (findPostData.isEmpty()) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
         }
 
@@ -59,14 +62,21 @@ public class PostDomainService {
         return postRepository.save(post);
     }
 
-    public Post updatePost(Post postUpdateData) {
+    public Post updatePost(Post postUpdateData, ImageUrlDto mainImageUrlDto) {
         Post postEntityData = postRepository.findById(postUpdateData.getId()).orElse(null);
 
         if (postEntityData == null) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
         }
 
+        if (mainImageUrlDto != null) {
+            postUpdateData.updateFileExtension(mainImageUrlDto.getKey());
+        } else {
+            postUpdateData.updateFileExtension(postEntityData.getPostImagePath());
+        }
+
         postEntityData.updatePost(postUpdateData);
+
         return postUpdateData;
     }
 

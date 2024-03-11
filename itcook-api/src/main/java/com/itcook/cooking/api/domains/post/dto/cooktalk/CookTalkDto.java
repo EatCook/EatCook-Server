@@ -1,4 +1,4 @@
-package com.itcook.cooking.api.domains.post.dto;
+package com.itcook.cooking.api.domains.post.dto.cooktalk;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
@@ -23,6 +23,8 @@ public class CookTalkDto {
     private String recipeName;
     @Schema(description = "본문", example = "간단하게 만들 수 있어요")
     private String introduction;
+    @Schema(description = "메인 이미지", example = "/image/{UUID}")
+    private String postImagePath;
 
     @Schema(description = "생성 날짜", example = "2024-02-29T03:31:29.784088")
     private LocalDateTime createdAt;
@@ -40,6 +42,7 @@ public class CookTalkDto {
         this.id = post.getId();
         this.recipeName = post.getRecipeName();
         this.introduction = post.getIntroduction();
+        this.postImagePath = post.getPostImagePath();
         this.createdAt = post.getCreatedAt();
         this.lastModifiedAt = post.getLastModifiedAt();
         this.userId = post.getUserId();
