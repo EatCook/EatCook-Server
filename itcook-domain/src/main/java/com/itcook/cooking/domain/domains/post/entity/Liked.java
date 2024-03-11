@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.domains.user.entity;
+package com.itcook.cooking.domain.domains.post.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,10 +10,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Archive {
+public class Liked {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "archive_id")
+    @Column(name = "liked_id")
     private Long id;
 
     @Column(name = "user_id")
@@ -23,9 +24,10 @@ public class Archive {
     private Long postId;
 
     @Builder
-    public Archive(Long itCookUserId, Long postId) {
+    public Liked(Long itCookUserId, Long postId) {
         this.itCookUserId = itCookUserId;
         this.postId = postId;
     }
+
 
 }

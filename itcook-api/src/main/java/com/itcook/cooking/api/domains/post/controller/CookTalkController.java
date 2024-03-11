@@ -28,30 +28,23 @@ public class CookTalkController {
 
     private final CookTalkUseCase cooktalkUseCase;
 
-    /**
-     * Todo
-     * create ?
-     * read 완료
-     * update ?
-     * delete ?
-     */
     @GetMapping("/test")
     public String cookTalkVerifyTest() {
         log.info("테스트 cookTalkVerifyTest");
         return "/api/cooktalk/test 접근";
     }
 
-    @Operation(summary = "cooktalk 요청")
-    @PostMapping("/cooks")
+    @Operation(summary = "cooktalk 요청", description = "cooktalk 요청 설명")
+    @PostMapping("/feed")
     public ResponseEntity<ApiResponse<List<CookTalkResponse>>> retrieveAllCookTalk(@AuthenticationPrincipal AuthenticationUser authenticationUser,
                                                                                    @Valid @RequestBody CookTalkRequest cookTalkRequest
     ) {
-        List<CookTalkResponse> cookTalkData = cooktalkUseCase.getCookTalk(cookTalkRequest.getEmail());
+        List<CookTalkResponse> cookTalkData = cooktalkUseCase.getCookTalkFeed(cookTalkRequest.getEmail());
 
         return ResponseEntity.ok(ApiResponse.OK(cookTalkData));
     }
 
-    @Operation(summary = "follower 요청", description = "유저정보 - email")
+    @Operation(summary = "follower 요청", description = "follower 요청 설명")
     @PostMapping("/following")
     public ResponseEntity<ApiResponse<List<CookTalkResponse>>> retrieveAllFollowing(@AuthenticationPrincipal AuthenticationUser authenticationUser,
                                                                                     @Valid @RequestBody CookTalkRequest cookTalkRequest) {

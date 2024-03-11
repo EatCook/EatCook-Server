@@ -59,6 +59,7 @@ public class SecurityConfig {
         http.authorizeRequests()
             .antMatchers(SWAGGER_PATTERNS).permitAll()
             .antMatchers("/open-api/**").permitAll()
+            .antMatchers("/api/**").permitAll()
             .antMatchers("/test").permitAll()
             .anyRequest().hasRole("USER");
 

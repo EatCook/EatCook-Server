@@ -3,8 +3,6 @@ package com.itcook.cooking.infra.s3;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 
 @Data
 @AllArgsConstructor

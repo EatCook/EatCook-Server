@@ -12,7 +12,7 @@ import javax.validation.constraints.Email;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "cooktalk request")
+@Schema(name = "cooktalk request")
 public class CookTalkRequest {
 
     @Schema(description = "유저 email", example = "user@test.com")

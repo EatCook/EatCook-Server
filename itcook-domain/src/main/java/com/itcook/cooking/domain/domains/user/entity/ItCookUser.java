@@ -46,11 +46,6 @@ public class ItCookUser extends BaseTimeEntity {
     private ProviderType providerType;
 
     @ElementCollection
-    @CollectionTable(name = "liked", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "liked_id")
-    private List<Long> likeds;
-
-    @ElementCollection
     @CollectionTable(name = "follow", joinColumns = @JoinColumn(name = "from_user", referencedColumnName = "user_id"))
     @Column(name = "to_user")
     private List<Long> follow;

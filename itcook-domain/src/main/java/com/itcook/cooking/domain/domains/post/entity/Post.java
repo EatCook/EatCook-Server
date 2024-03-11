@@ -5,6 +5,7 @@ import com.itcook.cooking.domain.common.BaseTimeEntity;
 import java.util.List;
 import javax.persistence.*;
 
+import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +24,8 @@ public class Post extends BaseTimeEntity {
     private String recipeName; // 요리 제목
     private Integer recipeTime; // 요리 시간
     private String introduction; // 요리 소개글
-    private Integer likeCount; // 좋아요수
+
+    private String postImagePath; // 메인 이미지
 
     @Column(nullable = false)
     private Long userId;
@@ -33,16 +35,37 @@ public class Post extends BaseTimeEntity {
     @Column(name = "ingredient_name")
     private List<String> foodIngredients; //재료
 
+    @Enumerated(EnumType.STRING)
+    private PostFlag postFlag;
+
     @Builder
-    public Post(Long id, String recipeName, Integer recipeTime, String introduction,
-                Integer likeCount, Long userId,
-                List<String> foodIngredients) {
+    public Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImagePath,
+                Long userId, List<String> foodIngredients, PostFlag postFlag) {
         this.id = id;
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
         this.introduction = introduction;
-        this.likeCount = likeCount;
         this.userId = userId;
         this.foodIngredients = foodIngredients;
+        this.postImagePath = postImagePath;
+        this.postFlag = postFlag;
     }
+
+    public void updatePost(Post updateData) {
+        this.recipeName = updateData.getRecipeName();
+        this.recipeTime = updateData.getRecipeTime();
+        this.introduction = updateData.getIntroduction();
+        this.userId = updateData.getUserId();
+        this.foodIngredients = updateData.getFoodIngredients();
+        this.postImagePath = updateData.postImagePath;
+    }
+
+    public void updateFileExtension(String postImagePath) {
+        this.postImagePath = postImagePath;
+    }
+
+    public void deletePost() {
+        this.postFlag = PostFlag.DISABLED;
+    }
+
 }

@@ -8,7 +8,9 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,10 +27,11 @@ import org.springframework.context.annotation.Configuration;
 //                url = "http://52.79.243.219:8080"
 //            )
 //    },
-    tags = {
-        @Tag(name = "01. User", description = "유저 도메인과 관련된 APIs"),
-        @Tag(name = "02. CookTalk", description = "쿡톡 도메인과 관련된 APIs"),
-    }
+        tags = {
+                @Tag(name = "01. User", description = "유저 도메인과 관련된 APIs"),
+                @Tag(name = "02. CookTalk", description = "쿡톡 도메인과 관련된 APIs"),
+                @Tag(name = "03. Recipe", description = "레시피 도메인과 관련된 APIs"),
+        }
 )
 public class SwaggerConfig {
 
@@ -44,32 +47,32 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         List<Server> servers = getServers();
         License license = new License()
-            .name("잇쿡")
-            .url("https://github.com/EatCook/EatCook-Server");
+                .name("잇쿡")
+                .url("https://github.com/EatCook/EatCook-Server");
 
         Info info = new Info()
-            .title("잇쿡 서비스 API")
-            .version("v0.0.1")
-            .license(license)
-            .description("잇쿡 서비스에 대한 API입니다.");
+                .title("잇쿡 서비스 API")
+                .version("v0.0.1")
+                .license(license)
+                .description("잇쿡 서비스에 대한 API입니다.");
 
         return new OpenAPI()
-            .components(authSettings())
-            .info(info)
-            .servers(servers)
-            ;
+                .components(authSettings())
+                .info(info)
+                .servers(servers)
+                ;
     }
 
     private Components authSettings() {
         return new Components()
-            .addSecuritySchemes("access-token",
-                new SecurityScheme()
-                    .type(SecurityScheme.Type.HTTP)
-                    .scheme("bearer")
-                    .bearerFormat("JWT")
-                    .in(SecurityScheme.In.HEADER)
-                    .name("Authorization")
-            );
+                .addSecuritySchemes("access-token",
+                        new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Authorization")
+                );
     }
 
     private List<Server> getServers() {

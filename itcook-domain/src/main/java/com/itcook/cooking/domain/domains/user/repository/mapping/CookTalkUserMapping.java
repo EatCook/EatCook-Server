@@ -7,5 +7,5 @@ public interface CookTalkUserMapping {
 
     String getNickName();
 
-    List<Long> getFollowings();
+    List<Long> getFollow();
 }
