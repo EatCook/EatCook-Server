@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @Builder
-@Schema(name = "recipe process dto")
 public class RecipeProcessDto {
 
     private Integer stepNum;

@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @Builder
-@Schema(name = "recipe process read dto")
 public class RecipeProcessReadDto {
 
     @NotNull(message = "조리 과정 번호가 없습니다.")
