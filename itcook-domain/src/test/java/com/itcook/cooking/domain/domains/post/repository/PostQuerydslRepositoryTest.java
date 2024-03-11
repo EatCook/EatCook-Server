@@ -74,6 +74,18 @@ class PostQuerydslRepositoryTest {
         assertEquals(0, posts.size());
     }
 
+
+    @Test
+    @DisplayName("test")
+    void test() {
+        //given
+        List<Post> posts = postQuerydslRepository.findAllWithPagination(null, null, 10);
+        //when
+        posts.forEach(post -> System.out.println("post = " + post.getRecipeName()));
+
+        //then
+    }
+
     @Test
     @DisplayName("nooffset 첫번쨰 페이지 테스트")
     void nooffset_firstPage_test() {
