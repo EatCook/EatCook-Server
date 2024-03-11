@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.itcook.cooking.DomainTestQuerydslConfiguration;
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -47,9 +48,30 @@ class PostQuerydslRepositoryTest {
                     .recipeName("test"+i)
                     .foodIngredients(List.of("ingredient"+i, "ingredient"+(i+1)))   // 재료
                     .userId(1L)
+                    .postFlag(PostFlag.ACTIVATE)
                     .build()
             );
         }
+    }
+
+    @Test
+    @DisplayName("Post가 삭제된 상태 조회 X")
+    void not_search_disabled() {
+        //given
+        Post post = Post.builder()
+            .recipeName("test0")
+            .foodIngredients(Arrays.asList("ingredient1", "ingredient2"))
+            .userId(1L)
+            .postFlag(PostFlag.DISABLED)
+            .build();
+        postRepository.save(post);
+
+        //when
+        List<Post> posts = postQuerydslRepository.findAllWithPagination(null, List.of("test0"),
+            10);
+
+        //then
+        assertEquals(0, posts.size());
     }
 
     @Test
@@ -60,7 +82,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("test"),10L);
+            .findAllWithPagination(null, List.of("test"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -76,7 +98,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("test1"),10L);
+            .findAllWithPagination(null, List.of("test1"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -92,7 +114,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("ingredient2"),10L);
+            .findAllWithPagination(null, List.of("ingredient2"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -109,7 +131,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(10L, List.of("test1"),10L);
+            .findAllWithPagination(10L, List.of("test1"),10);
 
         //then
         assertEquals(1, posts.size());
@@ -125,7 +147,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(21L, List.of("test"), 10L);
+            .findAllWithPagination(21L, List.of("test"), 10);
 
         //then
         assertEquals(10, posts.size());

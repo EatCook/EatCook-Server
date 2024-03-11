@@ -17,14 +17,12 @@ public class SearchResponse {
     private String recipeName;
     private String introduction;
     private String representImageFilePath;
-    private Integer likeCount;
 
     public static SearchResponse of(Post post) {
         return SearchResponse.builder()
             .postId(post.getId())
             .recipeName(post.getRecipeName())
             .introduction(post.getIntroduction())
-            .likeCount(post.getLikeCount())
             .build();
     }
 

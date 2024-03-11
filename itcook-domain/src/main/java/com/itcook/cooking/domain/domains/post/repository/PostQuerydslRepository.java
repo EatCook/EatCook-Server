@@ -3,12 +3,12 @@ package com.itcook.cooking.domain.domains.post.repository;
 import static com.itcook.cooking.domain.domains.post.entity.QPost.post;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,11 +18,12 @@ public class PostQuerydslRepository {
 
     // TODO
     public List<Post> findAllWithPagination(Long lastId
-        , List<String> names, Long size) {
+        , List<String> names, Integer size) {
 
         return jpaQueryFactory.selectFrom(post)
             .distinct()
             .where(lessThanId(lastId)
+                , post.postFlag.eq(PostFlag.ACTIVATE)
                 , containsRecipeName(names).or(containsIngredientNames(names)))
             .orderBy(post.createdAt.desc())
             .limit(size)

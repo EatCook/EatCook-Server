@@ -4,11 +4,8 @@ import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.dto.response.SearchResponse;
 import com.itcook.cooking.domain.domains.post.entity.Post;
-<<<<<<< HEAD
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
-=======
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
->>>>>>> dev
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
@@ -98,7 +95,7 @@ public class PostDomainService {
     }
 
     public List<SearchResponse> searchByRecipeNameOrIngredients(
-        Long lastId, List<String> names, Long size
+        Long lastId, List<String> names, Integer size
     ) {
         List<Post> posts = postQuerydslRepository.findAllWithPagination(lastId, names, size);
 

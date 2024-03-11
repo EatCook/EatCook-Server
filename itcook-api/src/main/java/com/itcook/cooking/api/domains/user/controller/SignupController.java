@@ -31,12 +31,6 @@ public class SignupController {
     private final SignupUseCase signupUseCase;
     private final UserDomainService userDomainService;
 
-    @GetMapping("/test")
-    public String userVerifyTest() {
-        log.info("테스트 userVerifyTest");
-        return "테스트 성공";
-    }
-
     @Operation(summary = "이메일 인증 요청", description = "이메일 인증 요청")
     @PostMapping("/v1/emails/request")
     public ResponseEntity<ApiResponse> sendEmailAuthRequest(
