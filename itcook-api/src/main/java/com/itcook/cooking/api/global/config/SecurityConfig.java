@@ -60,7 +60,6 @@ public class SecurityConfig {
             .antMatchers(SWAGGER_PATTERNS).permitAll()
             .antMatchers("/open-api/**").permitAll()
             .antMatchers("/api/**").permitAll()
-            .antMatchers("/test").permitAll()
             .anyRequest().hasRole("USER");
 
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
