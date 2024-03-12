@@ -25,7 +25,7 @@ public class PostDomainService {
     private final PostRepository postRepository;
 
     public List<Post> fetchFindAllByUserIdNotWithUsers(Long userId) {
-        List<Post> findPostAllData = postRepository.findAllByUserIdNot(userId, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+        List<Post> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
 
         if (ObjectUtils.isEmpty(findPostAllData)) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
@@ -35,7 +35,7 @@ public class PostDomainService {
     }
 
     public List<Post> fetchFindFollowingCookTalk(List<Long> userId) {
-        List<Post> findFollowingCookTalkData = postRepository.findByUserIdIn(userId, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+        List<Post> findFollowingCookTalkData = postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
 
         if (ObjectUtils.isEmpty(findFollowingCookTalkData)) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
