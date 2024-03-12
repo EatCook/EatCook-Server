@@ -14,7 +14,7 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.email.EmailTemplate;
-import com.itcook.cooking.infra.redis.config.RedisService;
+import com.itcook.cooking.infra.redis.RedisService;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import com.itcook.cooking.infra.s3.S3PresignedUrlService;
 import java.util.List;

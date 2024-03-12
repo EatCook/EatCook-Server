@@ -14,7 +14,7 @@ import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
-import com.itcook.cooking.infra.redis.config.RedisService;
+import com.itcook.cooking.infra.redis.RedisService;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

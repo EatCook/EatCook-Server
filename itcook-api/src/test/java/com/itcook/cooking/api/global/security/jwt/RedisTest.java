@@ -4,9 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
-import com.itcook.cooking.infra.redis.config.RedisService;
-import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Assertions;
+import com.itcook.cooking.infra.redis.RedisService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

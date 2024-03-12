@@ -21,5 +21,6 @@ public class PostSearchRequest {
     @Schema(description = "검색어", example = "[ \"김치찌개\" ]")
     private List<String> searchWords;
     @Schema(description = "가져올 게시글의 개수, 기본 사이즈 = 10", example = "10")
-    private Integer size;
+    @Builder.Default
+    private Integer size = 10;
 }

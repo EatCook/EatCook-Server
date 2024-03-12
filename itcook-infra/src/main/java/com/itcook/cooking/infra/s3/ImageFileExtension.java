@@ -13,4 +13,13 @@ public enum ImageFileExtension {
     }
 
     private final String uploadExtension;
+
+    public static ImageFileExtension fromFileExtension(String fileExtension)  {
+        for (ImageFileExtension value : values()) {
+            if (value.uploadExtension.equalsIgnoreCase(fileExtension)) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

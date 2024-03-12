@@ -1,6 +1,5 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
-import com.itcook.cooking.domain.domains.post.dto.response.SearchResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +27,7 @@ public class PostSearchResponse {
             .postId(searchResponse.getPostId())
             .recipeName(searchResponse.getRecipeName())
             .introduction(searchResponse.getIntroduction())
-            .representImageFilePath(searchResponse.getRepresentImageFilePath())
+            .representImageFilePath(searchResponse.getImageFilePath())
             .build();
     }
 }

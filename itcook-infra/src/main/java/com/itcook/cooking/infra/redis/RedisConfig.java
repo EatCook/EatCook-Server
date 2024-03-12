@@ -1,4 +1,4 @@
-package com.itcook.cooking.infra.redis.config;
+package com.itcook.cooking.infra.redis;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

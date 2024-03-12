@@ -76,14 +76,15 @@ class PostQuerydslRepositoryTest {
 
 
     @Test
-    @DisplayName("test")
-    void test() {
+    @DisplayName("아무 검색을 하지 않았을때 전체 조회 테스트")
+    void no_search_words_test() {
         //given
-        List<Post> posts = postQuerydslRepository.findAllWithPagination(null, null, 10);
         //when
-        posts.forEach(post -> System.out.println("post = " + post.getRecipeName()));
+        List<Post> posts = postQuerydslRepository.findAllWithPagination(null, null, 10);
 
         //then
+        assertEquals(10, posts.size());
+        assertEquals("test30", posts.get(0).getRecipeName());
     }
 
     @Test

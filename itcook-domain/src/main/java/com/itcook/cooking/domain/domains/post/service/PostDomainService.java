@@ -2,7 +2,6 @@ package com.itcook.cooking.domain.domains.post.service;
 
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.post.dto.response.SearchResponse;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
@@ -94,11 +93,9 @@ public class PostDomainService {
         postEntity.deletePost();
     }
 
-    public List<SearchResponse> searchByRecipeNameOrIngredients(
+    public List<Post> searchByRecipeNameOrIngredients(
         Long lastId, List<String> names, Integer size
     ) {
-        List<Post> posts = postQuerydslRepository.findAllWithPagination(lastId, names, size);
-
-        return posts.stream().map(SearchResponse::of).toList();
+        return postQuerydslRepository.findAllWithPagination(lastId, names, size);
     }
 }
