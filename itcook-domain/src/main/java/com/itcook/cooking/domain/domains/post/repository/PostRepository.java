@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findByUserIdIn(List<Long> userId, Sort sort);
+    List<Post> findByUserIdInAndPostFlag(List<Long> userId, PostFlag postFlag, Sort sort);
 
-    List<Post> findAllByUserIdNot(Long userId, Sort sort);
+    List<Post> findAllByUserIdNotAndPostFlag(Long userId, PostFlag postFlag, Sort sort);
 
     Optional<Post> findByIdAndPostFlag(Long postId, PostFlag postFlag);
 }

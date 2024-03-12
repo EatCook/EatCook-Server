@@ -19,50 +19,31 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "recipe read dto")
 public class RecipeReadDto {
 
-    @Schema(description = "레시피 id", example = "1")
     private Long id;
-    @Schema(description = "제목", example = "김밥 만들기")
     private String recipeName;
-    @Schema(description = "조리 시간", example = "10")
     private Integer recipeTime;
-    @Schema(description = "본문", example = "간단하게 만들 수 있어요")
     private String introduction;
 
-    @Schema(description = "생성 날짜", example = "2024-02-29T03:31:29.784088")
     private LocalDateTime createdAt;
-    @Schema(description = "마지막 수정 날짜", example = "2024-02-29T03:31:29.784088")
     private LocalDateTime lastModifiedAt;
 
-    @Schema(description = "재료수", example = "2")
     private Integer foodIngredientsCnt;
-    @Schema(description = "재료", example = "[\"김밥\",\"밥\"]")
     private List<String> foodIngredients;
 
-    @Schema(description = "테마", example = "[\"한식\",\"중식\"]")
     private List<String> cookingType;
 
-    @Schema(description = "조리 과정", example = "{\"1\": \"밥을 준비해 주세요\",\"2\": \"밥을 한 주먹 ~\"}")
     private List<RecipeProcessReadDto> recipeProcess;
 
-    @Schema(description = "유저 id", example = "1")
     private Long userId;
-    @Schema(description = "유저 닉네임", example = "username")
     private String nickName;
 
-
-    @Schema(description = "팔로우 수", example = "10")
     private Integer followerCount;
-    @Schema(description = "좋아요 수", example = "10")
     private Integer likedCount;
 
-    @Schema(description = "팔로우 여부", example = "true")
     private Boolean followCheck;
-    @Schema(description = "좋아요 여부", example = "true")
     private Boolean lickedCheck;
-    @Schema(description = "보관함 여부", example = "true")
     private Boolean archiveCheck;
 
     public RecipeReadDto(Post post, CookTalkUserMapping user) {
