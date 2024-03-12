@@ -13,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "recipe image url dto")
 public class RecipeImageUrlDto {
 
     private ImageUrlDto mainImageUrl;
