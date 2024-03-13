@@ -42,7 +42,7 @@ public class CookTalkController {
     ) {
         Pageable pageable = PageRequest.of(pageNum, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
         CookTalkResponse cookTalkData = cooktalkUseCase.getCookTalkFeed(authenticationUser.getUsername(), pageable);
-//        authenticationUser.getUsername()
+
         return ResponseEntity.ok(ApiResponse.OK(cookTalkData));
     }
 
