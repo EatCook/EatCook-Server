@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -16,39 +16,21 @@ import java.time.LocalDateTime;
 @Schema(name = "cooktalk response")
 public class CookTalkResponse {
 
-    @Schema(description = "레시피 id", example = "1")
-    private Long id;
-    @Schema(description = "제목", example = "김밥 만들기")
-    private String recipeName;
-    @Schema(description = "본문", example = "간단하게 만들 수 있어요")
-    private String introduction;
-    @Schema(description = "메인 이미지", example = "/image/{UUID}")
-    private String postImagePath;
+    private List<CookTalkDto> cookTalkDtoList;
 
-    @Schema(description = "생성 날짜", example = "2024-02-29T03:31:29.784088")
-    private LocalDateTime createdAt;
-    @Schema(description = "마지막 수정 날짜", example = "2024-02-29T03:31:29.784088")
-    private LocalDateTime lastModifiedAt;
+    private boolean hasNextPage;
+    private Long getTotalElements;
 
-    @Schema(description = "유저 id", example = "1")
-    private Long userId;
-    @Schema(description = "유저 닉네임", example = "username")
-    private String nickName;
-    @Schema(description = "팔로우 여부", example = "true")
-    private Boolean followChk;
-
-    public static CookTalkResponse of(CookTalkDto cookTalkDto) {
+    public static CookTalkResponse of(List<CookTalkDto> cookTalkDto, boolean hasNextPage, Long getTotalElements) {
         return CookTalkResponse.builder()
-                .id(cookTalkDto.getId())
-                .recipeName(cookTalkDto.getRecipeName())
-                .introduction(cookTalkDto.getIntroduction())
-                .postImagePath(cookTalkDto.getPostImagePath())
-                .createdAt(cookTalkDto.getCreatedAt())
-                .lastModifiedAt(cookTalkDto.getLastModifiedAt())
-                .userId(cookTalkDto.getUserId())
-                .nickName(cookTalkDto.getNickName())
-                .followChk(cookTalkDto.getFollowChk())
+                .cookTalkDtoList(cookTalkDto)
+                .hasNextPage(hasNextPage)
+                .getTotalElements(getTotalElements)
                 .build();
+    }
+
+    public void cookTalkDtoListAdd(CookTalkDto cookTalkDto) {
+        cookTalkDtoList.add(cookTalkDto);
     }
 
 }

@@ -8,6 +8,8 @@ import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,20 +26,20 @@ public class PostDomainService {
 
     private final PostRepository postRepository;
 
-    public List<Post> fetchFindAllByUserIdNotWithUsers(Long userId) {
-        List<Post> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+    public Page<Post> fetchFindAllByUserIdNotWithUsers(Long userId, Pageable pageable) {
+        Page<Post> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
 
-        if (ObjectUtils.isEmpty(findPostAllData)) {
+        if (!findPostAllData.hasContent()) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
         }
 
         return findPostAllData;
     }
 
-    public List<Post> fetchFindFollowingCookTalk(List<Long> userId) {
-        List<Post> findFollowingCookTalkData = postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+    public Page<Post> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
+        Page<Post> findFollowingCookTalkData = postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
 
-        if (ObjectUtils.isEmpty(findFollowingCookTalkData)) {
+        if (!findFollowingCookTalkData.hasContent()) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
         }
 

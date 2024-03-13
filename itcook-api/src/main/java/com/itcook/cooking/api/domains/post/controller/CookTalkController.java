@@ -7,10 +7,16 @@ import com.itcook.cooking.api.domains.post.service.CookTalkUseCase;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,27 +34,26 @@ public class CookTalkController {
 
     private final CookTalkUseCase cooktalkUseCase;
 
-    @GetMapping("/test")
-    public String cookTalkVerifyTest() {
-        log.info("테스트 cookTalkVerifyTest");
-        return "/api/cooktalk/test 접근";
-    }
-
     @Operation(summary = "cooktalk 요청", description = "cooktalk 요청 설명")
-    @PostMapping("/feed")
-    public ResponseEntity<ApiResponse<List<CookTalkResponse>>> retrieveAllCookTalk(@AuthenticationPrincipal AuthenticationUser authenticationUser,
-                                                                                   @Valid @RequestBody CookTalkRequest cookTalkRequest
+    @GetMapping("/feed")
+    public ResponseEntity<ApiResponse<CookTalkResponse>> retrieveAllCookTalk(
+            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @RequestParam(value = "pageNum", defaultValue = "0") int pageNum
     ) {
-        List<CookTalkResponse> cookTalkData = cooktalkUseCase.getCookTalkFeed(cookTalkRequest.getEmail());
+        Pageable pageable = PageRequest.of(pageNum, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+        CookTalkResponse cookTalkData = cooktalkUseCase.getCookTalkFeed(authenticationUser.getUsername(), pageable);
 
         return ResponseEntity.ok(ApiResponse.OK(cookTalkData));
     }
 
     @Operation(summary = "follower 요청", description = "follower 요청 설명")
-    @PostMapping("/following")
-    public ResponseEntity<ApiResponse<List<CookTalkResponse>>> retrieveAllFollowing(@AuthenticationPrincipal AuthenticationUser authenticationUser,
-                                                                                    @Valid @RequestBody CookTalkRequest cookTalkRequest) {
-        List<CookTalkResponse> followerTalk = cooktalkUseCase.getFollowingTalk(cookTalkRequest.getEmail());
+    @GetMapping("/following")
+    public ResponseEntity<ApiResponse<CookTalkResponse>> retrieveAllFollowing(
+            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @RequestParam(value = "pageNum", defaultValue = "0") int pageNum
+    ) {
+        Pageable pageable = PageRequest.of(pageNum, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+        CookTalkResponse followerTalk = cooktalkUseCase.getFollowingTalk(authenticationUser.getUsername(), pageable);
         return ResponseEntity.ok(ApiResponse.OK(followerTalk));
     }
 
