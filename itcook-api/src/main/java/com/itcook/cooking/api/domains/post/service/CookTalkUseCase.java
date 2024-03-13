@@ -55,7 +55,7 @@ public class CookTalkUseCase {
 
         cookTalkDtos.forEach(cookTalkDto -> postValidationUseCase.getFollowingCheck(cookTalkDto, followingSet));
 
-        return CookTalkResponse.of(cookTalkDtos, postFollowingData.hasNext(), postFollowingData.getTotalElements());
+        return CookTalkResponse.of(cookTalkDtos, postFollowingData.hasNext(), postFollowingData.getTotalElements(), postFollowingData.getTotalPages());
     }
 
 

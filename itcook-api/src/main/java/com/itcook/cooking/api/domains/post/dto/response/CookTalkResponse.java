@@ -16,21 +16,18 @@ import java.util.List;
 @Schema(name = "cooktalk response")
 public class CookTalkResponse {
 
+    private boolean nextPageValid;
+    private Long totalElements;
+    private Integer totalPages;
     private List<CookTalkDto> cookTalkDtoList;
 
-    private boolean hasNextPage;
-    private Long getTotalElements;
-
-    public static CookTalkResponse of(List<CookTalkDto> cookTalkDto, boolean hasNextPage, Long getTotalElements) {
+    public static CookTalkResponse of(List<CookTalkDto> cookTalkDto, boolean nextPage, Long totalElements, int totalPages) {
         return CookTalkResponse.builder()
                 .cookTalkDtoList(cookTalkDto)
-                .hasNextPage(hasNextPage)
-                .getTotalElements(getTotalElements)
+                .nextPageValid(nextPage)
+                .totalElements(totalElements)
+                .totalPages(totalPages)
                 .build();
-    }
-
-    public void cookTalkDtoListAdd(CookTalkDto cookTalkDto) {
-        cookTalkDtoList.add(cookTalkDto);
     }
 
 }
