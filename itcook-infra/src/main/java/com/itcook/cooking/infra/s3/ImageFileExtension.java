@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ImageFileExtension {
     JPEG("jpeg"),
-    JPG("jpeg"),
+    JPG("jpg"),
     PNG("png");
 
     ImageFileExtension(String uploadExtension) {
