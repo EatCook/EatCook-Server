@@ -6,7 +6,6 @@ import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
 import com.itcook.cooking.domain.domains.post.repository.RecipeProcessRepository;
-import com.itcook.cooking.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -55,29 +54,44 @@ public class RecipeProcessDomainService {
     }
 
     public void updateRecipeProcess(List<RecipeProcess> updateRecipeProcess, Post postData) {
-        updateRecipeProcess.forEach(newProcess -> {
-            if (newProcess.getStepNum() == null || newProcess.getRecipeWriting() == null) {
-                throw new ApiException(RecipeProcessErrorCode.RECIPE_PROCESS_REQUEST_ERROR);
-            }
-            if (newProcess.getStepNum() != updateRecipeProcess.indexOf(newProcess) + 1) {
-                throw new ApiException(RecipeProcessErrorCode.RECIPE_PROCESS_REQUEST_ERROR);
-            }
-        });
+        // 유효성 검사를 먼저 수행
+        recipeProcessNullValidation(updateRecipeProcess);
 
+        // 기존 레시피 과정 로드
         List<RecipeProcess> existingRecipeProcess = recipeProcessRepository.findByPost(postData);
 
-        for (RecipeProcess updateRecipeProcessData : updateRecipeProcess) {
-            if (updateRecipeProcessData.getRecipeProcessImagePath() == null) {
+        // 이미지 파일 확장자 업데이트
+        recipeProcessImageFileExtensionUpdate(updateRecipeProcess, existingRecipeProcess);
 
-                for (RecipeProcess existingRecipeProcessData : existingRecipeProcess) {
-                    if (existingRecipeProcessData.getStepNum() == updateRecipeProcessData.getStepNum()) {
-                        updateRecipeProcessData.updateFileExtension(existingRecipeProcessData.getRecipeProcessImagePath());
-                    }
-                }
+        // 변경된 레시피 과정 업데이트
+        recipeProcessUpdateValidation(updateRecipeProcess, existingRecipeProcess);
+
+        // 새로운 과정 추가 또는 삭제 처리
+        handleCreateOrDeletedProcesses(updateRecipeProcess, postData, existingRecipeProcess);
+    }
+
+    private static void recipeProcessNullValidation(List<RecipeProcess> updateRecipeProcess) {
+        for (RecipeProcess newProcess : updateRecipeProcess) {
+            if (newProcess.getStepNum() == null || newProcess.getRecipeWriting() == null ||
+                    newProcess.getStepNum() != updateRecipeProcess.indexOf(newProcess) + 1) {
+                throw new ApiException(RecipeProcessErrorCode.RECIPE_PROCESS_REQUEST_ERROR);
             }
         }
+    }
 
-        updateRecipeProcess.forEach(newProcess -> {
+    private static void recipeProcessImageFileExtensionUpdate(List<RecipeProcess> updateRecipeProcess, List<RecipeProcess> existingRecipeProcess) {
+        for (RecipeProcess updateProcess : updateRecipeProcess) {
+            if (updateProcess.getRecipeProcessImagePath() == null) {
+                existingRecipeProcess.stream()
+                        .filter(existingProcess -> existingProcess.getStepNum().equals(updateProcess.getStepNum()))
+                        .findFirst()
+                        .ifPresent(existingProcess -> updateProcess.updateFileExtension(existingProcess.getRecipeProcessImagePath()));
+            }
+        }
+    }
+
+    private static void recipeProcessUpdateValidation(List<RecipeProcess> updateRecipeProcess, List<RecipeProcess> existingRecipeProcess) {
+        for (RecipeProcess newProcess : updateRecipeProcess) {
             existingRecipeProcess.stream()
                     .filter(oldProcess -> newProcess.getStepNum().equals(oldProcess.getStepNum()))
                     .findFirst()
@@ -89,20 +103,16 @@ public class RecipeProcessDomainService {
                             oldProcess.updateRecipeProcess(newProcess);
                         }
                     });
-        });
+        }
+    }
 
-        // 새로운 레시피 과정이 추가되거나 삭제된 경우에 대한 처리
-        List<RecipeProcess> recipeProcesses;
-        if (updateRecipeProcess.size() > existingRecipeProcess.size()) {
-            recipeProcesses = updateRecipeProcess.stream()
-                    .skip(existingRecipeProcess.size())
-                    .collect(Collectors.toList());
-            createRecipeProcess(recipeProcesses);
-        } else {
-            recipeProcesses = existingRecipeProcess.stream()
-                    .skip(updateRecipeProcess.size())
-                    .collect(Collectors.toList());
-            deleteRecipeProcess(postData, recipeProcesses);
+    private void handleCreateOrDeletedProcesses(List<RecipeProcess> updateRecipeProcess, Post postData, List<RecipeProcess> existingRecipeProcess) {
+        int newSize = updateRecipeProcess.size();
+        int existingSize = existingRecipeProcess.size();
+        if (newSize > existingSize) {
+            createRecipeProcess(updateRecipeProcess.subList(existingSize, newSize));
+        } else if (newSize < existingSize) {
+            deleteRecipeProcess(postData, existingRecipeProcess.subList(newSize, existingSize));
         }
     }
 
