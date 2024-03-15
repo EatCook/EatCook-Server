@@ -73,7 +73,7 @@ public class SwaggerConfig {
 
         Server server2 = new Server();
         server2.url("http://%s:8080".formatted(devHost));
-        server2.description("Local ENV");
+        server2.description("Dev ENV");
 
         return List.of(server1, server2);
     }
