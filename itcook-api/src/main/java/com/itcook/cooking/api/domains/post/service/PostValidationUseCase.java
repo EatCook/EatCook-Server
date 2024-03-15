@@ -97,7 +97,7 @@ public class PostValidationUseCase {
 
     //확장자 검증
     private ImageFileExtension getFileExtensionValidation(String fileExtension) {
-        ImageFileExtension mainImageFileExtension = s3PresignedUrlService.fileExtensionValidation(fileExtension);
+        ImageFileExtension mainImageFileExtension = ImageFileExtension.fromFileExtension(fileExtension);
 
         if (mainImageFileExtension == null) {
             throw new ApiException(PostErrorCode.POST_FILE_EXTENSION_NOT_EXIST);

@@ -1,5 +1,6 @@
 package com.itcook.cooking.api.domains.user.service;
 
+import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
@@ -14,7 +15,8 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.email.EmailTemplate;
-import com.itcook.cooking.infra.redis.config.RedisService;
+import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.infra.s3.ImageFileExtension;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import com.itcook.cooking.infra.s3.S3PresignedUrlService;
 import java.util.List;
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 @Slf4j
@@ -79,11 +82,11 @@ public class SignupUseCase {
     }
 
     @Transactional
-    public AddUserResponse addSignup(ItCookUser user, String fileExtension, List<CookingType> cookingTypes) {
+    public AddUserResponse addSignup(AddSignupRequest addSignupRequest) {
         ImageUrlDto imageUrlDto = ImageUrlDto.builder().build();
-        ItCookUser itCookUser = userDomainService.addSignup(user, cookingTypes);
+        ItCookUser itCookUser = userDomainService.addSignup(addSignupRequest.toEntity(), addSignupRequest.toCookingTypes());
         // fileExension이 있을 경우 프로필 이미지 업로드
-        imageUrlDto = getImageUrlDto(fileExtension, imageUrlDto, itCookUser);
+        imageUrlDto = getImageUrlDto(addSignupRequest.getFileExtension(), imageUrlDto, itCookUser);
 
         return AddUserResponse.builder()
             .presignedUrl(imageUrlDto.getUrl())
@@ -95,8 +98,11 @@ public class SignupUseCase {
     private ImageUrlDto getImageUrlDto(String fileExtension, ImageUrlDto imageUrlDto,
         ItCookUser itCookUser) {
         if (StringUtils.hasText(fileExtension)) {
-            imageUrlDto = s3PresignedUrlService.forUser(itCookUser.getId(),
+            ImageFileExtension imageFileExtension = ImageFileExtension.fromFileExtension(
                 fileExtension);
+            Assert.notNull(imageFileExtension, fileExtension + "는 지원하지 않는 확장자입니다.");
+            imageUrlDto = s3PresignedUrlService.forUser(itCookUser.getId(),
+                imageFileExtension.getUploadExtension());
             itCookUser.updateProfile(imageUrlDto.getKey());
         }
         return imageUrlDto;

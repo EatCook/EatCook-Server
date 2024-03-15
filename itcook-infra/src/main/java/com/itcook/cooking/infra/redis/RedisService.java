@@ -1,8 +1,10 @@
-package com.itcook.cooking.infra.redis.config;
+package com.itcook.cooking.infra.redis;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +32,14 @@ public class RedisService {
     public void addBlackList(String accessToken, long time) {
         redisTemplate.opsForValue()
             .set(accessToken, "logout", time, TimeUnit.MILLISECONDS);
+    }
+
+    public void incrementScore(String key, String value, long score) {
+        redisTemplate.opsForZSet().incrementScore(key, value, score);
+    }
+
+    public Set<TypedTuple<Object>> getRankingWords() {
+        return redisTemplate.opsForZSet().reverseRangeWithScores("searchWords", 0, 9);
     }
 
 }

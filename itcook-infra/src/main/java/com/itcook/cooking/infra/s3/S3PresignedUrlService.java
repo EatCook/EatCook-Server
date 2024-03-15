@@ -67,18 +67,18 @@ public class S3PresignedUrlService {
                 + fileExtension;
     }
 
-    public ImageFileExtension fileExtensionValidation(String fileExtension) {
-        if (fileExtension.equalsIgnoreCase("jpg")) {
-            return ImageFileExtension.JPG;
-        } else if (fileExtension.equalsIgnoreCase("jpeg")) {
-            return ImageFileExtension.JPEG;
-        } else if (fileExtension.equalsIgnoreCase("png")) {
-            return ImageFileExtension.PNG;
-        } else {
-            //허용되지 않은 확장자명
-            return null;
-        }
-    }
+//    public ImageFileExtension fileExtensionValidation(String fileExtension) {
+//        if (fileExtension.equalsIgnoreCase("jpg")) {
+//            return ImageFileExtension.JPG;
+//        } else if (fileExtension.equalsIgnoreCase("jpeg")) {
+//            return ImageFileExtension.JPEG;
+//        } else if (fileExtension.equalsIgnoreCase("png")) {
+//            return ImageFileExtension.PNG;
+//        } else {
+//            //허용되지 않은 확장자명
+//            return null;
+//        }
+//    }
 
     public ImageUrlDto forUser(Long userId, String fileExtension) {
 //        String fileExtension = imageFileExtension.getUploadExtension();

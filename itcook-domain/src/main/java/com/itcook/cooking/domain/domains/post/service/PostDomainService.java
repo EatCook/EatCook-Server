@@ -3,6 +3,7 @@ package com.itcook.cooking.domain.domains.post.service;
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
@@ -25,6 +26,7 @@ import java.util.Optional;
 public class PostDomainService {
 
     private final PostRepository postRepository;
+    private final PostQuerydslRepository postQuerydslRepository;
 
     public Page<Post> fetchFindAllByUserIdNotWithUsers(Long userId, Pageable pageable) {
         Page<Post> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
@@ -55,6 +57,7 @@ public class PostDomainService {
 
         return findPostData;
     }
+
 
     public Post fetchFindByMyPost(Long userId) {
         return postRepository.findById(userId).orElse(null);
@@ -90,5 +93,11 @@ public class PostDomainService {
         }
 
         postEntity.deletePost();
+    }
+
+    public List<Post> searchByRecipeNameOrIngredients(
+        Long lastId, List<String> names, Integer size
+    ) {
+        return postQuerydslRepository.findAllWithPagination(lastId, names, size);
     }
 }
