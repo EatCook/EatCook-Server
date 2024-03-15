@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(description = "회원가입 응답")
+@Schema(name = "회원가입 응답")
 public class UserResponse {
 
     @Schema(description = "유저 id", example = "1")

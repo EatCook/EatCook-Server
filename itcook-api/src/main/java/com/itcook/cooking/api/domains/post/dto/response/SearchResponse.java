@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Schema(name = "게시글 검색 응답")
 public class SearchResponse {
 
     @Schema(description = "게시글 id")
