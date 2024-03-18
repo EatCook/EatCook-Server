@@ -69,9 +69,9 @@ public class PostValidationUseCase {
     }
 
     //좋아요 여부
-    public boolean getLikedValidation(List<Liked> findAllLikedData, Long userId, Long postId) {
+    public boolean getLikedValidation(List<Liked> findAllLikedData, Long userId) {
         return findAllLikedData.stream()
-                .anyMatch(liked -> liked.getPostId().equals(postId) && liked.getItCookUserId().equals(userId));
+                .anyMatch(liked -> liked.getItCookUserId().equals(userId));
     }
 
 
