@@ -100,7 +100,6 @@ public class SignupUseCase {
         if (StringUtils.hasText(fileExtension)) {
             ImageFileExtension imageFileExtension = ImageFileExtension.fromFileExtension(
                 fileExtension);
-            Assert.notNull(imageFileExtension, fileExtension + "는 지원하지 않는 확장자입니다.");
             imageUrlDto = s3PresignedUrlService.forUser(itCookUser.getId(),
                 imageFileExtension.getUploadExtension());
             itCookUser.updateProfile(imageUrlDto.getKey());

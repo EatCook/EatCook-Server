@@ -20,6 +20,6 @@ public enum ImageFileExtension {
                 return value;
             }
         }
-        return null;
+        throw new IllegalArgumentException(fileExtension + "는 지원하지 않는 확장자입니다.");
     }
 }
