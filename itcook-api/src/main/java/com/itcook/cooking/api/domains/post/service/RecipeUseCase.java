@@ -123,7 +123,7 @@ public class RecipeUseCase {
 
         List<Liked> findAllLiked = likedDomainService.getFindLiked(postData.get().getId());
 
-        boolean likedValidation = postValidationUseCase.getLikedValidation(findAllLiked, findByUserEmail.getId(), postData.get().getId());
+        boolean likedValidation = postValidationUseCase.getLikedValidation(findAllLiked, findByUserEmail.getId());
 
         boolean archiveValidation = postValidationUseCase.getArchiveValidation(archiveDomainService.getFindByItCookUserId(findByUserEmail.getId()), postData.get().getId());
 

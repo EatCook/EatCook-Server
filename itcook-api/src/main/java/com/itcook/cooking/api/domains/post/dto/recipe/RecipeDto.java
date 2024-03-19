@@ -5,7 +5,6 @@ import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,7 +42,7 @@ public class RecipeDto {
     private Integer likedCount;
 
     private Boolean followCheck;
-    private Boolean lickedCheck;
+    private Boolean likedCheck;
     private Boolean archiveCheck;
 
     public RecipeDto(Post post, CookTalkUserMapping user) {
@@ -66,7 +65,7 @@ public class RecipeDto {
                 .collect(Collectors.toList());
 
         this.likedCount = findAllLiked.size();
-        this.lickedCheck = likedValidation;
+        this.likedCheck = likedValidation;
         this.archiveCheck = archiveValidation;
         this.recipeProcess = findRecipeProcesses;
     }

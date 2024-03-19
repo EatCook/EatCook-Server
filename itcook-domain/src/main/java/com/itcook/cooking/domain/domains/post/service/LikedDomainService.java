@@ -17,8 +17,12 @@ import java.util.List;
 public class LikedDomainService {
 
     private final LikedRepository likedRepository;
+
     public List<Liked> getFindLiked(Long postId) {
         return likedRepository.findAllByPostId(postId);
     }
 
+    public List<Liked> getFindAllLiked(List<Long> postIdData) {
+        return likedRepository.findAllByPostIdIn(postIdData);
+    }
 }
