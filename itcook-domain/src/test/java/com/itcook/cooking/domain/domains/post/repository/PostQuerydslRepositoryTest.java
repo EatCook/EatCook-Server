@@ -5,6 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.itcook.cooking.DomainTestQuerydslConfiguration;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -30,6 +34,9 @@ class PostQuerydslRepositoryTest {
     private PostRepository postRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private EntityManagerFactory entityManagerFactory;
 
     @AfterEach
@@ -42,16 +49,44 @@ class PostQuerydslRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        ItCookUser user1 = userRepository.save(ItCookUser.builder()
+            .nickName("잇쿡1")
+            .email("user@test.com")
+            .password("1234")
+            .providerType(ProviderType.COMMON)
+            .userRole(UserRole.USER)
+            .build());
+        ItCookUser user2 = userRepository.save(ItCookUser.builder()
+            .nickName("잇쿡2")
+            .email("user@test2.com")
+            .password("1234")
+            .providerType(ProviderType.COMMON)
+            .userRole(UserRole.USER)
+            .build());
+
         for (int i = 1; i <= 30; i++) {
-            postRepository.save(
-                Post.builder()
-                    .recipeName("test"+i)
-                    .foodIngredients(List.of("ingredient"+i, "ingredient"+(i+1)))   // 재료
-                    .userId(1L)
-                    .postFlag(PostFlag.ACTIVATE)
-                    .build()
-            );
+            if (i <= 15) {
+                postRepository.save(
+                    Post.builder()
+                        .recipeName("test"+i)
+                        .foodIngredients(List.of("ingredient"+i, "ingredient"+(i+1)))   // 재료
+                        .userId(user1.getId())
+                        .postFlag(PostFlag.ACTIVATE)
+                        .build()
+                );
+            } else {
+                postRepository.save(
+                    Post.builder()
+                        .recipeName("test"+i)
+                        .foodIngredients(List.of("ingredient"+i, "ingredient"+(i+1)))   // 재료
+                        .userId(user2.getId())
+                        .postFlag(PostFlag.ACTIVATE)
+                        .build()
+                );
+
+            }
         }
+
     }
 
     @Test
@@ -67,7 +102,7 @@ class PostQuerydslRepositoryTest {
         postRepository.save(post);
 
         //when
-        List<Post> posts = postQuerydslRepository.findAllWithPagination(null, List.of("test0"),
+        List<Post> posts = postQuerydslRepository.findNamesWithPagination(null, List.of("test0"),
             10);
 
         //then
@@ -80,7 +115,7 @@ class PostQuerydslRepositoryTest {
     void no_search_words_test() {
         //given
         //when
-        List<Post> posts = postQuerydslRepository.findAllWithPagination(null, null, 10);
+        List<Post> posts = postQuerydslRepository.findNamesWithPagination(null, null, 10);
 
         //then
         assertEquals(10, posts.size());
@@ -95,7 +130,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("test"),10);
+            .findNamesWithPagination(null, List.of("test"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -111,7 +146,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("test1"),10);
+            .findNamesWithPagination(null, List.of("test1"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -127,7 +162,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("ingredient2"),10);
+            .findNamesWithPagination(null, List.of("ingredient2"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -144,7 +179,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(10L, List.of("test1"),10);
+            .findNamesWithPagination(10L, List.of("test1"),10);
 
         //then
         assertEquals(1, posts.size());
@@ -160,11 +195,37 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(21L, List.of("test"), 10);
+            .findNamesWithPagination(21L, List.of("test"), 10);
 
         //then
         assertEquals(10, posts.size());
         assertEquals("test20", posts.get(0).getRecipeName());
         assertEquals("test11", posts.get(9).getRecipeName());
+    }
+
+    @Test
+    @DisplayName("재료 조회 테스트")
+    void findAllWithRecipeNamesTest() {
+        //given
+//        List<SearchIngredients> ingredients = postQuerydslRepository
+//            .findAllWithPagination(null, List.of("test1"), null,10);
+        //when
+//        ingredients.forEach(searchIngredients -> System.out.println("searchIngredients = " + searchIngredients));
+
+        //then
+    }
+
+    @Test
+    @DisplayName("RecipeName 조회 테스트")
+    void findAllWithIngredientsTest() {
+        //given
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(null, null, List.of("ingredient23"),10);
+        //when
+        ingredients.forEach(searchNames -> System.out.println("searchIngredients = " + searchNames));
+
+
+
+        //then
     }
 }

@@ -1,9 +1,14 @@
 package com.itcook.cooking.domain.domains.post.repository;
 
 import static com.itcook.cooking.domain.domains.post.entity.QPost.post;
+import static com.itcook.cooking.domain.domains.user.entity.QItCookUser.itCookUser;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.post.repository.dto.SearchNames;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -17,8 +22,7 @@ public class PostQuerydslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    // TODO
-    public List<Post> findAllWithPagination(Long lastId
+    public List<Post> findNamesWithPagination(Long lastId
         , List<String> names, Integer size) {
 
         return jpaQueryFactory.selectFrom(post)
@@ -32,6 +36,31 @@ public class PostQuerydslRepository {
             .limit(size)
             .fetch();
     }
+
+    public List<SearchNames> findAllWithPagination
+    (
+        Long lastId, List<String> recipeNames ,List<String> ingredientNames, Integer size
+    ) {
+        return jpaQueryFactory.select(
+                Projections.constructor(
+                    SearchNames.class, post.id, post.recipeName,
+                    post.introduction, post.postImagePath,
+                    post.likeCount,
+                    itCookUser.nickName
+            ))
+            .from(post)
+            .innerJoin(itCookUser).on(post.userId.eq(itCookUser.id))
+            .where(
+                lessThanId(lastId),
+                post.postFlag.eq(PostFlag.ACTIVATE),
+                containsRecipeName(recipeNames),
+                containsIngredientNames(ingredientNames)
+            )
+            .orderBy(post.createdAt.desc())
+            .limit(size)
+            .fetch();
+    }
+
 
     private BooleanExpression lessThanId(Long lastId) {
         return lastId != null ? post.id.lt(lastId) : null;

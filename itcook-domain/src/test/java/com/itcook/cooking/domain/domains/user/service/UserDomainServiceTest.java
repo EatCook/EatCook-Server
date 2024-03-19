@@ -45,6 +45,38 @@ class UserDomainServiceTest {
 //    void setUp() {
 //    }
 
+    @Test
+    @DisplayName("이메일 조회 테스트")
+    void fetchFindByEmailTest() {
+        //given
+        given(userRepository.findByEmail("test")).willReturn(Optional.of(
+            ItCookUser.builder()
+                .id(1L)
+                .nickName("test")
+                .lifeType(LifeType.DELIVERY_FOOD)
+                .build()
+        ));
+        //when
+        ItCookUser itCookUser = userDomainService.fetchFindByEmail("test");
+
+        //then
+        assertEquals(1L, itCookUser.getId());
+        assertEquals("test", itCookUser.getNickName());
+    }
+
+    @Test
+    @DisplayName("이메일 조회 실패 테스트")
+    void fetchFindByExistingEmailTest() {
+        //given
+        given(userRepository.findByEmail("test")).willReturn(Optional.empty());
+
+        //when
+        ApiException apiException = assertThrows(ApiException.class,
+            () -> userDomainService.fetchFindByEmail("test"));
+
+        //then
+        assertEquals(UserErrorCode.USER_NOT_FOUND, apiException.getErrorCode());
+    }
 
     @Test
     @DisplayName("추가 회원가입 닉네임 중복 체크 에러 테스트")
