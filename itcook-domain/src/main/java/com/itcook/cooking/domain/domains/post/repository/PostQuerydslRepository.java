@@ -1,13 +1,16 @@
 package com.itcook.cooking.domain.domains.post.repository;
 
+import static com.itcook.cooking.domain.domains.post.entity.QLiked.liked;
 import static com.itcook.cooking.domain.domains.post.entity.QPost.post;
 import static com.itcook.cooking.domain.domains.user.entity.QItCookUser.itCookUser;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.entity.QLiked;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.dto.SearchNames;
+import com.itcook.cooking.domain.domains.post.repository.dto.TestDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -37,27 +40,43 @@ public class PostQuerydslRepository {
             .fetch();
     }
 
+    // TODO : ingredientNames로 그룹핑해서 가져오기
     public List<SearchNames> findAllWithPagination
     (
         Long lastId, List<String> recipeNames ,List<String> ingredientNames, Integer size
     ) {
         return jpaQueryFactory.select(
                 Projections.constructor(
-                    SearchNames.class, post.id, post.recipeName,
-                    post.introduction, post.postImagePath,
-                    post.likeCount,
+                    SearchNames.class, post.id,
+                    post.recipeName,
+                    post.introduction,
+                    post.postImagePath,
+                    liked.postId.count(),
                     itCookUser.nickName
             ))
             .from(post)
             .innerJoin(itCookUser).on(post.userId.eq(itCookUser.id))
+            .leftJoin(liked).on(post.id.eq(liked.postId))
             .where(
                 lessThanId(lastId),
                 post.postFlag.eq(PostFlag.ACTIVATE),
                 containsRecipeName(recipeNames),
                 containsIngredientNames(ingredientNames)
             )
+            .groupBy(post.id)
             .orderBy(post.createdAt.desc())
             .limit(size)
+            .fetch();
+    }
+
+    public List<TestDto> findPostsWithLikes() {
+        return jpaQueryFactory.select(
+            Projections.constructor(
+                TestDto.class, post.id, liked.postId.count()
+            ))
+            .from(post)
+            .leftJoin(liked).on(post.id.eq(liked.postId))
+            .groupBy(post.id)
             .fetch();
     }
 

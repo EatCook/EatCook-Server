@@ -3,8 +3,10 @@ package com.itcook.cooking.domain.domains.post.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.itcook.cooking.DomainTestQuerydslConfiguration;
+import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.post.repository.dto.TestDto;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
@@ -35,6 +37,9 @@ class PostQuerydslRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LikedRepository likedRepository;
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -219,8 +224,15 @@ class PostQuerydslRepositoryTest {
     @DisplayName("RecipeName 조회 테스트")
     void findAllWithIngredientsTest() {
         //given
+        Liked liked = new Liked(1L, 30L);
+        Liked liked2 = new Liked(2L, 30L);
+        Liked liked3 = new Liked(2L, 3L);
+        Liked liked1 = new Liked(2L, 4L);
+
+        likedRepository.saveAll(List.of(liked, liked1, liked2, liked3));
+
         var ingredients = postQuerydslRepository
-            .findAllWithPagination(null, null, List.of("ingredient23"),10);
+            .findAllWithPagination(null, null, List.of("ingredient3"),10);
         //when
         ingredients.forEach(searchNames -> System.out.println("searchIngredients = " + searchNames));
 
@@ -228,4 +240,21 @@ class PostQuerydslRepositoryTest {
 
         //then
     }
+
+//    @Test
+//    @DisplayName("Post와 LikeCount 조회 테스트")
+//    void testLiked() {
+//        //given
+//        Liked liked = new Liked(1L, 3L);
+//        Liked liked1 = new Liked(2L, 4L);
+//        Liked liked2 = new Liked(2L, 3L);
+//
+//        likedRepository.saveAll(List.of(liked, liked1, liked2));
+//
+//        //when
+//        List<TestDto> postWithLikes = postQuerydslRepository.findPostsWithLikes();
+//        postWithLikes.forEach(testDto -> System.out.println("testDto = " + testDto));
+//
+//        //then
+//    }
 }

@@ -30,7 +30,6 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private Long userId;
 
-    private int likeCount;
 
     @ElementCollection
     @CollectionTable(name = "food_ingredients", joinColumns = @JoinColumn(name = "post_id"))
