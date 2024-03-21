@@ -7,20 +7,20 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.post.entity.QLiked;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
-import com.itcook.cooking.domain.domains.post.repository.dto.SearchNames;
-import com.itcook.cooking.domain.domains.post.repository.dto.TestDto;
+import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PostQuerydslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -33,7 +33,7 @@ public class PostQuerydslRepository {
             .where(
                 lessThanId(lastId)
                 , post.postFlag.eq(PostFlag.ACTIVATE)
-                , combineExpr(containsRecipeName(names), containsIngredientNames(names))
+                , combineExpr(containsRecipeNames(names), containsIngredientNames(names))
             )
             .orderBy(post.createdAt.desc())
             .limit(size)
@@ -41,13 +41,13 @@ public class PostQuerydslRepository {
     }
 
     // TODO : ingredientNames로 그룹핑해서 가져오기
-    public List<SearchNames> findAllWithPagination
+    public List<SearchPostDto> findAllWithPagination
     (
         Long lastId, List<String> recipeNames ,List<String> ingredientNames, Integer size
     ) {
         return jpaQueryFactory.select(
                 Projections.constructor(
-                    SearchNames.class, post.id,
+                    SearchPostDto.class, post.id,
                     post.recipeName,
                     post.introduction,
                     post.postImagePath,
@@ -60,7 +60,7 @@ public class PostQuerydslRepository {
             .where(
                 lessThanId(lastId),
                 post.postFlag.eq(PostFlag.ACTIVATE),
-                containsRecipeName(recipeNames),
+                containsRecipeNames(recipeNames),
                 containsIngredientNames(ingredientNames)
             )
             .groupBy(post.id)
@@ -69,16 +69,35 @@ public class PostQuerydslRepository {
             .fetch();
     }
 
-    public List<TestDto> findPostsWithLikes() {
+    public List<SearchPostDto> findAllWithPagination2
+        (
+            Long lastId, String recipeName ,String ingredientName, Integer size
+        ) {
         return jpaQueryFactory.select(
-            Projections.constructor(
-                TestDto.class, post.id, liked.postId.count()
-            ))
+                Projections.constructor(
+                    SearchPostDto.class, post.id,
+                    post.recipeName,
+                    post.introduction,
+                    post.postImagePath,
+                    liked.postId.count(),
+                    itCookUser.nickName
+                ))
             .from(post)
+            .innerJoin(itCookUser).on(post.userId.eq(itCookUser.id))
             .leftJoin(liked).on(post.id.eq(liked.postId))
+            .where(
+                lessThanId(lastId),
+                post.postFlag.eq(PostFlag.ACTIVATE),
+                containsRecipeName(recipeName),
+                containsIngredientName(ingredientName)
+            )
             .groupBy(post.id)
+            .orderBy(post.createdAt.desc())
+            .limit(size)
             .fetch();
     }
+
+
 
 
     private BooleanExpression lessThanId(Long lastId) {
@@ -94,7 +113,15 @@ public class PostQuerydslRepository {
         return containsRecipeName.or(containsIngredientNames);
     }
 
-    private BooleanExpression containsRecipeName(List<String> recipeNames) {
+    private BooleanExpression containsRecipeName(String recipeName) {
+        return recipeName != null ? post.recipeName.containsIgnoreCase(recipeName) : null;
+    }
+
+    private BooleanExpression containsIngredientName(String ingredientName) {
+        return ingredientName != null ? post.foodIngredients.any().contains(ingredientName) : null;
+    }
+
+    private BooleanExpression containsRecipeNames(List<String> recipeNames) {
         if (CollectionUtils.isEmpty(recipeNames)) {
             return null;
         }

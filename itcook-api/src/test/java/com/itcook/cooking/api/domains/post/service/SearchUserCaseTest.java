@@ -1,7 +1,9 @@
 package com.itcook.cooking.api.domains.post.service;
 
+import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.post.repository.LikedRepository;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
@@ -35,6 +37,10 @@ class SearchUserCaseTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private LikedRepository likedRepository;
+
+
     @AfterEach
     void tearDown() {
         EntityManager em = entityManagerFactory.createEntityManager();
@@ -45,6 +51,12 @@ class SearchUserCaseTest {
 
     @BeforeEach
     void setUp() {
+        Liked liked = new Liked(1L, 3L);
+        Liked liked1 = new Liked(2L, 4L);
+        Liked liked2 = new Liked(2L, 3L);
+
+        likedRepository.saveAll(List.of(liked, liked1, liked2));
+
         ItCookUser user1 = userRepository.save(ItCookUser.builder()
             .nickName("잇쿡1")
             .email("user@test.com")
@@ -93,12 +105,9 @@ class SearchUserCaseTest {
 
         //when
         var searchNames = searchUserCase
-            .findAllWithPagination(null, null,
-            List.of("ingredient3"), 10);
+            .findAllWithPagination2(null, null,
+            List.of("ingredient1"), 10);
         //then
-//        List<String> foodIngredients = searchNames.get("ingredient2").getFoodIngredients();
-//        foodIngredients.forEach(System.out::println);
-
         searchNames.forEach(System.out::println);
 
     }
