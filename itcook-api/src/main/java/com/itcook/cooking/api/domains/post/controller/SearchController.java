@@ -2,7 +2,6 @@ package com.itcook.cooking.api.domains.post.controller;
 
 import com.itcook.cooking.api.domains.post.dto.request.PostSearchRequest;
 import com.itcook.cooking.api.domains.post.dto.response.SearchRankResponse;
-import com.itcook.cooking.api.domains.post.dto.response.SearchResponse;
 import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
 import com.itcook.cooking.api.domains.post.service.SearchUserCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
@@ -35,7 +34,7 @@ public class SearchController {
     public ResponseEntity<ApiResponse<List<SearchResultResponse>>> search(
         @RequestBody @Valid PostSearchRequest postSearchRequest
     ) {
-        List<SearchResultResponse> searchResponses = searchUserCase.search(
+        List<SearchResultResponse> searchResponses = searchUserCase.searchV3(
             postSearchRequest.getLastId(),
             postSearchRequest.getRecipeNames(),
             postSearchRequest.getIngredients(),

@@ -1,6 +1,8 @@
 package com.itcook.cooking.api.domains.post.service;
 
 
+import static java.util.stream.Collectors.toList;
+
 import com.itcook.cooking.api.domains.post.dto.response.SearchRankResponse;
 import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
 import com.itcook.cooking.api.global.annotation.UseCase;
@@ -16,7 +18,9 @@ import com.itcook.cooking.infra.redis.RealTimeSearchWords;
 import com.itcook.cooking.infra.redis.RedisService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +41,9 @@ public class SearchUserCase {
     private final PostRepository postRepository;
     private final PostQuerydslRepository postQuerydslRepository;
 
+    /**
+     * 검색 리스트 하나로 RecipeName, IngredientName을 모두 검색한다.
+     */
     public List<SearchResponse> search(
         Long lastId, List<String> names, Integer size
     ) {
@@ -53,13 +60,50 @@ public class SearchUserCase {
         return rankingWords.stream().map(SearchRankResponse::of).toList();
     }
 
-    public List<SearchPostProcess> findAllWithPagination(Long lastId, List<String> recipeNames, List<String> ingredientNames, Integer size) {
+    /**
+     * 1. 검색 리스트를 RecipeName, IngredientName으로 나누어 검색한다. (여러개의 쿼리를 날리는게 아닌 하나의 쿼리로 한번에 검색)
+     * 2. 쿼리한 결과를 가져와서, 메모리상에서 검색명에 따른 결과를 출력
+     */
+    public List<SearchResultResponse> searchV3(Long lastId, List<String> recipeNames, List<String> ingredientNames, Integer size) {
         List<SearchPostDto> searchPostDtos = postQuerydslRepository.findAllWithPagination(lastId, recipeNames, ingredientNames, size);
+        List<SearchPostProcess> searchList = getSearchList(searchPostDtos);
 
-        return getSearchList(searchPostDtos);
+        return CollectionUtils.isEmpty(ingredientNames)
+            ? getSearchResultResponses(recipeNames, searchList, this::isRecipeNameContains)
+            : getSearchResultResponses(ingredientNames, searchList, this::isFoodIngredientContains);
     }
 
-    public List<SearchResultResponse> search(Long lastId, List<String> recipeNames, List<String> ingredientNames, Integer size) {
+    private boolean isRecipeNameContains(SearchPostProcess searchPostProcess, String name) {
+        return searchPostProcess.getRecipeName().contains(name);
+    }
+
+    private boolean isFoodIngredientContains(SearchPostProcess searchPostProcess, String name) {
+        return searchPostProcess.getFoodIngredients().stream().anyMatch(foodIngredient -> foodIngredient.contains(name));
+    }
+
+    private List<SearchResultResponse> getSearchResultResponses(List<String> names, List<SearchPostProcess> searchList, BiPredicate<SearchPostProcess, String> predicate) {
+        return names.stream()
+            .map(name -> {
+                List<SearchPostProcess> filteredSearchList = searchList.stream()
+                    .filter(searchPostProcess -> predicate.test(searchPostProcess, name))
+                    .collect(toList());
+                return SearchResultResponse.builder()
+                    .name(name)
+                    .searchResults(filteredSearchList)
+                    .build();
+            })
+            .collect(toList());
+    }
+
+
+
+
+
+    /**
+     * 1. 검색 리스트를 RecipeName, IngredientName으로 나누어 검색한다. (여러번의 쿼리를 날림)
+     * 2. 쿼리한 결과를 가져와서, 메모리상에서 검색명에 따른 결과를 출력
+     */
+    public List<SearchResultResponse> searchV2(Long lastId, List<String> recipeNames, List<String> ingredientNames, Integer size) {
         List<SearchResultResponse> searchResults = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(recipeNames) && CollectionUtils.isEmpty(ingredientNames)) {
@@ -103,7 +147,7 @@ public class SearchUserCase {
                 Post post = PostServiceHelper.findExistingPostByIdAndPostFlag(postRepository, searchPostDto.getPostId());
                 return SearchPostProcess.from(searchPostDto, post.getFoodIngredients());
             })
-            .collect(Collectors.toList());
+            .collect(toList());
     }
 
 }

@@ -40,7 +40,6 @@ public class PostQuerydslRepository {
             .fetch();
     }
 
-    // TODO : ingredientNames로 그룹핑해서 가져오기
     public List<SearchPostDto> findAllWithPagination
     (
         Long lastId, List<String> recipeNames ,List<String> ingredientNames, Integer size

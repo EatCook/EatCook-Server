@@ -232,7 +232,7 @@ class PostQuerydslRepositoryTest {
         likedRepository.saveAll(List.of(liked, liked1, liked2, liked3));
 
         var ingredients = postQuerydslRepository
-            .findAllWithPagination(null, null, null,10);
+            .findAllWithPagination(null, List.of("test3","test2"), null,10);
         //when
         ingredients.forEach(searchNames -> System.out.println("searchIngredients = " + searchNames));
 

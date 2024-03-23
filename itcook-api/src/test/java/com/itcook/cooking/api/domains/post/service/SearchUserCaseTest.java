@@ -105,8 +105,8 @@ class SearchUserCaseTest {
 
         //when
         var searchNames = searchUserCase
-            .findAllWithPagination2(null, null,
-            List.of("ingredient1"), 10);
+            .searchV3(null, List.of("test3","test2"),
+            null, 10);
         //then
         searchNames.forEach(System.out::println);
 
