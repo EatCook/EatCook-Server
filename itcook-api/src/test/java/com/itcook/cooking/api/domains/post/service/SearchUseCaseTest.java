@@ -1,5 +1,11 @@
 package com.itcook.cooking.api.domains.post.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+
+import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
+import com.itcook.cooking.api.domains.post.dto.search.SearchPostProcess;
 import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
@@ -23,10 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class SearchUserCaseTest {
+class SearchUseCaseTest {
 
     @Autowired
-    private SearchUserCase searchUserCase;
+    private SearchUseCase searchUseCase;
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -46,7 +52,12 @@ class SearchUserCaseTest {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         em.createNativeQuery("ALTER TABLE post ALTER COLUMN post_id RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE itcook_user ALTER COLUMN user_id RESTART WITH 1").executeUpdate();
         em.getTransaction().commit();
+
+        postRepository.deleteAll();
+        userRepository.deleteAll();
+        likedRepository.deleteAll();
     }
 
     @BeforeEach
@@ -98,17 +109,84 @@ class SearchUserCaseTest {
     }
 
     @Test
-    @DisplayName("post 테스트")
-    @Transactional
-    void test() {
+    @DisplayName("RecipeName 리스트를 받아서, RecipeName으로 구분지어서 검색 결과를 출력한다.")
+//    @Transactional
+    void search() {
         //given
 
         //when
-        var searchNames = searchUserCase
+        List<SearchResultResponse> result = searchUseCase
             .searchV3(null, List.of("test3","test2"),
             null, 10);
         //then
-        searchNames.forEach(System.out::println);
+        assertThat(result).hasSize(2)
+            .extracting("name")
+            .contains("test3", "test2")
+            ;
+        List<SearchPostProcess> searchResults = result.get(0).getSearchResults();
+        List<SearchPostProcess> searchResult2 = result.get(1).getSearchResults();
 
+        assertThat(searchResults).hasSize(1)
+            .extracting("recipeName")
+            .contains(
+                "test30"
+            );
+        assertThat(searchResults.get(0).getFoodIngredients()).hasSize(2)
+                .contains("ingredient30", "ingredient31");
+        assertThat(searchResult2).hasSize(9)
+            .extracting("recipeName")
+            .contains("test29", "test28", "test27", "test26", "test25", "test24", "test23", "test22", "test21")
+        ;
+
+
+    }
+
+    @Test
+    @DisplayName("RecipeName 리스트를 받아서, RecipeName으로 구분지어서 검색 결과를 출력한다. 두번째 페이지를 출력한다")
+    void searchSecondPage() {
+        //given
+
+        //when
+        List<SearchResultResponse> result = searchUseCase
+            .searchV3(21L, List.of("test3","test2"),
+            null, 10);
+        //then
+        assertThat(result).hasSize(2)
+            .extracting("name")
+            .contains("test3", "test2")
+            ;
+        List<SearchPostProcess> searchResults1 = result.get(0).getSearchResults();
+        List<SearchPostProcess> searchResult2 = result.get(1).getSearchResults();
+
+        assertThat(searchResults1).hasSize(1)
+            .extracting("recipeName")
+            .contains(
+                "test3"
+            );
+        assertThat(searchResults1.get(0).getFoodIngredients()).hasSize(2)
+                .contains("ingredient3", "ingredient4");
+        assertThat(searchResult2).hasSize(2)
+            .extracting("recipeName")
+            .contains("test20","test2");
+        assertThat(searchResult2.get(0).getFoodIngredients()).hasSize(2)
+                .contains("ingredient20", "ingredient21");
+        ;
+    }
+
+    @Test
+    @DisplayName("RecipeName과 Ingredients가 null 값일시, 전체 최신순 조회한다.")
+    void searchTwoParametersNull() {
+        //given
+        //when
+        List<SearchResultResponse> result = searchUseCase
+            .searchV3(null, null,
+                null, 10);
+
+        //then
+        assertThat(result.get(0).getName()).isEqualTo("전체 검색");
+        assertThat(result.get(0).getSearchResults()).hasSize(10)
+            .extracting("recipeName")
+            .containsExactly("test30", "test29", "test28", "test27", "test26", "test25", "test24", "test23", "test22", "test21");
+        ;
     }
 }

@@ -1,5 +1,6 @@
 package com.itcook.cooking.domain.domains.post.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.itcook.cooking.DomainTestQuerydslConfiguration;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -209,52 +211,107 @@ class PostQuerydslRepositoryTest {
     }
 
     @Test
-    @DisplayName("재료 조회 테스트")
-    void findAllWithRecipeNamesTest() {
+    @DisplayName("RecipeName과 IngredientName이 null로 넘어올시 Post를 전체 조회한다.")
+    void findAllWithIngredientsWithNull() {
         //given
-//        List<SearchIngredients> ingredients = postQuerydslRepository
-//            .findAllWithPagination(null, List.of("test1"), null,10);
+
         //when
-//        ingredients.forEach(searchIngredients -> System.out.println("searchIngredients = " + searchIngredients));
+        List<Post> posts = postQuerydslRepository
+            .findNamesWithPagination(null, null, 10);
 
         //then
+        assertThat(posts).hasSize(10)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test30", "test29", "test28", "test27", "test26", "test25", "test24", "test23", "test22", "test21")
+            ;
     }
 
     @Test
-    @DisplayName("RecipeName 조회 테스트")
-    void findAllWithIngredientsTest() {
+    @DisplayName("RecipeName을 리스트로 입력받아 첫번째 페이지 Post를 조회한다.")
+    void findAllWithRecipeNames() {
         //given
-        Liked liked = new Liked(1L, 30L);
-        Liked liked2 = new Liked(2L, 30L);
-        Liked liked3 = new Liked(2L, 3L);
-        Liked liked1 = new Liked(2L, 4L);
 
-        likedRepository.saveAll(List.of(liked, liked1, liked2, liked3));
-
-        var ingredients = postQuerydslRepository
-            .findAllWithPagination(null, List.of("test3","test2"), null,10);
         //when
-        ingredients.forEach(searchNames -> System.out.println("searchIngredients = " + searchNames));
-
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(null, List.of("test2","test3"), null,10);
 
 
         //then
+        assertThat(ingredients).hasSize(10)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test30", "test29", "test28", "test27", "test26", "test25", "test24", "test23", "test22", "test21")
+            ;
+    }
+    @Test
+    @DisplayName("RecipeName을 리스트로 입력받아 두번쨰 페이지 Post를 조회한다.")
+    void findAllWithRecipeNamesSecondPage() {
+        //given
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(21L, List.of("test2","test3"), null,10);
+
+
+        //then
+        assertThat(ingredients).hasSize(3)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test20", "test3", "test2")
+            ;
     }
 
-//    @Test
-//    @DisplayName("Post와 LikeCount 조회 테스트")
-//    void testLiked() {
-//        //given
-//        Liked liked = new Liked(1L, 3L);
-//        Liked liked1 = new Liked(2L, 4L);
-//        Liked liked2 = new Liked(2L, 3L);
-//
-//        likedRepository.saveAll(List.of(liked, liked1, liked2));
-//
-//        //when
-//        List<TestDto> postWithLikes = postQuerydslRepository.findPostsWithLikes();
-//        postWithLikes.forEach(testDto -> System.out.println("testDto = " + testDto));
-//
-//        //then
-//    }
+    @Test
+    @DisplayName("IngredientName을 리스트로 입력받아 첫번째 페이지 Post를 조회한다.")
+    void findAllWithIngredients() {
+        //given
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(null, null, List.of("ingredient1"),10);
+
+        //then
+        assertThat(ingredients).hasSize(10)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test19", "test18", "test17", "test16", "test15", "test14", "test13", "test12", "test11", "test10")
+            ;
+    }
+
+    @Test
+    @DisplayName("IngredientName을 리스트로 입력받아 두번째 페이지 Post를 조회한다.")
+    void findAllWithIngredientsSecondPage() {
+        //given
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(10L, null, List.of("ingredient1"),10);
+
+        //then
+        assertThat(ingredients).hasSize(2)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test9", "test1")
+            ;
+    }
+
+    @Test
+    @DisplayName("RecipeName 리스트를 받고 Post를 조회할시, 좋아요수도 조회한다")
+    void findAllWithIngredientsLike() {
+        //given
+        Liked liked = new Liked(1L, 30L);
+        Liked liked2 = new Liked(2L, 30L);
+        Liked liked3 = new Liked(2L, 29L);
+        Liked liked1 = new Liked(2L, 28L);
+
+        likedRepository.saveAll(List.of(liked, liked1, liked2, liked3));
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(null, List.of("test2","test3"), null,10);
+
+        //then
+        assertThat(ingredients)
+            .extracting("likeCount")
+            .containsExactlyInAnyOrder(2L, 1L, 1L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
+
+
+    }
+
 }

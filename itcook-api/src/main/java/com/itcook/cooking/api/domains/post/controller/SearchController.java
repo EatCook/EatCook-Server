@@ -3,7 +3,7 @@ package com.itcook.cooking.api.domains.post.controller;
 import com.itcook.cooking.api.domains.post.dto.request.PostSearchRequest;
 import com.itcook.cooking.api.domains.post.dto.response.SearchRankResponse;
 import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
-import com.itcook.cooking.api.domains.post.service.SearchUserCase;
+import com.itcook.cooking.api.domains.post.service.SearchUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "04. Search")
 public class SearchController {
 
-    private final SearchUserCase searchUserCase;
+    private final SearchUseCase searchUseCase;
 
     @Operation(summary = "검색 요청", description = "검색 요청 설명")
     @PostMapping("/v1/posts/search")
     public ResponseEntity<ApiResponse<List<SearchResultResponse>>> search(
         @RequestBody @Valid PostSearchRequest postSearchRequest
     ) {
-        List<SearchResultResponse> searchResponses = searchUserCase.searchV3(
+        List<SearchResultResponse> searchResponses = searchUseCase.searchV3(
             postSearchRequest.getLastId(),
             postSearchRequest.getRecipeNames(),
             postSearchRequest.getIngredients(),
@@ -46,7 +46,7 @@ public class SearchController {
     @Operation(summary = "검색어 랭킹", description = "검색어 랭킹 설명")
     @GetMapping("/v1/posts/search/ranking")
     public ResponseEntity<ApiResponse<List<SearchRankResponse>>> getRankingWords() {
-        List<SearchRankResponse> rankingWords = searchUserCase.getRankingWords();
+        List<SearchRankResponse> rankingWords = searchUseCase.getRankingWords();
         return ResponseEntity.ok(ApiResponse.OK(rankingWords));
     }
 }

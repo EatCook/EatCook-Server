@@ -18,10 +18,8 @@ import com.itcook.cooking.infra.redis.RealTimeSearchWords;
 import com.itcook.cooking.infra.redis.RedisService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -33,7 +31,7 @@ import org.springframework.util.CollectionUtils;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class SearchUserCase {
+public class SearchUseCase {
 
     private final PostDomainService postDomainService;
     private final ApplicationEventPublisher eventPublisher;
@@ -68,9 +66,24 @@ public class SearchUserCase {
         List<SearchPostDto> searchPostDtos = postQuerydslRepository.findAllWithPagination(lastId, recipeNames, ingredientNames, size);
         List<SearchPostProcess> searchList = getSearchList(searchPostDtos);
 
+        if (isBothNamesEmpty(recipeNames, ingredientNames)) {
+            return getSearchResultForAll(searchList);
+        }
+
         return CollectionUtils.isEmpty(ingredientNames)
             ? getSearchResultResponses(recipeNames, searchList, this::isRecipeNameContains)
             : getSearchResultResponses(ingredientNames, searchList, this::isFoodIngredientContains);
+    }
+
+    private boolean isBothNamesEmpty(List<String> recipeNames, List<String> ingredientNames) {
+        return CollectionUtils.isEmpty(recipeNames) && CollectionUtils.isEmpty(ingredientNames);
+    }
+
+    private List<SearchResultResponse> getSearchResultForAll(List<SearchPostProcess> searchList) {
+        return List.of(SearchResultResponse.builder()
+            .name("전체 검색")
+            .searchResults(searchList)
+            .build());
     }
 
     private boolean isRecipeNameContains(SearchPostProcess searchPostProcess, String name) {
