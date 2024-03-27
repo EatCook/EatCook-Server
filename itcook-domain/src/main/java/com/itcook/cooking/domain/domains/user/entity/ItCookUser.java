@@ -32,6 +32,8 @@ public class ItCookUser extends BaseTimeEntity {
 
     private String nickName;
 
+    private String badge;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole userRole;
