@@ -11,7 +11,7 @@ import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
-import com.itcook.cooking.api.domains.post.dto.search.SearchPostProcess;
+import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
 import com.itcook.cooking.domain.domains.post.service.PostServiceHelper;
 import com.itcook.cooking.infra.redis.RealTimeSearchWords;
@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 @UseCase
 @Transactional(readOnly = true)
@@ -53,18 +54,60 @@ public class SearchUseCase {
         return posts.stream().map(SearchResponse::of).toList();
     }
 
+    public List<SearchPostResponse> searchV4(Long lastId, List<String> recipeNames, List<String> ingredientNames, Integer size) {
+
+        countingSearchNames(lastId, ingredientNames);
+
+        return getSearchResult(
+            lastId, recipeNames, ingredientNames, size);
+    }
+    private void countingSearchNames(Long lastId, List<String> ingredientNames) {
+        if (!CollectionUtils.isEmpty(ingredientNames) && ObjectUtils.isEmpty(lastId)) {
+            eventPublisher.publishEvent(
+                RealTimeSearchWords.builder()
+                    .searchWords(ingredientNames)
+                    .build());
+        }
+    }
+
+    private List<SearchPostResponse> getSearchResult(Long lastId, List<String> recipeNames,
+        List<String> ingredientNames, Integer size) {
+        List<SearchPostDto> posts = postQuerydslRepository.findAllWithPagination(
+            lastId, recipeNames, ingredientNames, size);
+        return fillFoodIngredients(posts);
+    }
+
+    private List<SearchPostResponse> fillFoodIngredients(List<SearchPostDto> postDtos) {
+        if (postDtos.isEmpty()) {
+            return List.of();
+        }
+
+        return postDtos.stream()
+            .map(searchPostResponse -> {
+                Post post = PostServiceHelper.findExistingPostByIdAndPostFlag(postRepository, searchPostResponse.getPostId());
+                return SearchPostResponse.from(searchPostResponse, post.getFoodIngredients());
+            })
+            .collect(toList());
+    }
+
+
+    /**
+     * 검색어 랭킹을 가져온다.
+     */
     public List<SearchRankResponse> getRankingWords() {
         Set<TypedTuple<Object>> rankingWords = redisService.getRankingWords();
         return rankingWords.stream().map(SearchRankResponse::of).toList();
     }
+
+
 
     /**
      * 1. 검색 리스트를 RecipeName, IngredientName으로 나누어 검색한다. (여러개의 쿼리를 날리는게 아닌 하나의 쿼리로 한번에 검색)
      * 2. 쿼리한 결과를 가져와서, 메모리상에서 검색명에 따른 결과를 출력
      */
     public List<SearchResultResponse> searchV3(Long lastId, List<String> recipeNames, List<String> ingredientNames, Integer size) {
-        List<SearchPostDto> searchPostDtos = postQuerydslRepository.findAllWithPagination(lastId, recipeNames, ingredientNames, size);
-        List<SearchPostProcess> searchList = getSearchList(searchPostDtos);
+        List<SearchPostDto> searchPostRespons = postQuerydslRepository.findAllWithPagination(lastId, recipeNames, ingredientNames, size);
+        List<SearchPostResponse> searchList = fillFoodIngredients(searchPostRespons);
 
         if (isBothNamesEmpty(recipeNames, ingredientNames)) {
             return getSearchResultForAll(searchList);
@@ -79,25 +122,25 @@ public class SearchUseCase {
         return CollectionUtils.isEmpty(recipeNames) && CollectionUtils.isEmpty(ingredientNames);
     }
 
-    private List<SearchResultResponse> getSearchResultForAll(List<SearchPostProcess> searchList) {
+    private List<SearchResultResponse> getSearchResultForAll(List<SearchPostResponse> searchList) {
         return List.of(SearchResultResponse.builder()
             .name("전체 검색")
             .searchResults(searchList)
             .build());
     }
 
-    private boolean isRecipeNameContains(SearchPostProcess searchPostProcess, String name) {
-        return searchPostProcess.getRecipeName().contains(name);
+    private boolean isRecipeNameContains(SearchPostResponse searchPostResponse, String name) {
+        return searchPostResponse.getRecipeName().contains(name);
     }
 
-    private boolean isFoodIngredientContains(SearchPostProcess searchPostProcess, String name) {
-        return searchPostProcess.getFoodIngredients().stream().anyMatch(foodIngredient -> foodIngredient.contains(name));
+    private boolean isFoodIngredientContains(SearchPostResponse searchPostResponse, String name) {
+        return searchPostResponse.getFoodIngredients().stream().anyMatch(foodIngredient -> foodIngredient.contains(name));
     }
 
-    private List<SearchResultResponse> getSearchResultResponses(List<String> names, List<SearchPostProcess> searchList, BiPredicate<SearchPostProcess, String> predicate) {
+    private List<SearchResultResponse> getSearchResultResponses(List<String> names, List<SearchPostResponse> searchList, BiPredicate<SearchPostResponse, String> predicate) {
         return names.stream()
             .map(name -> {
-                List<SearchPostProcess> filteredSearchList = searchList.stream()
+                List<SearchPostResponse> filteredSearchList = searchList.stream()
                     .filter(searchPostProcess -> predicate.test(searchPostProcess, name))
                     .collect(toList());
                 return SearchResultResponse.builder()
@@ -130,9 +173,9 @@ public class SearchUseCase {
     }
 
     private SearchResultResponse getIngredientSearchResult(Long lastId, String recipeName, String ingredientName, Integer size, String searchName) {
-        List<SearchPostDto> searchPostDtos = postQuerydslRepository.findAllWithPagination2(lastId, recipeName, ingredientName, size);
-        List<SearchPostProcess> searchPostProcesses = getSearchList(searchPostDtos);
-        return new SearchResultResponse(searchName, searchPostProcesses);
+        List<SearchPostDto> searchPostRespons = postQuerydslRepository.findAllWithPagination2(lastId, recipeName, ingredientName, size);
+        List<SearchPostResponse> searchPostResponses = fillFoodIngredients(searchPostRespons);
+        return new SearchResultResponse(searchName, searchPostResponses);
     }
 
     private List<SearchResultResponse> getIngredientSearchResultsByNames(Long lastId, List<String> recipeNames, List<String> ingredientNames, Integer size) {
@@ -150,17 +193,5 @@ public class SearchUseCase {
         return searchResults;
     }
 
-    private List<SearchPostProcess> getSearchList(List<SearchPostDto> searchPostDtos) {
-        if (searchPostDtos.isEmpty()) {
-            return List.of();
-        }
-
-        return searchPostDtos.stream()
-            .map(searchPostDto -> {
-                Post post = PostServiceHelper.findExistingPostByIdAndPostFlag(postRepository, searchPostDto.getPostId());
-                return SearchPostProcess.from(searchPostDto, post.getFoodIngredients());
-            })
-            .collect(toList());
-    }
 
 }

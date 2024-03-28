@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SearchPostProcess {
+public class SearchPostResponse {
 
 
     @Schema(description = "게시글 id")
@@ -31,8 +31,8 @@ public class SearchPostProcess {
     @Schema(description = "유저 닉네임")
     private String userNickName;
 
-    public static SearchPostProcess from(SearchPostDto searchPostDto, List<String> foodIngredients) {
-        return SearchPostProcess.builder()
+    public static SearchPostResponse from(SearchPostDto searchPostDto, List<String> foodIngredients) {
+        return SearchPostResponse.builder()
             .postId(searchPostDto.getPostId())
             .recipeName(searchPostDto.getRecipeName())
             .introduction(searchPostDto.getIntroduction())

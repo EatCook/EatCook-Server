@@ -7,7 +7,7 @@ import com.itcook.cooking.DomainTestQuerydslConfiguration;
 import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
-import com.itcook.cooking.domain.domains.post.repository.dto.TestDto;
+import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -289,6 +288,18 @@ class PostQuerydslRepositoryTest {
             .extracting("recipeName")
             .containsExactlyInAnyOrder("test9", "test1")
             ;
+    }
+
+    @Test
+    @DisplayName("전체 조회")
+    void findAll() {
+        //given
+        List<SearchPostDto> posts = postQuerydslRepository.findAllWithPagination(null,
+            List.of("test3"), null, 10);
+        //when
+
+        //then
+        posts.forEach(System.out::println);
     }
 
     @Test

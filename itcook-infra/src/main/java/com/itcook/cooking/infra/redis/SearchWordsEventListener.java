@@ -16,7 +16,7 @@ public class SearchWordsEventListener {
 
     @Async
     @EventListener
-    public void setSearchWords(RealTimeSearchWords realTimeSearchWords) {
+    public void handle(RealTimeSearchWords realTimeSearchWords) {
         log.info("SearchWordsEventListener Start");
         List<String> searchWords = realTimeSearchWords.getSearchWords();
         searchWords.forEach(word -> {

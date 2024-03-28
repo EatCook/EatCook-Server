@@ -2,7 +2,7 @@ package com.itcook.cooking.api.domains.post.controller;
 
 import com.itcook.cooking.api.domains.post.dto.request.PostSearchRequest;
 import com.itcook.cooking.api.domains.post.dto.response.SearchRankResponse;
-import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
+import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.api.domains.post.service.SearchUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,16 +31,16 @@ public class SearchController {
 
     @Operation(summary = "검색 요청", description = "검색 요청 설명")
     @PostMapping("/v1/posts/search")
-    public ResponseEntity<ApiResponse<List<SearchResultResponse>>> search(
+    public ResponseEntity<ApiResponse<List<SearchPostResponse>>> search(
         @RequestBody @Valid PostSearchRequest postSearchRequest
     ) {
-        List<SearchResultResponse> searchResponses = searchUseCase.searchV3(
+        List<SearchPostResponse> response = searchUseCase.searchV4(
             postSearchRequest.getLastId(),
             postSearchRequest.getRecipeNames(),
             postSearchRequest.getIngredients(),
             postSearchRequest.getSize()
         );
-        return ResponseEntity.ok(ApiResponse.OK(searchResponses));
+        return ResponseEntity.ok(ApiResponse.OK(response));
     }
 
     @Operation(summary = "검색어 랭킹", description = "검색어 랭킹 설명")
