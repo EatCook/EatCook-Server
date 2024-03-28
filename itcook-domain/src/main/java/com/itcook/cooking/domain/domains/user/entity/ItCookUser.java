@@ -1,9 +1,7 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
-import com.itcook.cooking.domain.domains.user.enums.LifeType;
-import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.enums.*;
 
 import java.util.List;
 
@@ -32,6 +30,14 @@ public class ItCookUser extends BaseTimeEntity {
 
     private String nickName;
 
+    private String badge;
+
+    @Enumerated(EnumType.STRING)
+    private ServiceAlertType serviceAlertType;
+
+    @Enumerated(EnumType.STRING)
+    private EventAlertType eventAlertType;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole userRole;
@@ -52,7 +58,8 @@ public class ItCookUser extends BaseTimeEntity {
 
     @Builder
     private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
-                      String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
+                      String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
+                      ServiceAlertType serviceAlertType, EventAlertType eventAlertType
     ) {
         this.id = id;
         this.email = email;
@@ -63,6 +70,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.providerType = providerType;
         this.follow = follow;
         this.lifeType = lifeType;
+        this.serviceAlertType = serviceAlertType;
+        this.eventAlertType = eventAlertType;
     }
 
     public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
