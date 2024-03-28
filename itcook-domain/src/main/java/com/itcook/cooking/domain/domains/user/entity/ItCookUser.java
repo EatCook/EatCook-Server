@@ -57,7 +57,7 @@ public class ItCookUser extends BaseTimeEntity {
     private List<Long> follow;
 
     @Builder
-    public ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
+    private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
                       String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
                       ServiceAlertType serviceAlertType, EventAlertType eventAlertType
     ) {

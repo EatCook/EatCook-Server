@@ -1,10 +1,17 @@
 package com.itcook.cooking.domain.domains.post.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.itcook.cooking.DomainTestQuerydslConfiguration;
+import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -30,6 +37,12 @@ class PostQuerydslRepositoryTest {
     private PostRepository postRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private LikedRepository likedRepository;
+
+    @Autowired
     private EntityManagerFactory entityManagerFactory;
 
     @AfterEach
@@ -42,16 +55,44 @@ class PostQuerydslRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        ItCookUser user1 = userRepository.save(ItCookUser.builder()
+            .nickName("잇쿡1")
+            .email("user@test.com")
+            .password("1234")
+            .providerType(ProviderType.COMMON)
+            .userRole(UserRole.USER)
+            .build());
+        ItCookUser user2 = userRepository.save(ItCookUser.builder()
+            .nickName("잇쿡2")
+            .email("user@test2.com")
+            .password("1234")
+            .providerType(ProviderType.COMMON)
+            .userRole(UserRole.USER)
+            .build());
+
         for (int i = 1; i <= 30; i++) {
-            postRepository.save(
-                Post.builder()
-                    .recipeName("test"+i)
-                    .foodIngredients(List.of("ingredient"+i, "ingredient"+(i+1)))   // 재료
-                    .userId(1L)
-                    .postFlag(PostFlag.ACTIVATE)
-                    .build()
-            );
+            if (i <= 15) {
+                postRepository.save(
+                    Post.builder()
+                        .recipeName("test"+i)
+                        .foodIngredients(List.of("ingredient"+i, "ingredient"+(i+1)))   // 재료
+                        .userId(user1.getId())
+                        .postFlag(PostFlag.ACTIVATE)
+                        .build()
+                );
+            } else {
+                postRepository.save(
+                    Post.builder()
+                        .recipeName("test"+i)
+                        .foodIngredients(List.of("ingredient"+i, "ingredient"+(i+1)))   // 재료
+                        .userId(user2.getId())
+                        .postFlag(PostFlag.ACTIVATE)
+                        .build()
+                );
+
+            }
         }
+
     }
 
     @Test
@@ -67,7 +108,7 @@ class PostQuerydslRepositoryTest {
         postRepository.save(post);
 
         //when
-        List<Post> posts = postQuerydslRepository.findAllWithPagination(null, List.of("test0"),
+        List<Post> posts = postQuerydslRepository.findNamesWithPagination(null, List.of("test0"),
             10);
 
         //then
@@ -80,7 +121,7 @@ class PostQuerydslRepositoryTest {
     void no_search_words_test() {
         //given
         //when
-        List<Post> posts = postQuerydslRepository.findAllWithPagination(null, null, 10);
+        List<Post> posts = postQuerydslRepository.findNamesWithPagination(null, null, 10);
 
         //then
         assertEquals(10, posts.size());
@@ -95,7 +136,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("test"),10);
+            .findNamesWithPagination(null, List.of("test"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -111,7 +152,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("test1"),10);
+            .findNamesWithPagination(null, List.of("test1"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -127,7 +168,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(null, List.of("ingredient2"),10);
+            .findNamesWithPagination(null, List.of("ingredient2"),10);
 
         //then
         assertEquals(10, posts.size());
@@ -144,7 +185,7 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(10L, List.of("test1"),10);
+            .findNamesWithPagination(10L, List.of("test1"),10);
 
         //then
         assertEquals(1, posts.size());
@@ -160,11 +201,128 @@ class PostQuerydslRepositoryTest {
 
         //when
         List<Post> posts = postQuerydslRepository
-            .findAllWithPagination(21L, List.of("test"), 10);
+            .findNamesWithPagination(21L, List.of("test"), 10);
 
         //then
         assertEquals(10, posts.size());
         assertEquals("test20", posts.get(0).getRecipeName());
         assertEquals("test11", posts.get(9).getRecipeName());
     }
+
+    @Test
+    @DisplayName("RecipeName과 IngredientName이 null로 넘어올시 Post를 전체 조회한다.")
+    void findAllWithIngredientsWithNull() {
+        //given
+
+        //when
+        List<Post> posts = postQuerydslRepository
+            .findNamesWithPagination(null, null, 10);
+
+        //then
+        assertThat(posts).hasSize(10)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test30", "test29", "test28", "test27", "test26", "test25", "test24", "test23", "test22", "test21")
+            ;
+    }
+
+    @Test
+    @DisplayName("RecipeName을 리스트로 입력받아 첫번째 페이지 Post를 조회한다.")
+    void findAllWithRecipeNames() {
+        //given
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(null, List.of("test2","test3"), null,10);
+
+
+        //then
+        assertThat(ingredients).hasSize(10)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test30", "test29", "test28", "test27", "test26", "test25", "test24", "test23", "test22", "test21")
+            ;
+    }
+    @Test
+    @DisplayName("RecipeName을 리스트로 입력받아 두번쨰 페이지 Post를 조회한다.")
+    void findAllWithRecipeNamesSecondPage() {
+        //given
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(21L, List.of("test2","test3"), null,10);
+
+
+        //then
+        assertThat(ingredients).hasSize(3)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test20", "test3", "test2")
+            ;
+    }
+
+    @Test
+    @DisplayName("IngredientName을 리스트로 입력받아 첫번째 페이지 Post를 조회한다.")
+    void findAllWithIngredients() {
+        //given
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(null, null, List.of("ingredient1"),10);
+
+        //then
+        assertThat(ingredients).hasSize(10)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test19", "test18", "test17", "test16", "test15", "test14", "test13", "test12", "test11", "test10")
+            ;
+    }
+
+    @Test
+    @DisplayName("IngredientName을 리스트로 입력받아 두번째 페이지 Post를 조회한다.")
+    void findAllWithIngredientsSecondPage() {
+        //given
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(10L, null, List.of("ingredient1"),10);
+
+        //then
+        assertThat(ingredients).hasSize(2)
+            .extracting("recipeName")
+            .containsExactlyInAnyOrder("test9", "test1")
+            ;
+    }
+
+    @Test
+    @DisplayName("전체 조회")
+    void findAll() {
+        //given
+        List<SearchPostDto> posts = postQuerydslRepository.findAllWithPagination(null,
+            List.of("test3"), null, 10);
+        //when
+
+        //then
+        posts.forEach(System.out::println);
+    }
+
+    @Test
+    @DisplayName("RecipeName 리스트를 받고 Post를 조회할시, 좋아요수도 조회한다")
+    void findAllWithIngredientsLike() {
+        //given
+        Liked liked = new Liked(1L, 30L);
+        Liked liked2 = new Liked(2L, 30L);
+        Liked liked3 = new Liked(2L, 29L);
+        Liked liked1 = new Liked(2L, 28L);
+
+        likedRepository.saveAll(List.of(liked, liked1, liked2, liked3));
+
+        //when
+        var ingredients = postQuerydslRepository
+            .findAllWithPagination(null, List.of("test2","test3"), null,10);
+
+        //then
+        assertThat(ingredients)
+            .extracting("likeCount")
+            .containsExactlyInAnyOrder(2L, 1L, 1L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
+
+
+    }
+
 }
