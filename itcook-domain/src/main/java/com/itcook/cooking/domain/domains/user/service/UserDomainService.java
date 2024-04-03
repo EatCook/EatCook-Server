@@ -1,5 +1,10 @@
 package com.itcook.cooking.domain.domains.user.service;
 
+import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.checkDuplicateEmail;
+import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.checkDuplicateNickname;
+import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserByEmail;
+import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserById;
+
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
@@ -18,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Optional;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -31,12 +34,14 @@ public class UserDomainService {
 
     public ItCookUser fetchFindByEmail(String email) {
 
-        Optional<ItCookUser> findByUserData = userRepository.findByEmail(email);
-        if (findByUserData.isEmpty()) {
-            throw new ApiException(UserErrorCode.USER_NOT_FOUND);
-        }
+        return findExistingUserByEmail(userRepository, email);
 
-        return findByUserData.get();
+//        Optional<ItCookUser> findByUserData = userRepository.findByEmail(email);
+//        if (findByUserData.isEmpty()) {
+//            throw new ApiException(UserErrorCode.USER_NOT_FOUND);
+//        }
+//
+//        return findByUserData.get();
     }
 
     public List<CookTalkUserMapping> fetchFindUserByIdIn(List<Long> userId) {
@@ -52,10 +57,7 @@ public class UserDomainService {
 
     @Transactional(readOnly = true)
     public void findUserByEmail(String email) {
-        userRepository.findByEmail(email)
-                .ifPresent(it -> {
-                    throw new ApiException(UserErrorCode.ALREADY_EXISTS_USER);
-                });
+        checkDuplicateEmail(userRepository, email);
     }
 
     @Transactional
@@ -66,7 +68,7 @@ public class UserDomainService {
     @Transactional
     public ItCookUser addSignup(ItCookUser user, List<CookingType> cookingTypes) {
         //닉네임 중복 체크
-        checkDuplicatedNicName(user);
+        checkDuplicateNickname(userRepository, user.getNickName());
         // 업데이트 필드 (닉네임, 거주형태)
         ItCookUser itCookUser = updateNickNameAndLifeType(user);
 
@@ -87,16 +89,9 @@ public class UserDomainService {
     }
 
     private ItCookUser updateNickNameAndLifeType(ItCookUser user) {
-        ItCookUser itCookUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new ApiException(UserErrorCode.USER_NOT_FOUND));
+        ItCookUser itCookUser = findExistingUserById(userRepository, user.getId());
         itCookUser.updateNickNameAndLifeType(user.getNickName(), user.getLifeType());
         return itCookUser;
     }
 
-    private void checkDuplicatedNicName(ItCookUser user) {
-        userRepository.findByNickName(user.getNickName())
-                .ifPresent(it -> {
-                    throw new ApiException(UserErrorCode.ALREADY_EXISTS_NICKNAME);
-                });
-    }
 }

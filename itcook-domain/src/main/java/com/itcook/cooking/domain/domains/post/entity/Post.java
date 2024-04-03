@@ -30,7 +30,8 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @ElementCollection
+
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "food_ingredients", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "ingredient_name")
     private List<String> foodIngredients; //재료
