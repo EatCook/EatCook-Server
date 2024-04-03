@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
+import com.itcook.cooking.api.IntegrationMockTestSupport;
 import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
+import com.itcook.cooking.api.domains.post.service.dto.PostSearchServiceDto;
 import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
@@ -32,9 +34,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-@ActiveProfiles("test")
-class SearchUseCaseTest {
+//@SpringBootTest
+//@ActiveProfiles("test")
+class SearchUseCaseTest extends IntegrationMockTestSupport {
 
     @Autowired
     private SearchUseCase searchUseCase;
@@ -63,9 +65,9 @@ class SearchUseCaseTest {
         em.createNativeQuery("ALTER TABLE itcook_user ALTER COLUMN user_id RESTART WITH 1").executeUpdate();
         em.getTransaction().commit();
 
-        postRepository.deleteAll();
-        userRepository.deleteAll();
-        likedRepository.deleteAll();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+        likedRepository.deleteAllInBatch();
     }
 
     @BeforeEach
@@ -122,11 +124,16 @@ class SearchUseCaseTest {
     void search() {
         //given
         doNothing().when(searchWordsEventListener).handle(any(RealTimeSearchWords.class));
+        PostSearchServiceDto serviceDto = PostSearchServiceDto.builder()
+            .lastId(null)
+            .recipeNames(List.of("test3"))
+            .ingredients(null)
+            .size(10)
+            .build();
 
         //when
         List<SearchPostResponse> result = searchUseCase
-            .searchV4(null, List.of("test3"),
-                null, 10);
+            .searchV4(serviceDto);
 
         //then
         assertThat(result).hasSize(2)
@@ -142,10 +149,15 @@ class SearchUseCaseTest {
         //given
         doNothing().when(searchWordsEventListener).handle(any(RealTimeSearchWords.class));
 
+        PostSearchServiceDto serviceDto = PostSearchServiceDto.builder()
+            .lastId(21L)
+            .recipeNames(List.of("test3","test2"))
+            .ingredients(null)
+            .build();
+
         //when
         List<SearchPostResponse> result = searchUseCase
-            .searchV4(21L, List.of("test3", "test2"),
-                null, 10);
+            .searchV4(serviceDto);
 
         //then
         assertThat(result).hasSize(3)
@@ -159,11 +171,15 @@ class SearchUseCaseTest {
     void searchAllWithNull() {
         //given
         doNothing().when(searchWordsEventListener).handle(any(RealTimeSearchWords.class));
+        PostSearchServiceDto serviceDto = PostSearchServiceDto.builder()
+            .lastId(null)
+            .recipeNames(null)
+            .ingredients(null)
+            .build();
 
         //when
         List<SearchPostResponse> result = searchUseCase
-            .searchV4(null, null,
-                null, 10);
+            .searchV4(serviceDto);
 
         //then
         assertThat(result).hasSize(10)

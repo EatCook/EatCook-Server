@@ -1,5 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.request;
 
+import com.itcook.cooking.api.domains.post.service.dto.PostSearchServiceDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -25,4 +26,13 @@ public class PostSearchRequest {
     @Schema(description = "가져올 게시글의 개수, 기본 사이즈 = 10", example = "10")
     @Builder.Default
     private Integer size = 10;
+
+    public PostSearchServiceDto toServiceDto() {
+        return PostSearchServiceDto.builder()
+            .lastId(lastId)
+            .recipeNames(recipeNames)
+            .ingredients(ingredients)
+            .size(size)
+            .build();
+    }
 }
