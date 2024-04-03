@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.itcook.cooking.api.IntegrationRedisContainerSupport;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
@@ -23,10 +24,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@SpringBootTest
-@Import(RedisTestContainers.class)
-public class TokenRedisTest {
+//@ActiveProfiles("test")
+//@SpringBootTest
+//@Import(RedisTestContainers.class)
+public class TokenRedisTest extends IntegrationRedisContainerSupport {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;

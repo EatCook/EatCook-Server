@@ -35,10 +35,7 @@ public class SearchController {
         @RequestBody @Valid PostSearchRequest postSearchRequest
     ) {
         List<SearchPostResponse> response = searchUseCase.searchV4(
-            postSearchRequest.getLastId(),
-            postSearchRequest.getRecipeNames(),
-            postSearchRequest.getIngredients(),
-            postSearchRequest.getSize()
+            postSearchRequest.toServiceDto()
         );
         return ResponseEntity.ok(ApiResponse.OK(response));
     }

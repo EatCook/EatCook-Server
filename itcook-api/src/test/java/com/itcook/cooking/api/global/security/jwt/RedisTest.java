@@ -3,6 +3,7 @@ package com.itcook.cooking.api.global.security.jwt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.itcook.cooking.api.IntegrationRedisContainerSupport;
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
 import com.itcook.cooking.infra.redis.RedisService;
 import org.junit.jupiter.api.DisplayName;
@@ -12,10 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@Import(RedisTestContainers.class)
-@SpringBootTest
-public class RedisTest {
+//@ActiveProfiles("test")
+//@Import(RedisTestContainers.class)
+//@SpringBootTest
+public class RedisTest extends IntegrationRedisContainerSupport {
 
     @Autowired
     private RedisService redisService;

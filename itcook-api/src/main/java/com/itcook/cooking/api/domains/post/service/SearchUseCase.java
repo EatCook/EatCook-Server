@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.itcook.cooking.api.domains.post.dto.response.SearchRankResponse;
 import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
+import com.itcook.cooking.api.domains.post.service.dto.PostSearchServiceDto;
 import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.api.domains.post.dto.response.SearchResponse;
 import com.itcook.cooking.domain.domains.post.entity.Post;
@@ -54,12 +55,14 @@ public class SearchUseCase {
         return posts.stream().map(SearchResponse::of).toList();
     }
 
-    public List<SearchPostResponse> searchV4(Long lastId, List<String> recipeNames, List<String> ingredientNames, Integer size) {
+    public List<SearchPostResponse> searchV4(PostSearchServiceDto postSearchServiceDto) {
 
-        countingSearchNames(lastId, ingredientNames);
+        countingSearchNames(postSearchServiceDto.getLastId(), postSearchServiceDto.getIngredients());
 
         return getSearchResult(
-            lastId, recipeNames, ingredientNames, size);
+            postSearchServiceDto.getLastId(), postSearchServiceDto.getRecipeNames(),
+            postSearchServiceDto.getIngredients(), postSearchServiceDto.getSize()
+            );
     }
     private void countingSearchNames(Long lastId, List<String> ingredientNames) {
         if (!CollectionUtils.isEmpty(ingredientNames) && ObjectUtils.isEmpty(lastId)) {
@@ -100,7 +103,7 @@ public class SearchUseCase {
     }
 
 
-
+    
     /**
      * 1. 검색 리스트를 RecipeName, IngredientName으로 나누어 검색한다. (여러개의 쿼리를 날리는게 아닌 하나의 쿼리로 한번에 검색)
      * 2. 쿼리한 결과를 가져와서, 메모리상에서 검색명에 따른 결과를 출력
