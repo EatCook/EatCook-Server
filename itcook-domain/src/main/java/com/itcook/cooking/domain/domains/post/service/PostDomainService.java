@@ -6,6 +6,7 @@ import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
+import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,10 @@ public class PostDomainService {
         }
 
         return findPostData;
+    }
+
+    public List<PostWithLikedDto> getPostsByUserId(Long userId) {
+        return postQuerydslRepository.findPostsWithLiked(userId);
     }
 
 

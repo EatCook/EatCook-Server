@@ -11,8 +11,10 @@ import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
+import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import java.util.List;
 
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
@@ -31,6 +33,7 @@ public class UserDomainService {
 
     private final UserRepository userRepository;
     private final UserCookingThemeRepository userCookingThemeRepository;
+    private final UserQueryRepository userQueryRepository;
 
     public ItCookUser fetchFindByEmail(String email) {
 
@@ -94,4 +97,10 @@ public class UserDomainService {
         return itCookUser;
     }
 
+
+    public MyPageUserDto getMyPageInfo(String email) {
+        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        long followerCounts = userQueryRepository.getFollowerCounts(user.getId());
+        return MyPageUserDto.from(user, followerCounts);
+    }
 }

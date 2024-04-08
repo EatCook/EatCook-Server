@@ -51,6 +51,8 @@ class UserDomainServiceTest {
         given(userRepository.findByEmail("test")).willReturn(Optional.of(
             ItCookUser.builder()
                 .id(1L)
+                .email("user@test.com")
+                .password("cook1234")
                 .nickName("test")
                 .lifeType(LifeType.DELIVERY_FOOD)
                 .build()
@@ -83,6 +85,8 @@ class UserDomainServiceTest {
         //given
         ItCookUser user = ItCookUser.builder()
             .id(1L)
+            .email("user@test.com")
+            .password("cook1234")
             .nickName("test")
             .lifeType(LifeType.DELIVERY_FOOD)
             .build()
@@ -91,6 +95,8 @@ class UserDomainServiceTest {
         given(userRepository.findByNickName("test")).willReturn(Optional.of(
             ItCookUser.builder()
                 .id(1L)
+                .email("user@test.com")
+                .password("cook1234")
                 .nickName("test")
                 .lifeType(LifeType.DELIVERY_FOOD)
                 .build()
@@ -112,6 +118,8 @@ class UserDomainServiceTest {
         //given
         ItCookUser user = ItCookUser.builder()
             .id(1L)
+            .email("user@test.com")
+            .password("cook1234")
             .nickName("test")
             .lifeType(LifeType.DELIVERY_FOOD)
             .build()
@@ -135,6 +143,8 @@ class UserDomainServiceTest {
         //given
         ItCookUser user = ItCookUser.builder()
             .id(1L)
+            .email("user@test.com")
+            .password("cook1234")
             .nickName("test")
             .lifeType(LifeType.DELIVERY_FOOD)
             .build()
@@ -156,6 +166,8 @@ class UserDomainServiceTest {
         //given
         ItCookUser user = ItCookUser.builder()
             .id(1L)
+            .email("user@test.com")
+            .password("cook1234")
             .nickName("test")
             .lifeType(LifeType.DELIVERY_FOOD)
             .build()

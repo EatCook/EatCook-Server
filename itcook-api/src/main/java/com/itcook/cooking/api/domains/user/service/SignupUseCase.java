@@ -63,8 +63,11 @@ public class SignupUseCase {
     @Transactional
     public void verifyAuthCode(VerifyEmailAuthRequest verifyEmailAuthRequest) {
         String authCode = (String) redisService.getData(verifyEmailAuthRequest.getEmail());
+        validateAuthCode(verifyEmailAuthRequest, authCode);
+    }
 
-        if (StringUtils.isEmpty(authCode)) {
+    private void validateAuthCode(VerifyEmailAuthRequest verifyEmailAuthRequest, String authCode) {
+        if (!StringUtils.hasText(authCode)) {
             throw new ApiException(UserErrorCode.NO_VERIFY_CODE);
         }
         if (!verifyEmailAuthRequest.getAuthCode().equals(authCode)) {
@@ -77,8 +80,8 @@ public class SignupUseCase {
     public UserResponse signup(SignupRequest signupRequest) {
         signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         ItCookUser user = signupRequest.toDomain();
-        ItCookUser itCookUser = userDomainService.registerUser(user);
-        return UserResponse.of(itCookUser);
+        ItCookUser savedUser = userDomainService.registerUser(user);
+        return UserResponse.of(savedUser);
     }
 
     @Transactional

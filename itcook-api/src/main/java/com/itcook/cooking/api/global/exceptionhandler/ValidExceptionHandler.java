@@ -1,5 +1,7 @@
 package com.itcook.cooking.api.global.exceptionhandler;
 
+import static com.itcook.cooking.domain.common.errorcode.CommonErrorCode.BAD_REQUEST;
+
 import com.itcook.cooking.api.global.dto.ErrorResponse;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +23,25 @@ public class ValidExceptionHandler {
     ) {
         log.error("", exception);
 
-        ErrorResponse errorResponse = ErrorResponse.ERROR(CommonErrorCode.BAD_REQUEST);
+        ErrorResponse errorResponse = ErrorResponse.ERROR(BAD_REQUEST);
 
         for (FieldError fieldError : exception.getFieldErrors()) {
             errorResponse.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
-        return ResponseEntity.status(CommonErrorCode.BAD_REQUEST.getHttpStatusCode())
+        return ResponseEntity.status(BAD_REQUEST.getHttpStatusCode())
+            .body(errorResponse)
+            ;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> illegalArgumentException(
+        IllegalArgumentException exception
+    ) {
+        log.error("", exception);
+        ErrorResponse errorResponse = ErrorResponse.ERROR(BAD_REQUEST,exception.getMessage());
+
+        return ResponseEntity.status(BAD_REQUEST.getHttpStatusCode())
             .body(errorResponse)
             ;
     }

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<ItCookUser, Long> {
 

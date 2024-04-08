@@ -24,11 +24,11 @@ import lombok.NoArgsConstructor;
 public class SignupRequest {
 
     @Schema(description = "이메일", example = "user@gmail.com")
-    @Email(message = "이메일 형식에 맞게 입력해주세요.")
+//    @Email(message = "이메일 형식에 맞게 입력해주세요.")
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
     @Schema(description = "비밀번호", example = "hahahaha4ha12")
-    @Pattern(message = "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.", regexp = PASSWORD_REGEXP)
+//    @Pattern(message = "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.", regexp = PASSWORD_REGEXP)
     @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 

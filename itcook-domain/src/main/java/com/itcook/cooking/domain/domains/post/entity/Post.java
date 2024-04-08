@@ -40,7 +40,7 @@ public class Post extends BaseTimeEntity {
     private PostFlag postFlag;
 
     @Builder
-    public Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImagePath,
+    private Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImagePath,
                 Long userId, List<String> foodIngredients, PostFlag postFlag) {
         this.id = id;
         this.recipeName = recipeName;

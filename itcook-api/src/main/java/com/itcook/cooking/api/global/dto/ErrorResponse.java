@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ErrorResponse extends ApiResponse{
 
     @Schema(description = "에러 validation 필드",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private final Map<String, String> validation;
+    private final ConcurrentHashMap<String, String> validation;
 
     protected ErrorResponse(String code, String message) {
         super(false, code, message, null);
