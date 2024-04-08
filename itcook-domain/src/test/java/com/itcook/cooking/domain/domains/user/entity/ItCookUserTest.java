@@ -68,45 +68,13 @@ class ItCookUserTest {
     }
 
     @Test
-    @DisplayName("빌더로 User 객체 생성. 비밀번호 비어있을시 예외 발생")
-    void createUser3() {
+    @DisplayName("비밀번호를 변경합니다.")
+    void changePassword() {
         //given
-
 
         //when
 
         //then
-        assertThatThrownBy(() -> ItCookUser.builder()
-            .email("cook1234@test.com")
-            .nickName("잇쿡1")
-            .userRole(UserRole.USER)
-            .providerType(ProviderType.COMMON)
-            .build())
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Password is Not Empty")
-        ;
     }
-
-    @Test
-    @DisplayName("빌더로 User 객체 생성. 비밀번호는 8자리 이상이며 영문,숫자 혼합")
-    void createUser4() {
-        //given
-
-
-        //when
-
-        //then
-        assertThatThrownBy(() -> ItCookUser.builder()
-            .email("cook1234@test.com")
-            .password("cook123")
-            .nickName("잇쿡1")
-            .userRole(UserRole.USER)
-            .providerType(ProviderType.COMMON)
-            .build())
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.")
-        ;
-    }
-
 
 }

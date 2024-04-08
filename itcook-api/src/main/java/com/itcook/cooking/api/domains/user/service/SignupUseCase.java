@@ -1,5 +1,7 @@
 package com.itcook.cooking.api.domains.user.service;
 
+import static com.itcook.cooking.domain.common.constant.UserConstant.PASSWORD_REGEXP;
+
 import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
@@ -58,7 +60,7 @@ public class SignupUseCase {
     }
 
     /**
-     *  이메일 인증 코드 검증 서비스
+     * 이메일 인증 코드 검증 서비스
      */
     @Transactional
     public void verifyAuthCode(VerifyEmailAuthRequest verifyEmailAuthRequest) {
@@ -78,6 +80,10 @@ public class SignupUseCase {
 
     @Transactional
     public UserResponse signup(SignupRequest signupRequest) {
+        Assert.hasText(signupRequest.getPassword(), "패스워드를 입력해야합니다.");
+        Assert.isTrue(signupRequest.getPassword().matches(PASSWORD_REGEXP),
+            "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
+
         signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         ItCookUser user = signupRequest.toDomain();
         ItCookUser savedUser = userDomainService.registerUser(user);
@@ -87,7 +93,8 @@ public class SignupUseCase {
     @Transactional
     public AddUserResponse addSignup(AddSignupRequest addSignupRequest) {
         ImageUrlDto imageUrlDto = ImageUrlDto.builder().build();
-        ItCookUser itCookUser = userDomainService.addSignup(addSignupRequest.toEntity(), addSignupRequest.toCookingTypes());
+        ItCookUser itCookUser = userDomainService.addSignup(addSignupRequest.toEntity(),
+            addSignupRequest.toCookingTypes());
         // fileExension이 있을 경우 프로필 이미지 업로드
         imageUrlDto = getImageUrlDto(addSignupRequest.getFileExtension(), imageUrlDto, itCookUser);
 

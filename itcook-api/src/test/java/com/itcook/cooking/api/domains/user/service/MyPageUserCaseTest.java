@@ -4,8 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
-import com.itcook.cooking.api.domains.user.service.dto.MyPagePostResponse;
-import com.itcook.cooking.api.domains.user.service.dto.MyPageResponse;
+import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
+import com.itcook.cooking.api.domains.user.service.dto.response.MyPagePostResponse;
+import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
@@ -14,11 +15,11 @@ import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -32,6 +33,9 @@ class MyPageUserCaseTest extends IntegrationTestSupport {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("마이 페이지를 조회한다.")
@@ -63,10 +67,37 @@ class MyPageUserCaseTest extends IntegrationTestSupport {
 
     }
 
+    @Test
+    @DisplayName("비밀번호 변경을 한다.")
+    void changePassword() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+
+        String currentPassword = "cook12345";
+        String newPassword = "cook1234";
+
+        MyPagePasswordServiceDto passwordServiceDto = MyPagePasswordServiceDto.builder()
+            .email(user.getEmail())
+            .currentPassword(currentPassword)
+            .newPassword(newPassword)
+            .build();
+            ;
+
+        //when
+        myPageUserCase.changePassword(passwordServiceDto);
+
+        //then
+        ItCookUser findUser = userRepository.findById(user.getId()).get();
+
+        assertThat(passwordEncoder.matches(newPassword,findUser.getPassword()))
+            .isTrue()
+            ;
+    }
+
     private ItCookUser createUser(String username, String nickName) {
         ItCookUser user = ItCookUser.builder()
             .email(username)
-            .password("cook12345")
+            .password(passwordEncoder.encode("cook12345"))
             .providerType(ProviderType.COMMON)
             .nickName(nickName)
             .userRole(UserRole.USER)

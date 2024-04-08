@@ -58,7 +58,6 @@ public class UserDomainService {
         return findUserData;
     }
 
-    @Transactional(readOnly = true)
     public void findUserByEmail(String email) {
         checkDuplicateEmail(userRepository, email);
     }
@@ -102,5 +101,14 @@ public class UserDomainService {
         ItCookUser user = findExistingUserByEmail(userRepository, email);
         long followerCounts = userQueryRepository.getFollowerCounts(user.getId());
         return MyPageUserDto.from(user, followerCounts);
+    }
+
+    public String getCurrentPassword(String email) {
+        ItCookUser user = findExistingUserByEmail(userRepository,email);
+        return user.getPassword();
+    }
+
+    public void changePassword(String newPassword) {
+
     }
 }

@@ -88,8 +88,8 @@ public class ItCookUser extends BaseTimeEntity {
     ) {
         Assert.hasText(email, "Email is Not Empty");
         Assert.isTrue(email.matches(EMAIL_REGEXP), "유효한 이메일 형식이 아닙니다");
-        Assert.hasText(password, "Password is Not Empty");
-        Assert.isTrue(password.matches(PASSWORD_REGEXP), "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
+//        Assert.hasText(password, "Password is Not Empty");
+//        Assert.isTrue(password.matches(PASSWORD_REGEXP), "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
         Assert.notNull(email, "UserRole is Not Null");
         Assert.notNull(email, "ProviderType is Not Null");
 
@@ -113,11 +113,7 @@ public class ItCookUser extends BaseTimeEntity {
 
     }
 
-    public void changePassword(String currentPassword, String newPassword) {
-        Assert.hasText(currentPassword, "현재 비밀번호가 입력되지 않았습니다.");
-        if (!currentPassword.equals(password)) {
-            throw new ApiException(UserErrorCode.NOT_EQUAL_PASSWORD);
-        }
+    public void changePassword(String newPassword) {
         this.password = newPassword;
     }
 

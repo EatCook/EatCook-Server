@@ -1,10 +1,8 @@
-package com.itcook.cooking.api.domains.user.service.dto;
+package com.itcook.cooking.api.domains.user.service.dto.response;
 
-import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
