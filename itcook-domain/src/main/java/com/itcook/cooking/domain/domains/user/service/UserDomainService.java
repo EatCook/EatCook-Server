@@ -108,7 +108,5 @@ public class UserDomainService {
         return user.getPassword();
     }
 
-    public void changePassword(String newPassword) {
 
-    }
 }

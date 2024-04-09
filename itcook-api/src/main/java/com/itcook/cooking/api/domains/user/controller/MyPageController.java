@@ -5,6 +5,8 @@ import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordReque
 import com.itcook.cooking.api.domains.user.service.MyPageUserCase;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "access-token")
 @RequestMapping("/api")
 @Tag(name = "05. MyPage")
 public class MyPageController {
 
     private final MyPageUserCase myPageUserCase;
 
+    @Operation(summary = "마이페이지 조회 요청", description = "마이페이지 조회 요청")
     @GetMapping("/v1/mypage")
     public ResponseEntity<ApiResponse<MyPageResponse>> getMyPage(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
@@ -36,7 +40,8 @@ public class MyPageController {
             ;
     }
 
-    @PostMapping("/v1/mypage/password")
+    @Operation(summary = "비밀번호 변경 요청", description = "비밀번호 변경 요청")
+    @PostMapping("/v1/mypage/profile/password")
     public ResponseEntity<ApiResponse> changePassword(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
         @RequestBody @Valid MyPageChangePasswordRequest request

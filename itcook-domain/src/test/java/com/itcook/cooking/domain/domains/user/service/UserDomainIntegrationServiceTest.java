@@ -43,7 +43,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         MyPageUserDto myPageInfo = userDomainService.getMyPageInfo(user1.getEmail());
 
         //then
-        assertThat(myPageInfo.getUserId()).isEqualTo(1L);
+        assertThat(myPageInfo.getUserId()).isEqualTo(user1.getId());
         assertThat(myPageInfo.getNickName()).isEqualTo("잇쿡1");
         assertThat(myPageInfo.getBadge()).isEqualTo(UserBadge.GIBBAB_GOSU.getDescription());
         assertThat(myPageInfo.getProviderType()).isEqualTo(ProviderType.COMMON);

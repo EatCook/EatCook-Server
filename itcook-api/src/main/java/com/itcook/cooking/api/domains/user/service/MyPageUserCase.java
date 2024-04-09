@@ -58,8 +58,6 @@ public class MyPageUserCase {
         String currentPassword = passwordServiceDto.getCurrentPassword();
         String newPassword = passwordServiceDto.getNewPassword();
 
-        Assert.hasText(currentPassword, "현재 비밀번호가 입력되지 않았습니다.");
-        Assert.hasText(newPassword, "새로운 비밀번호가 입력되지 않았습니다.");
         Assert.isTrue(newPassword.matches(PASSWORD_REGEXP), "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
 
         if (!passwordEncoder
