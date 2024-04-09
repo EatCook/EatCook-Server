@@ -14,13 +14,16 @@ import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeReposit
 import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
+import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import java.util.List;
 
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -35,6 +38,7 @@ public class UserDomainService {
     private final UserRepository userRepository;
     private final UserCookingThemeRepository userCookingThemeRepository;
     private final UserQueryRepository userQueryRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ItCookUser fetchFindByEmail(String email) {
 
@@ -116,5 +120,14 @@ public class UserDomainService {
         checkDuplicateNickname(userRepository, myPageUpdateProfile.nickName());
         ItCookUser user = findExistingUserByEmail(userRepository, myPageUpdateProfile.email());
         user.updateNickName(myPageUpdateProfile.nickName());
+    }
+
+    @Transactional
+    public void leaveUser(MyPageLeaveUser myPageLeaveUser) {
+        ItCookUser user = findExistingUserByEmail(userRepository, myPageLeaveUser.email());
+        userRepository.delete(user);
+        eventPublisher.publishEvent(UserLeaveEvent.builder()
+            .email(user.getEmail())
+            .build());
     }
 }

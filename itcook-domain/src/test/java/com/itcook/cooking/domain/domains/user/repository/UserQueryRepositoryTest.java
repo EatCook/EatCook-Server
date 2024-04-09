@@ -6,6 +6,10 @@ import com.itcook.cooking.domain.domains.IntegrationTestSupport;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +33,15 @@ class UserQueryRepositoryTest extends IntegrationTestSupport {
         ItCookUser user3 = createUser("user3@test.com", "잇쿡3");
 
         // user1 팔로잉 1, 팔로워 2
-        user1.addFollowing(2L);
-        user1.addFollowing(3L);
+        user1.addFollowing(user2.getId());
+        user1.addFollowing(user3.getId());
 
         // user2 팔로잉 1, 팔로워 2
-        user2.addFollowing(1L);
+        user2.addFollowing(user1.getId());
 
         // user3  팔로잉 2, 팔로워 0
-        user3.addFollowing(1L);
-        user3.addFollowing(2L);
+        user3.addFollowing(user1.getId());
+        user3.addFollowing(user2.getId());
 
 
         //when

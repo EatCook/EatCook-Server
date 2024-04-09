@@ -2,6 +2,9 @@ package com.itcook.cooking.domain.domains.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.IntegrationTestSupport;
@@ -10,13 +13,19 @@ import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
+import com.itcook.cooking.infra.redis.event.UserLeaveEventListener;
 import java.util.List;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -27,6 +36,9 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+
+    @MockBean
+    private UserLeaveEventListener userLeaveEventListener;
 
     @Test
     @DisplayName("마이페이지를 조회시, 유저 정보는 닉네임, 뱃지, 팔로워, 팔로잉을 반환한다.")
@@ -93,6 +105,26 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .hasMessage("이미 존재하는 닉네임입니다.")
             ;
 
+    }
+
+    @Test
+    @DisplayName("유저 회원 탈퇴")
+    void leaveUser() {
+        //given
+        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
+        MyPageLeaveUser leaveUser = MyPageLeaveUser.builder()
+            .email(user1.getEmail())
+            .build();
+
+        doNothing().when(userLeaveEventListener).deleteToken(any(UserLeaveEvent.class));
+
+        //when
+        userDomainService.leaveUser(leaveUser);
+
+        //then
+        Optional<ItCookUser> findUser = userRepository.findById(user1.getId());
+
+        assertThat(findUser.isEmpty()).isTrue();
     }
 
     private ItCookUser createUser(String username, String nickName) {

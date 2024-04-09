@@ -1,4 +1,4 @@
-package com.itcook.cooking.infra.redis;
+package com.itcook.cooking.infra.redis.event;
 
 import java.util.List;
 import lombok.Builder;
