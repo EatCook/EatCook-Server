@@ -1,13 +1,16 @@
 package com.itcook.cooking.domain.domains.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.IntegrationTestSupport;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -38,7 +41,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         user2.addFollowing(user1.getId());
         user3.addFollowing(user2.getId());
 
-        userRepository.saveAll(List.of(user1,user2,user3));
+        userRepository.saveAll(List.of(user1, user2, user3));
         //when
         MyPageUserDto myPageInfo = userDomainService.getMyPageInfo(user1.getEmail());
 
@@ -49,6 +52,47 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         assertThat(myPageInfo.getProviderType()).isEqualTo(ProviderType.COMMON);
         assertThat(myPageInfo.getFollowingCounts()).isEqualTo(2L);
         assertThat(myPageInfo.getFollowerCounts()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("이메일, 닉네임을 받아서 프로필을 업데이트 한다")
+    void updateProfile() {
+        //given
+        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
+//        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
+
+        MyPageUpdateProfile updateProfile = MyPageUpdateProfile.builder()
+            .email(user1.getEmail())
+            .nickName("잇쿡2")
+            .build();
+        //when
+        userDomainService.updateProfile(updateProfile);
+
+        //then
+        ItCookUser findUser = userRepository.findById(user1.getId()).get();
+
+        assertThat(findUser.getNickName()).isEqualTo("잇쿡2");
+    }
+    @Test
+    @DisplayName("프로필 업데이트시 닉네임 중복으로 예외가 발생한다.")
+    void updateProfileDuplicateNick() {
+        //given
+        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
+        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
+
+        MyPageUpdateProfile updateProfile = MyPageUpdateProfile.builder()
+            .email(user1.getEmail())
+            .nickName("잇쿡2")
+            .build();
+        //when
+
+
+        //then
+        assertThatThrownBy(() -> userDomainService.updateProfile(updateProfile))
+            .isInstanceOf(ApiException.class)
+            .hasMessage("이미 존재하는 닉네임입니다.")
+            ;
+
     }
 
     private ItCookUser createUser(String username, String nickName) {

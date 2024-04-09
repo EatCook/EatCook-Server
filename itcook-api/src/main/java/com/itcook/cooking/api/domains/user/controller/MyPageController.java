@@ -2,9 +2,11 @@ package com.itcook.cooking.api.domains.user.controller;
 
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordRequest;
+import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
 import com.itcook.cooking.api.domains.user.service.MyPageUserCase;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
+import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MyPageController {
 
     private final MyPageUserCase myPageUserCase;
+    private final UserDomainService userDomainService;
 
     @Operation(summary = "마이페이지 조회 요청", description = "마이페이지 조회 요청")
     @GetMapping("/v1/mypage")
@@ -50,5 +53,15 @@ public class MyPageController {
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("비밀번호가 변경되었습니다"))
             ;
+    }
+
+    @PostMapping("/v1/mypage/profile")
+    public ResponseEntity<ApiResponse> updateProfile(
+        @AuthenticationPrincipal AuthenticationUser authenticationUser,
+        @RequestBody @Valid MyPageUpdateProfileRequest request
+    ) {
+        userDomainService.updateProfile(request.toServiceDto(authenticationUser.getUsername()));
+        return ResponseEntity.status(200)
+            .body(ApiResponse.OK("프로필이 편집되었습니다"));
     }
 }

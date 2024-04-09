@@ -15,6 +15,7 @@ import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import java.util.List;
 
 import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
@@ -85,7 +86,8 @@ public class UserDomainService {
         }
 
         cookingTypes.forEach(cookingType -> {
-            UserCookingTheme cookingTheme = UserCookingTheme.createUserCookingTheme(user.getId(), cookingType);
+            UserCookingTheme cookingTheme = UserCookingTheme.createUserCookingTheme(user.getId(),
+                cookingType);
             userCookingThemeRepository.save(cookingTheme);
         });
     }
@@ -104,9 +106,15 @@ public class UserDomainService {
     }
 
     public String getCurrentPassword(String email) {
-        ItCookUser user = findExistingUserByEmail(userRepository,email);
+        ItCookUser user = findExistingUserByEmail(userRepository, email);
         return user.getPassword();
     }
 
 
+    @Transactional
+    public void updateProfile(MyPageUpdateProfile myPageUpdateProfile) {
+        checkDuplicateNickname(userRepository, myPageUpdateProfile.nickName());
+        ItCookUser user = findExistingUserByEmail(userRepository, myPageUpdateProfile.email());
+        user.updateNickName(myPageUpdateProfile.nickName());
+    }
 }

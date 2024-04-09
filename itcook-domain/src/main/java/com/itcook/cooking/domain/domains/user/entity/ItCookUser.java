@@ -133,4 +133,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.profile = profile;
     }
 
+    public void updateNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
 }
