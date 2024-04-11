@@ -45,6 +45,8 @@ public class RecipeReadResponse {
     @Schema(description = "마지막 수정 날짜", example = "2024-02-29T03:31:29.784088")
     private LocalDateTime lastModifiedAt;
 
+    @Schema(description = "유저 id", example = "1")
+    private Long userId;
     @Schema(description = "유저 닉네임", example = "username")
     private String nickName;
     @Schema(description = "유저 프로필")
@@ -74,6 +76,7 @@ public class RecipeReadResponse {
                 .recipeProcess(recipeDto.getRecipeProcess())
                 .createdAt(recipeDto.getCreatedAt())
                 .lastModifiedAt(recipeDto.getLastModifiedAt())
+                .userId(recipeDto.getUserId())
                 .nickName(recipeDto.getNickName())
                 .profile(recipeDto.getProfile())
                 .followerCount(recipeDto.getFollowerCount())
