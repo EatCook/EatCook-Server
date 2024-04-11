@@ -126,6 +126,7 @@ public class UserDomainService {
     public void leaveUser(MyPageLeaveUser myPageLeaveUser) {
         ItCookUser user = findExistingUserByEmail(userRepository, myPageLeaveUser.email());
         userRepository.delete(user);
+        // 해당 유저 엑세스 토큰 삭제
         eventPublisher.publishEvent(UserLeaveEvent.builder()
             .email(user.getEmail())
             .build());

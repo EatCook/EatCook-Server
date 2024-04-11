@@ -112,9 +112,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     void leaveUser() {
         //given
         ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
-        MyPageLeaveUser leaveUser = MyPageLeaveUser.builder()
-            .email(user1.getEmail())
-            .build();
+        MyPageLeaveUser leaveUser = MyPageLeaveUser.of(user1.getEmail());
 
         doNothing().when(userLeaveEventListener).deleteToken(any(UserLeaveEvent.class));
 
@@ -125,6 +123,19 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         Optional<ItCookUser> findUser = userRepository.findById(user1.getId());
 
         assertThat(findUser.isEmpty()).isTrue();
+    }
+    @Test
+    @DisplayName("유저 회원 탈퇴시 유저가 존재하지 않은 예외 발생")
+    void leaveUserNotFound() {
+        //given
+        MyPageLeaveUser leaveUser = MyPageLeaveUser.of("user@test.com");
+
+        //when
+        assertThatThrownBy(() -> userDomainService.leaveUser(leaveUser))
+            .isInstanceOf(ApiException.class)
+            .hasMessage("유저를 찾을 수 없습니다.")
+            ;
+
     }
 
     private ItCookUser createUser(String username, String nickName) {

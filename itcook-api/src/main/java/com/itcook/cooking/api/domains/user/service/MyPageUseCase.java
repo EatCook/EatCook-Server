@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import static com.itcook.cooking.domain.common.constant.UserConstant.PASSWORD_REGEXP;
+import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserByEmail;
 
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
@@ -12,7 +13,6 @@ import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
-import com.itcook.cooking.domain.domains.user.service.UserServiceHelper;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
 @UseCase
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MyPageUserCase {
+public class MyPageUseCase {
 
     private final UserDomainService userDomainService;
     private final PostDomainService postDomainService;
@@ -46,19 +46,25 @@ public class MyPageUserCase {
      */
     @Transactional
     public void changePassword(MyPagePasswordServiceDto passwordServiceDto) {
-        ItCookUser user = UserServiceHelper.findExistingUserByEmail(userRepository,
+        validateNewPassword(passwordServiceDto);
+
+        ItCookUser user = findExistingUserByEmail(userRepository,
             passwordServiceDto.getEmail());
 
-        verifyPasswords(passwordServiceDto, user.getPassword());
+        validateCurrentPassword(passwordServiceDto, user.getPassword());
 
         user.changePassword(passwordEncoder.encode(passwordServiceDto.getNewPassword()));
     }
 
-    private void verifyPasswords(MyPagePasswordServiceDto passwordServiceDto, String userPassword) {
-        String currentPassword = passwordServiceDto.getCurrentPassword();
+    private static void validateNewPassword(MyPagePasswordServiceDto passwordServiceDto) {
         String newPassword = passwordServiceDto.getNewPassword();
+        Assert.isTrue(newPassword.matches(PASSWORD_REGEXP),
+            "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
+    }
 
-        Assert.isTrue(newPassword.matches(PASSWORD_REGEXP), "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
+    private void validateCurrentPassword(MyPagePasswordServiceDto passwordServiceDto,
+        String userPassword) {
+        String currentPassword = passwordServiceDto.getCurrentPassword();
 
         if (!passwordEncoder
             .matches(currentPassword, userPassword)) {

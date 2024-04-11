@@ -7,4 +7,9 @@ public record MyPageLeaveUser(
     String email
 ) {
 
+    public static MyPageLeaveUser of(String email) {
+        return MyPageLeaveUser.builder()
+            .email(email)
+            .build();
+    }
 }

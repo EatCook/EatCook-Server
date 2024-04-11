@@ -1,12 +1,14 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPagePostResponse;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
@@ -23,10 +25,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class MyPageUserCaseTest extends IntegrationTestSupport {
+class MyPageUseCaseTest extends IntegrationTestSupport {
 
     @Autowired
-    private MyPageUserCase myPageUserCase;
+    private MyPageUseCase myPageUseCase;
 
     @Autowired
     private UserRepository userRepository;
@@ -49,7 +51,7 @@ class MyPageUserCaseTest extends IntegrationTestSupport {
         createPost(user1.getId(), "책제목3", "소개글3");
 
         //when
-        MyPageResponse myPage = myPageUserCase.getMyPage(email);
+        MyPageResponse myPage = myPageUseCase.getMyPage(email);
         List<MyPagePostResponse> myPagePosts = myPage.getPosts();
 
         //then
@@ -84,13 +86,57 @@ class MyPageUserCaseTest extends IntegrationTestSupport {
             ;
 
         //when
-        myPageUserCase.changePassword(passwordServiceDto);
+        myPageUseCase.changePassword(passwordServiceDto);
 
         //then
         ItCookUser findUser = userRepository.findById(user.getId()).get();
 
         assertThat(passwordEncoder.matches(newPassword,findUser.getPassword()))
             .isTrue()
+            ;
+    }
+    @Test
+    @DisplayName("비밀번호 변경 요청시, 현재 비밀번호가 맞지 않아 예외 발생")
+    void changePasswordValidateCurrentPassword() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+
+        String currentPassword = "cook1234";
+        String newPassword = "cook1234";
+
+        MyPagePasswordServiceDto passwordServiceDto = MyPagePasswordServiceDto.builder()
+            .email(user.getEmail())
+            .currentPassword(currentPassword)
+            .newPassword(newPassword)
+            .build();
+            ;
+
+        //when //then
+        assertThatThrownBy(() -> myPageUseCase.changePassword(passwordServiceDto))
+            .isInstanceOf(ApiException.class)
+            .hasMessage("현재 비밀번호와 일치하지 않습니다.")
+            ;
+    }
+    @Test
+    @DisplayName("비밀번호 변경 요청시, 새로운 비밀번호가 비즈니스 비밀번호 규칙에 맞지 않아 예외 발생")
+    void changePasswordNotMatches() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+
+        String currentPassword = "cook12345";
+        String newPassword = "cook12";
+
+        MyPagePasswordServiceDto passwordServiceDto = MyPagePasswordServiceDto.builder()
+            .email(user.getEmail())
+            .currentPassword(currentPassword)
+            .newPassword(newPassword)
+            .build();
+            ;
+
+        //when //then
+        assertThatThrownBy(() -> myPageUseCase.changePassword(passwordServiceDto))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.")
             ;
     }
 
