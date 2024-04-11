@@ -65,10 +65,9 @@ public class CookTalkUseCase {
     }
 
     private void followValidation(ItCookUser findByUserEmail, List<CookTalkDto> cookTalkDtos) {
-        Set<Long> followingSet = new HashSet<>(findByUserEmail.getFollow());
 
         cookTalkDtos.forEach(cookTalkDto -> {
-            boolean followingCheck = postValidationUseCase.getFollowingCheck(cookTalkDto.getUserId(), followingSet);
+            boolean followingCheck = postValidationUseCase.getFollowingCheck(cookTalkDto.getUserId(), findByUserEmail.getFollow());
             cookTalkDto.followCheckSet(followingCheck);
         });
     }

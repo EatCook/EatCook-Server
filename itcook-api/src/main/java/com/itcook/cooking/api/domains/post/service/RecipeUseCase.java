@@ -185,8 +185,8 @@ public class RecipeUseCase {
     }
 
     private boolean isFollowingCheck(ItCookUser findByUserEmail, Post post) {
-        Set<Long> followingSet = new HashSet<>(findByUserEmail.getFollow());
-        return postValidationUseCase.getFollowingCheck(post.getUserId(), followingSet);
+        List<Long> follow = findByUserEmail.getFollow();
+        return postValidationUseCase.getFollowingCheck(post.getUserId(), follow);
     }
 
     private static RecipeReadDto getRecipeReadDto(Post post, ItCookUser itCookUser,

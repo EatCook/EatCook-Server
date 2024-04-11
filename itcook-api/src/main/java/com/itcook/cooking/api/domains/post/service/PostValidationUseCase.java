@@ -22,7 +22,7 @@ public class PostValidationUseCase {
     private final S3PresignedUrlService s3PresignedUrlService;
 
     //팔로우 여부
-    public boolean getFollowingCheck(Long userId, Set<Long> followingSet) {
+    public boolean getFollowingCheck(Long userId, List<Long> followingSet) {
         return followingSet.contains(userId);
     }
 
