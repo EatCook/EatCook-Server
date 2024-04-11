@@ -37,16 +37,6 @@ public class RecipeProcessDomainService {
         return recipeProcessRepository.saveAll(recipeProcess);
     }
 
-    public List<RecipeProcess> readRecipeProcess(Post post) {
-
-        List<RecipeProcess> findPost = recipeProcessRepository.findByPost(post);
-
-        if (findPost.isEmpty()) {
-            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
-        }
-
-        return findPost;
-    }
 
     public void deleteRecipeProcess(Post post, List<RecipeProcess> recipeProcessesData) {
         List<Integer> stepNumData = recipeProcessesData.stream().map(RecipeProcess::getStepNum).collect(Collectors.toList());

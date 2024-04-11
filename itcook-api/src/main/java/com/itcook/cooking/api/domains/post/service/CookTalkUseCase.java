@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @UseCase
@@ -30,55 +31,65 @@ public class CookTalkUseCase {
     private final PostValidationUseCase postValidationUseCase;
 
     public CookTalkResponse getCookTalkFeed(String email, Pageable pageable) {
-        // 사용자 정보 조회
         ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(email);
 
-        // 본인을 제외한 사용자 게시글 조회
-        Page<Post> postAllData = postDomainService.fetchFindAllByUserIdNotWithUsers(findByUserEmail.getId(), pageable);
+        Page<Object[]> findAllPostAndUserData = postDomainService.fetchFindAllByCookTalkFeedV2(findByUserEmail.getId(), pageable);
 
-        // 유저 정보 매핑 및 팔로우 여부 설정
-        return getCookTalkResponse(postAllData, findByUserEmail);
+        return getCookTalkResponse(findAllPostAndUserData, findByUserEmail);
     }
 
     public CookTalkResponse getFollowingTalk(String email, Pageable pageable) {
-        // 유저 정보 검색
         ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(email);
 
-        // 게시글 정보 검색
-        Page<Post> postFollowingData = postDomainService.fetchFindFollowingCookTalk(findByUserEmail.getFollow(), pageable);
+        Page<Object[]> cookTalkFeedDtos = postDomainService.fetchFindFollowingCookTalk(findByUserEmail.getFollow(), pageable);
 
-        // 유저 정보 매핑 및 팔로우 여부 설정
-        return getCookTalkResponse(postFollowingData, findByUserEmail);
+        return getCookTalkResponse(cookTalkFeedDtos, findByUserEmail);
     }
 
-    private CookTalkResponse getCookTalkResponse(Page<Post> postFollowingData, ItCookUser findByUserEmail) {
-        List<CookTalkDto> cookTalkDtos = postValidationUseCase.postUserMatchingValidation(postFollowingData.stream().toList(), CookTalkDto::new);
+    private CookTalkResponse getCookTalkResponse(Page<Object[]> postData, ItCookUser findByUserEmail) {
+        List<CookTalkDto> cookTalkDtos = new ArrayList<>();
 
+        for (Object[] postDatum : postData) {
+            Post post = (Post) postDatum[0];
+            ItCookUser itCookUser = (ItCookUser) postDatum[1];
+            cookTalkDtos.add(new CookTalkDto(post, itCookUser));
+        }
+
+        //팔로우 여부 검증
+        followValidation(findByUserEmail, cookTalkDtos);
+
+        //좋아요 여부 검증
+        likedValidation(findByUserEmail, cookTalkDtos);
+
+        return CookTalkResponse.of(cookTalkDtos, postData.hasNext(), postData.getTotalElements(), postData.getTotalPages());
+    }
+
+    private void followValidation(ItCookUser findByUserEmail, List<CookTalkDto> cookTalkDtos) {
         Set<Long> followingSet = new HashSet<>(findByUserEmail.getFollow());
 
-        cookTalkDtos.forEach(cookTalkDto -> postValidationUseCase.getFollowingCheck(cookTalkDto, followingSet));
-
-        List<Long> postIdData = postFollowingData.stream().map(Post::getId).toList();
-
-
-        List<Liked> findAllLiked = likedDomainService.getFindAllLiked(postIdData);
-
-        // postIdData를 반복하여 처리합니다.
-        postIdData.forEach(postIdDatum -> {
-            // postIdDatum에 해당하는 좋아요 리스트만 필터링합니다.
-            List<Liked> filteredLiked = findAllLiked.stream()
-                    .filter(liked -> postIdDatum.equals(liked.getPostId()))
-                    .toList();
-
-            // 해당 postIdDatum에 대한 좋아요 유효성을 확인하고, cookTalkDto의 상태를 설정합니다.
-            cookTalkDtos.stream()
-                    .filter(cookTalkDto -> Objects.equals(cookTalkDto.getId(), postIdDatum))
-                    .findFirst()
-                    .ifPresent(cookTalkDto -> cookTalkDto.of(filteredLiked, postValidationUseCase.getLikedValidation(filteredLiked, findByUserEmail.getId())));
+        cookTalkDtos.forEach(cookTalkDto -> {
+            boolean followingCheck = postValidationUseCase.getFollowingCheck(cookTalkDto.getUserId(), followingSet);
+            cookTalkDto.followCheckSet(followingCheck);
         });
+    }
 
+    private void likedValidation(ItCookUser findByUserEmail, List<CookTalkDto> cookTalkDtos) {
+        // postId 중복제거
+        Set<Long> postIdData = cookTalkDtos.stream()
+                .map(CookTalkDto::getPostId)
+                .collect(Collectors.toSet());
 
-        return CookTalkResponse.of(cookTalkDtos, postFollowingData.hasNext(), postFollowingData.getTotalElements(), postFollowingData.getTotalPages());
+        // postId에 해당하는 좋아요 조회
+        Map<Long, List<Liked>> postIdToLikedMap = likedDomainService.getFindAllLiked(new ArrayList<>(postIdData))
+                .stream()
+                .collect(Collectors.groupingBy(Liked::getPostId));
+
+        // 각 게시글에 대한 좋아요 유효성 검사 후 cookTalkDto의 상태를 설정
+        for (CookTalkDto cookTalkDto : cookTalkDtos) {
+            Long postId = cookTalkDto.getPostId();
+            List<Liked> filteredLiked = postIdToLikedMap.getOrDefault(postId, Collections.emptyList());
+            cookTalkDto.likedInfoSet(filteredLiked.size(), postValidationUseCase.getLikedValidation(filteredLiked, findByUserEmail.getId()));
+        }
     }
 
 
