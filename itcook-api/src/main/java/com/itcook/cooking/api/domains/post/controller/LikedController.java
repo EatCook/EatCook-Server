@@ -26,19 +26,17 @@ public class LikedController {
 
     @PostMapping("/add")
     public void likedAdd(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody LikedRequest likedRequest
     ) {
-//        likedUseCase.likedAdd(authenticationUser.getUsername(), likedRequest.getPostId());
-        likedUseCase.likedAdd("test1@naver.com", likedRequest.getPostId());
+        likedUseCase.likedAdd(authenticationUser.getUsername(), likedRequest.getPostId());
     }
 
     @PostMapping("/del")
     public void likedDel(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody LikedRequest likedRequest
     ) {
-//        likedUseCase.likedDel(authenticationUser.getUsername(), likedRequest.getPostId());
-        likedUseCase.likedDel("test1@naver.com", likedRequest.getPostId());
+        likedUseCase.likedDel(authenticationUser.getUsername(), likedRequest.getPostId());
     }
 }
