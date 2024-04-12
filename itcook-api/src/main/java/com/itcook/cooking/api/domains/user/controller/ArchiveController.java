@@ -24,7 +24,7 @@ public class ArchiveController {
 
     @PostMapping("/add")
     public void archiveAdd(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody ArchiveRequest archiveRequest
     ) {
         archiveUseCase.archiveAdd(authenticationUser.getUsername(), archiveRequest.getPostId());
@@ -32,7 +32,7 @@ public class ArchiveController {
 
     @PostMapping("/del")
     public void archiveDel(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody ArchiveRequest archiveRequest
     ) {
         archiveUseCase.archiveDel(authenticationUser.getUsername(), archiveRequest.getPostId());
