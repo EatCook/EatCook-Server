@@ -23,4 +23,13 @@ public class ArchiveDomainService {
         return archiveRepository.findByItCookUserId(userId);
     }
 
+    @Transactional
+    public void saveArchive(Archive newArchive) {
+        archiveRepository.save(newArchive);
+    }
+
+    @Transactional
+    public void removeArchive(Long archiveId) {
+        archiveRepository.deleteById(archiveId);
+    }
 }
