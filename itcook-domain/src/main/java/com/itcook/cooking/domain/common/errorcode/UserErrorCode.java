@@ -21,6 +21,7 @@ public enum UserErrorCode implements ErrorCode{
     EMAIL_VERIFY_FAIL(UNAUTHORIZED.code, "U-008", "인증 코드가 일치하지 않습니다."),
     NO_VERIFY_CODE(UNAUTHORIZED.code,"U-009" ,"인증 요청을 먼저 해주세요."),
     ALREADY_EXISTS_NICKNAME(BAD_REQUEST.code, "U-010", "이미 존재하는 닉네임입니다."),
+    ALREADY_FOLLOW_USER(BAD_REQUEST.code, "U-011", "이미 팔로우한 유저입니다."),
     ;
 
     private final Integer httpStatusCode;

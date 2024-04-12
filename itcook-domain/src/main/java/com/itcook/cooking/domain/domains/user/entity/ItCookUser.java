@@ -58,8 +58,8 @@ public class ItCookUser extends BaseTimeEntity {
 
     @Builder
     private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
-                      String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
-                      ServiceAlertType serviceAlertType, EventAlertType eventAlertType
+                       String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
+                       ServiceAlertType serviceAlertType, EventAlertType eventAlertType
     ) {
         this.id = id;
         this.email = email;
@@ -82,6 +82,10 @@ public class ItCookUser extends BaseTimeEntity {
 
     public void updateProfile(String profile) {
         this.profile = profile;
+    }
+
+    public void updateFollow(List<Long> follow) {
+        this.follow = follow;
     }
 
 }

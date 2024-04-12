@@ -5,8 +5,6 @@ import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.c
 import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserByEmail;
 import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserById;
 
-import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
@@ -72,6 +70,10 @@ public class UserDomainService {
         ItCookUser itCookUser = findExistingUserById(userRepository, user.getId());
         itCookUser.updateNickNameAndLifeType(user.getNickName(), user.getLifeType());
         return itCookUser;
+    }
+
+    public ItCookUser fetchFindByUserId(Long userId) {
+        return findExistingUserById(userRepository, userId);
     }
 
 }
