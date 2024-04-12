@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @Slf4j
 @Tag(name = "01. User")
 public class FollowController {
@@ -27,7 +27,7 @@ public class FollowController {
 
     @PostMapping("/follow")
     public void followUser(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody FollowRequest followRequest
     ) {
         followUseCase.toUserFollowAdd(authenticationUser.getUsername(), followRequest);
@@ -35,7 +35,7 @@ public class FollowController {
 
     @PostMapping("/unfollow")
     public void unFollowUser(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody FollowRequest followRequest
     ) {
         followUseCase.toUserFollowDelete(authenticationUser.getUsername(), followRequest);
