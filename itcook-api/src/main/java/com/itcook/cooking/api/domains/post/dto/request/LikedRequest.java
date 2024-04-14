@@ -16,5 +16,6 @@ import javax.validation.constraints.NotNull;
 public class LikedRequest {
 
     @NotNull
+    @Schema(description = "postId", example = "1")
     private Long postId;
 }
