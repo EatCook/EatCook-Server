@@ -1,16 +1,19 @@
 package com.itcook.cooking.domain.domains.post.service;
 
-import com.itcook.cooking.domain.common.errorcode.LikedErrorCode;
+import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Liked;
+import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.repository.LikedRepository;
+import com.itcook.cooking.domain.domains.post.repository.dto.LikedDomainDto;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
 
 @Service
 @Transactional(readOnly = true)
@@ -24,14 +27,26 @@ public class LikedDomainService {
         return likedRepository.findAllByPostIdIn(postIdData);
     }
 
-    public List<Liked> fetchFindByLikedUserId(Long userId) {
-        List<Liked> findByLiked = likedRepository.findByItCookUserId(userId);
+    public LikedDomainDto fetchFindByLikedUserId(Long userId, Long postId) {
+        List<Object[]> userWithPostAndArchive = likedRepository.findUserWithPostAndArchiveById(userId, postId);
 
-        if (findByLiked.isEmpty()) {
-            throw new ApiException(LikedErrorCode.NOT_SAVED_IN_LIKED);
+        nullCheckValidation(userWithPostAndArchive);
+
+        return LikedDomainDto.builder()
+                .itCookUser((ItCookUser) userWithPostAndArchive.get(0)[0])
+                .post((Post) userWithPostAndArchive.get(0)[1])
+                .liked((Liked) userWithPostAndArchive.get(0)[2])
+                .build();
+    }
+
+    private void nullCheckValidation(List<Object[]> userWithPostAndArchive) {
+        if (userWithPostAndArchive.get(0)[0] == null) {
+            throw new ApiException(UserErrorCode.USER_NOT_FOUND);
         }
 
-        return findByLiked;
+        if (userWithPostAndArchive.get(0)[1] == null) {
+            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
+        }
     }
 
     @Transactional
