@@ -46,7 +46,7 @@ public class RecipeController {
     @Operation(summary = "recipe 조회 요청", description = "recipe 조회 요청 설명")
     @GetMapping("/read")
     public ResponseEntity<ApiResponse<RecipeReadResponse>> readRecipe(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @RequestParam("postId") Long postId
     ) {
 

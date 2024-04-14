@@ -32,7 +32,7 @@ public class CookTalkController {
     @Operation(summary = "cooktalk 요청", description = "cooktalk 요청 설명")
     @GetMapping("/feed")
     public ResponseEntity<ApiResponse<CookTalkResponse>> retrieveAllCookTalk(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @RequestParam(value = "pageNum", defaultValue = "0") int pageNum
     ) {
         Pageable pageable = PageRequest.of(pageNum, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
@@ -44,7 +44,7 @@ public class CookTalkController {
     @Operation(summary = "follower 요청", description = "follower 요청 설명")
     @GetMapping("/following")
     public ResponseEntity<ApiResponse<CookTalkResponse>> retrieveAllFollowing(
-            @Parameter(in = ParameterIn.COOKIE) @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @RequestParam(value = "pageNum", defaultValue = "0") int pageNum
     ) {
         Pageable pageable = PageRequest.of(pageNum, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
