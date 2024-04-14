@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +16,8 @@ import lombok.NoArgsConstructor;
 @Schema(name = "보관함 요청")
 public class ArchiveRequest {
 
+    @NotNull
+    @Schema(description = "postId", example = "1")
     private Long postId;
+
 }
