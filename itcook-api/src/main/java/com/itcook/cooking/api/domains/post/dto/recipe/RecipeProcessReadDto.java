@@ -1,6 +1,5 @@
 package com.itcook.cooking.api.domains.post.dto.recipe;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

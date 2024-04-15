@@ -21,6 +21,7 @@ import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,7 +31,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,24 +46,6 @@ public class UserDomainService {
     public ItCookUser fetchFindByEmail(String email) {
 
         return findExistingUserByEmail(userRepository, email);
-
-//        Optional<ItCookUser> findByUserData = userRepository.findByEmail(email);
-//        if (findByUserData.isEmpty()) {
-//            throw new ApiException(UserErrorCode.USER_NOT_FOUND);
-//        }
-//
-//        return findByUserData.get();
-    }
-
-    public List<CookTalkUserMapping> fetchFindUserByIdIn(List<Long> userId) {
-
-        List<CookTalkUserMapping> findUserData = userRepository.findByIdIn(userId);
-
-        if (ObjectUtils.isEmpty(findUserData)) {
-            throw new ApiException(UserErrorCode.USER_NOT_FOUND);
-        }
-
-        return findUserData;
     }
 
     public void findUserByEmail(String email) {

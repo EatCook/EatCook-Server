@@ -18,13 +18,16 @@ import java.util.List;
 @Schema(name = "recipe read response")
 public class RecipeReadResponse {
     @Schema(description = "레시피 id", example = "1")
-    private Long id;
+    private Long postId;
     @Schema(description = "제목", example = "김밥 만들기")
     private String recipeName;
     @Schema(description = "조리 시간", example = "10")
     private Integer recipeTime;
     @Schema(description = "본문", example = "간단하게 만들 수 있어요")
     private String introduction;
+    @Schema(description = "메인 이미지")
+    private String postImagePath;
+
 
     @Schema(description = "재료", example = "[\"김밥\",\"밥\"]")
     private List<String> foodIngredients;
@@ -46,6 +49,8 @@ public class RecipeReadResponse {
     private Long userId;
     @Schema(description = "유저 닉네임", example = "username")
     private String nickName;
+    @Schema(description = "유저 프로필")
+    private String profile;
 
     @Schema(description = "팔로우 수", example = "10")
     private Integer followerCount;
@@ -55,16 +60,17 @@ public class RecipeReadResponse {
     @Schema(description = "팔로우 여부", example = "true")
     private Boolean followCheck;
     @Schema(description = "좋아요 여부", example = "true")
-    private Boolean lickedCheck;
+    private Boolean likedCheck;
     @Schema(description = "보관함 여부", example = "true")
     private Boolean archiveCheck;
 
     public static RecipeReadResponse of(RecipeReadDto recipeDto) {
         return RecipeReadResponse.builder()
-                .id(recipeDto.getId())
+                .postId(recipeDto.getPostId())
                 .recipeName(recipeDto.getRecipeName())
                 .recipeTime(recipeDto.getRecipeTime())
                 .introduction(recipeDto.getIntroduction())
+                .postImagePath(recipeDto.getPostImagePath())
                 .foodIngredients(recipeDto.getFoodIngredients())
                 .cookingType(recipeDto.getCookingType())
                 .recipeProcess(recipeDto.getRecipeProcess())
@@ -72,10 +78,11 @@ public class RecipeReadResponse {
                 .lastModifiedAt(recipeDto.getLastModifiedAt())
                 .userId(recipeDto.getUserId())
                 .nickName(recipeDto.getNickName())
+                .profile(recipeDto.getProfile())
                 .followerCount(recipeDto.getFollowerCount())
                 .likedCount(recipeDto.getLikedCount())
                 .followCheck(recipeDto.getFollowCheck())
-                .lickedCheck(recipeDto.getLickedCheck())
+                .likedCheck(recipeDto.getLikedCheck())
                 .archiveCheck(recipeDto.getArchiveCheck())
                 .build();
     }

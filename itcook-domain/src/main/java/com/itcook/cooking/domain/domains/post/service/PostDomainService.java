@@ -15,8 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,8 +27,8 @@ public class PostDomainService {
     private final PostRepository postRepository;
     private final PostQuerydslRepository postQuerydslRepository;
 
-    public Page<Post> fetchFindAllByUserIdNotWithUsers(Long userId, Pageable pageable) {
-        Page<Post> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
+    public Page<Object[]> fetchFindAllByCookTalkFeedV2(Long userId, Pageable pageable) {
+        Page<Object[]> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
 
         if (!findPostAllData.hasContent()) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
@@ -37,8 +37,8 @@ public class PostDomainService {
         return findPostAllData;
     }
 
-    public Page<Post> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
-        Page<Post> findFollowingCookTalkData = postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
+    public Page<Object[]> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
+        Page<Object[]> findFollowingCookTalkData = postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
 
         if (!findFollowingCookTalkData.hasContent()) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
@@ -47,8 +47,8 @@ public class PostDomainService {
         return findFollowingCookTalkData;
     }
 
-    public Optional<Post> fetchFindPost(Long postId) {
-        Optional<Post> findPostData = postRepository.findByIdAndPostFlag(postId, PostFlag.ACTIVATE);
+    public List<Object[]> fetchFindByRecipe(Long postId) {
+        List<Object[]> findPostData = postRepository.findRecipeData(postId, PostFlag.ACTIVATE);
 
         if (findPostData.isEmpty()) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
@@ -99,8 +99,10 @@ public class PostDomainService {
     }
 
     public List<Post> searchByRecipeNameOrIngredients(
-        Long lastId, List<String> names, Integer size
+            Long lastId, List<String> names, Integer size
     ) {
         return postQuerydslRepository.findNamesWithPagination(lastId, names, size);
     }
+
+
 }

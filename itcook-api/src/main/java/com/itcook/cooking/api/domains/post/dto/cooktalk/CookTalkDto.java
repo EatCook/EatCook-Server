@@ -2,8 +2,7 @@ package com.itcook.cooking.api.domains.post.dto.cooktalk;
 
 import com.itcook.cooking.domain.domains.post.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,39 +17,38 @@ import java.util.List;
 @Builder
 public class CookTalkDto {
 
-    private Long id;
-    private String recipeName;
+    private Long postId;
     private String introduction;
     private String postImagePath;
-
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
-
-    private Integer likedCount;
-    private Boolean likedCheck;
-
-
     private Long userId;
     private String nickName;
-    private Boolean followChk;
+    private String profile;
+    private Integer likeCount;
 
-    public CookTalkDto(Post post, CookTalkUserMapping user) {
-        this.id = post.getId();
-        this.recipeName = post.getRecipeName();
-        this.introduction = post.getIntroduction();
-        this.postImagePath = post.getPostImagePath();
-        this.createdAt = post.getCreatedAt();
-        this.lastModifiedAt = post.getLastModifiedAt();
-        this.likedCount = null;
-        this.likedCheck = null;
-        this.userId = post.getUserId();
+    private Boolean likedCheck;
+    private Boolean followCheck;
+
+    public CookTalkDto(Post data, ItCookUser user) {
+        this.postId = data.getId();
+        this.introduction = data.getIntroduction();
+        this.postImagePath = data.getPostImagePath();
+        this.createdAt = data.getCreatedAt();
+        this.lastModifiedAt = data.getLastModifiedAt();
+        this.userId = data.getUserId();
         this.nickName = user.getNickName();
+        this.profile = user.getProfile();
     }
 
 
-    public void of(List<Liked> size, Boolean likedCheck) {
-        this.likedCount = size.size();
+    public void likedInfoSet(Integer likedCount, Boolean likedCheck) {
+        this.likeCount = likedCount;
         this.likedCheck = likedCheck;
+    }
+
+    public void followCheckSet(Boolean followCheck) {
+        this.followCheck = followCheck;
     }
 
 }
