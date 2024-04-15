@@ -27,12 +27,19 @@ public class AddSignupRequest {
     @NotNull
     @Schema(description = "유저 id", example = "1")
     private Long userId;
+
+    @Schema(description = "이메일", example = "user@gmail.com")
+    @NotBlank(message = "이메일을 입력해주세요.")
+    private String email;
+
     @Schema(description = "프로필 이미지 확장자명(필수값 X)", example = "jpg", requiredMode  = RequiredMode.NOT_REQUIRED)
     private String fileExtension;
+
     @Pattern(regexp = "^[가-힣]{2,6}$", message = "2~6자의 한글 닉네임(특수문자 사용 불가)")
     @NotBlank(message = "닉네임을 입력해주세요")
     @Schema(description = "닉네임", example = "잇쿡")
     private String nickName;
+
     @Size(max = 3, message = "최대 3개까지 선택 가능합니다.")
     @Schema(description = "요리 유형", example = "[\"한식\", \"중식\", \"일식\"]")
     private List<String> cookingType;
@@ -49,7 +56,8 @@ public class AddSignupRequest {
 
     public ItCookUser toEntity() {
         return ItCookUser.builder()
-            .id(this.userId)
+            .id(userId)
+            .email(email)
             .nickName(this.nickName)
             .lifeType(LifeType.getByName(this.lifeType))
             .build();

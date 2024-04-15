@@ -17,6 +17,7 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.infra.redis.RedisService;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
@@ -32,7 +33,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
 class SignupUseCaseTest {
 
     @InjectMocks
@@ -109,7 +109,7 @@ class SignupUseCaseTest {
         //given
         SignupRequest signupRequest = SignupRequest.builder()
             .email("user@test.com")
-            .password("1234")
+            .password("cook1234")
             .build();
         given(passwordEncoder.encode(signupRequest.getPassword())).willReturn("1234");
 
@@ -136,6 +136,7 @@ class SignupUseCaseTest {
         //given
         AddSignupRequest addSignupRequest = AddSignupRequest.builder()
             .userId(1L)
+            .email("itcook@test.com")
             .nickName("잇쿡")
             .cookingType(List.of("한식", "중식", "일식"))
             .lifeType("배달음식 단골고객")
@@ -143,6 +144,7 @@ class SignupUseCaseTest {
         given(userDomainService.addSignup(any(ItCookUser.class), any(List.class)))
             .willReturn(ItCookUser.builder()
                 .id(1L)
+                .email("itcook@test.com")
                 .nickName(addSignupRequest.getNickName())
                 .lifeType(LifeType.DELIVERY_FOOD)
                 .build());
@@ -161,6 +163,7 @@ class SignupUseCaseTest {
         //given
         AddSignupRequest addSignupRequest = AddSignupRequest.builder()
             .userId(1L)
+            .email("itcook@test.com")
             .nickName("잇쿡")
             .fileExtension("jpg")
             .cookingType(List.of("한식", "중식", "일식"))
@@ -169,6 +172,7 @@ class SignupUseCaseTest {
         given(userDomainService.addSignup(any(ItCookUser.class), any(List.class)))
             .willReturn(ItCookUser.builder()
                 .id(1L)
+                .email("itcook@test.com")
                 .nickName(addSignupRequest.getNickName())
                 .lifeType(LifeType.DELIVERY_FOOD)
                 .build());
@@ -192,6 +196,7 @@ class SignupUseCaseTest {
         //given
         AddSignupRequest addSignupRequest = AddSignupRequest.builder()
             .userId(1L)
+            .email("itcook@test.com")
             .nickName("잇쿡")
             .fileExtension("heic")
             .cookingType(List.of("한식", "중식", "일식"))

@@ -80,7 +80,6 @@ public class SignupUseCase {
 
     @Transactional
     public UserResponse signup(SignupRequest signupRequest) {
-        Assert.hasText(signupRequest.getPassword(), "패스워드를 입력해야합니다.");
         Assert.isTrue(signupRequest.getPassword().matches(PASSWORD_REGEXP),
             "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
 
