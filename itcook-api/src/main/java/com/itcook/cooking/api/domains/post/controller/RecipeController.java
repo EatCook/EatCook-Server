@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@RestController
-@Tag(name = "03. Recipe")
-@SecurityRequirement(name = "access-token")
-@RequestMapping("/api/v1/recipe")
-@RequiredArgsConstructor
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/recipe")
+@SecurityRequirement(name = "access-token")
+@Tag(name = "03. Recipe")
 public class RecipeController {
 
     private final RecipeUseCase recipeUseCase;

@@ -19,12 +19,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@Tag(name = "02. CookTalk")
-@SecurityRequirement(name = "access-token")
-@RequestMapping("/api/v1/cooktalk")
-@RequiredArgsConstructor
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/cooktalk")
+@SecurityRequirement(name = "access-token")
+@Tag(name = "02. CookTalk")
 public class CookTalkController {
 
     private final CookTalkUseCase cooktalkUseCase;
