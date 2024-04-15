@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,23 +29,19 @@ public class LikedDomainService {
     }
 
     public LikedDomainDto fetchFindByLikedUserId(Long userId, Long postId) {
-        List<Object[]> userWithPostAndArchive = likedRepository.findUserWithPostAndArchiveById(userId, postId);
+        LikedDomainDto userWithPostAndArchive = likedRepository.findUserWithPostAndArchiveById(userId, postId);
 
         nullCheckValidation(userWithPostAndArchive);
 
-        return LikedDomainDto.builder()
-                .itCookUser((ItCookUser) userWithPostAndArchive.get(0)[0])
-                .post((Post) userWithPostAndArchive.get(0)[1])
-                .liked((Liked) userWithPostAndArchive.get(0)[2])
-                .build();
+        return userWithPostAndArchive;
     }
 
-    private void nullCheckValidation(List<Object[]> userWithPostAndArchive) {
-        if (userWithPostAndArchive.get(0)[0] == null) {
+    private void nullCheckValidation(LikedDomainDto userWithPostAndArchive) {
+        if (userWithPostAndArchive.getItCookUser() == null) {
             throw new ApiException(UserErrorCode.USER_NOT_FOUND);
         }
 
-        if (userWithPostAndArchive.get(0)[1] == null) {
+        if (userWithPostAndArchive.getPost() == null) {
             throw new ApiException(PostErrorCode.POST_NOT_EXIST);
         }
     }

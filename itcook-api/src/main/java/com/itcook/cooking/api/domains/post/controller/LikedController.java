@@ -29,7 +29,8 @@ public class LikedController {
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody LikedRequest likedRequest
     ) {
-        likedUseCase.likedAdd(authenticationUser.getUsername(), likedRequest.getPostId());
+//        authenticationUser.getUsername()
+        likedUseCase.likedAdd("test1@naver.com", likedRequest.getPostId());
 
         return ResponseEntity
                 .status(200)
