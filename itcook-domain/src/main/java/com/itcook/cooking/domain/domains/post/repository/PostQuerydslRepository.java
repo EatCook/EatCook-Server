@@ -8,6 +8,7 @@ import static com.querydsl.core.group.GroupBy.list;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -24,6 +25,29 @@ import org.springframework.util.CollectionUtils;
 public class PostQuerydslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public List<PostWithLikedDto> findPostsWithLiked(Long userId) {
+        return jpaQueryFactory.select(
+            Projections.constructor(
+                PostWithLikedDto.class,
+                post.id,
+                post.postImagePath,
+                post.recipeName,
+                post.introduction,
+                liked.postId.count()
+            )
+        )
+            .from(post)
+            .leftJoin(liked).on(post.id.eq(liked.postId))
+            .where(
+                post.userId.eq(userId),
+                post.postFlag.eq(PostFlag.ACTIVATE)
+            )
+            .groupBy(post.id)
+            .orderBy(post.createdAt.desc())
+            .fetch()
+            ;
+    }
 
     public List<Post> findNamesWithPagination(Long lastId
         , List<String> names, Integer size) {

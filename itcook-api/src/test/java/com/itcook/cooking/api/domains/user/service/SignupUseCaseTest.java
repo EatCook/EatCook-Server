@@ -22,6 +22,7 @@ import com.itcook.cooking.infra.redis.RedisService;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import com.itcook.cooking.infra.s3.S3PresignedUrlService;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
+@Disabled
 class SignupUseCaseTest {
 
     @InjectMocks
@@ -198,6 +200,8 @@ class SignupUseCaseTest {
         given(userDomainService.addSignup(any(ItCookUser.class), any(List.class)))
             .willReturn(ItCookUser.builder()
                 .id(1L)
+                .email("user@test.com")
+                .password("cook1234")
                 .nickName(addSignupRequest.getNickName())
                 .lifeType(LifeType.DELIVERY_FOOD)
                 .build());

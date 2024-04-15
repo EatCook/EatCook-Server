@@ -1,5 +1,6 @@
-package com.itcook.cooking.infra.redis;
+package com.itcook.cooking.infra.redis.event;
 
+import com.itcook.cooking.infra.redis.RedisService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

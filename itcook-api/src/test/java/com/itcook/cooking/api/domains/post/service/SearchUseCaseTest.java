@@ -1,12 +1,10 @@
 package com.itcook.cooking.api.domains.post.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
-import com.itcook.cooking.api.IntegrationMockTestSupport;
+import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.api.domains.post.service.dto.PostSearchServiceDto;
 import com.itcook.cooking.domain.domains.post.entity.Liked;
@@ -18,25 +16,19 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-import com.itcook.cooking.infra.redis.RealTimeSearchWords;
-import com.itcook.cooking.infra.redis.SearchWordsEventListener;
+import com.itcook.cooking.infra.redis.event.RealTimeSearchWords;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-//@SpringBootTest
-//@ActiveProfiles("test")
-class SearchUseCaseTest extends IntegrationMockTestSupport {
+
+class SearchUseCaseTest extends IntegrationTestSupport {
 
     @Autowired
     private SearchUseCase searchUseCase;
@@ -53,8 +45,6 @@ class SearchUseCaseTest extends IntegrationMockTestSupport {
     @Autowired
     private LikedRepository likedRepository;
 
-    @MockBean
-    private SearchWordsEventListener searchWordsEventListener;
 
 
     @AfterEach
@@ -81,14 +71,14 @@ class SearchUseCaseTest extends IntegrationMockTestSupport {
         ItCookUser user1 = userRepository.save(ItCookUser.builder()
             .nickName("잇쿡1")
             .email("user@test.com")
-            .password("1234")
+            .password("cook1234")
             .providerType(ProviderType.COMMON)
             .userRole(UserRole.USER)
             .build());
         ItCookUser user2 = userRepository.save(ItCookUser.builder()
             .nickName("잇쿡2")
             .email("user@test2.com")
-            .password("1234")
+            .password("cook1234")
             .providerType(ProviderType.COMMON)
             .userRole(UserRole.USER)
             .build());

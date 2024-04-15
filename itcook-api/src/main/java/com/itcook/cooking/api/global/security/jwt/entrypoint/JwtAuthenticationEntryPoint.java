@@ -30,8 +30,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         log.error("jwt 토큰 검증 예외");
         log.error("",exception);
 
-        if (exception instanceof ApiException) {
-            sendErrorResponse(((ApiException) exception).getErrorCode(),response);
+        if (exception instanceof ApiException apiEx) {
+            sendErrorResponse(apiEx.getErrorCode(),response);
             return;
         }
 

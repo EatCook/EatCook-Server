@@ -36,6 +36,15 @@ public class CommonUser implements ProviderUser {
 
     }
 
+    public static CommonUser of(String username) {
+        return CommonUser.builder()
+            .email(username)
+            .password("")
+            .providerType(ProviderType.COMMON)
+            .role(UserRole.USER)
+            .build();
+    }
+
     @Override
     public String getId() {
         return String.valueOf(id);

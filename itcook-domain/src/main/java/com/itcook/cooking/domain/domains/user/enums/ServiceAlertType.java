@@ -1,8 +1,10 @@
 package com.itcook.cooking.domain.domains.user.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum ServiceAlertType {
     DISABLED("disabled"),
     ACTIVATE("activate")
@@ -10,7 +12,4 @@ public enum ServiceAlertType {
 
     private final String serviceAlertTypeName;
 
-    ServiceAlertType(String serviceAlertTypeName) {
-        this.serviceAlertTypeName = serviceAlertTypeName;
-    }
 }

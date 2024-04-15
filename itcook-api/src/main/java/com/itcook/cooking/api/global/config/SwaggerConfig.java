@@ -21,7 +21,8 @@ import org.springframework.context.annotation.Configuration;
                 @Tag(name = "01. User", description = "유저 도메인과 관련된 APIs"),
                 @Tag(name = "02. CookTalk", description = "쿡톡 도메인과 관련된 APIs"),
                 @Tag(name = "03. Recipe", description = "레시피 도메인과 관련된 APIs"),
-                @Tag(name = "04. Search", description = "검색 도메인과 관련된 APIs"),
+                @Tag(name = "04. Search", description = "검색과 관련된 APIs"),
+                @Tag(name = "05. MyPage", description = "마이페이지와 관련된 APIs"),
         }
 )
 public class SwaggerConfig {

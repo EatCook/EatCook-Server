@@ -1,8 +1,10 @@
 package com.itcook.cooking.domain.domains.user.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum LifeType {
     DIET("다이어트만 n번째"),
     HEALTH_DIET("건강한 식단관리"),
@@ -12,12 +14,7 @@ public enum LifeType {
 
     ;
 
-
-    private String lifeTypeName;
-
-    LifeType(String lifeTypeName) {
-        this.lifeTypeName = lifeTypeName;
-    }
+    private final String lifeTypeName;
 
     public static LifeType getByName(String lifeTypeName) {
         for (LifeType lifeType : LifeType.values()) {
