@@ -5,8 +5,6 @@ import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.c
 import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserByEmail;
 import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserById;
 
-import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
@@ -87,7 +85,6 @@ public class UserDomainService {
         return itCookUser;
     }
 
-
     public MyPageUserDto getMyPageInfo(String email) {
         ItCookUser user = findExistingUserByEmail(userRepository, email);
         long followerCounts = userQueryRepository.getFollowerCounts(user.getId());
@@ -142,4 +139,9 @@ public class UserDomainService {
         user.updateAlertTypes(myPageAlertUpdate.serviceAlertType(),
             myPageAlertUpdate.eventAlertType());
     }
+  
+    public ItCookUser fetchFindByUserId(Long userId) {
+        return findExistingUserById(userRepository, userId);
+    }
+
 }

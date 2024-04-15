@@ -15,8 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -61,9 +61,13 @@ public class PostDomainService {
         return postQuerydslRepository.findPostsWithLiked(userId);
     }
 
+    public Optional<Post> fetchFindByPost(Long postId) {
+        Optional<Post> findByIdPost = postRepository.findById(postId);
 
-    public Post fetchFindByMyPost(Long userId) {
-        return postRepository.findById(userId).orElse(null);
+        if (findByIdPost.isEmpty()) {
+            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
+        }
+        return findByIdPost;
     }
 
     public Post createPost(Post post) {

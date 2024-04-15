@@ -7,11 +7,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ArchiveErrorCode implements ErrorCode {
-
-    ARCHIVE_NOT_EXIST(BAD_REQUEST.code, "A-001", "보관함이 비어있습니다."),
-    ALREADY_ADD_ARCHIVE(BAD_REQUEST.code, "A-002", "이미 보관함에 추가된 게시글입니다."),
-    NOT_SAVED_IN_ARCHIVE(BAD_REQUEST.code, "A-003", "보관함에 없는 게시글입니다."),
+public enum LikedErrorCode implements ErrorCode {
+    ALREADY_ADD_Liked(BAD_REQUEST.code, "l-001", "이미 좋아요 한 게시글입니다."),
+    NOT_SAVED_IN_LIKED(BAD_REQUEST.code, "l-002", "해당 게시글에 좋아요를 누르지 않았습니다."),
     ;
 
     private final Integer httpStatusCode;

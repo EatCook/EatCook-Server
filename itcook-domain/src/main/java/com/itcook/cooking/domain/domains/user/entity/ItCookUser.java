@@ -145,4 +145,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.serviceAlertType = serviceAlertType;
         this.eventAlertType = eventAlertType;
     }
+    public void updateFollow(List<Long> follow) {
+        this.follow = follow;
+    }
+
 }
