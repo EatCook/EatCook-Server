@@ -13,16 +13,19 @@ import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-
+import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import java.util.List;
-
-import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,5 +133,31 @@ public class UserDomainService {
         eventPublisher.publishEvent(UserLeaveEvent.builder()
             .email(user.getEmail())
             .build());
+    }
+
+
+    /**
+     * 마이 프로필 설정(서비스 이용 알림, 이벤트 알림 조회)
+     */
+    @Cacheable(cacheNames = "mypage", key = "'user:'+'#email'")
+    public MyPageSetUpResponse getMyPageSetUp(String email) {
+        log.info("getMyPageSetUp 조회");
+        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        return MyPageSetUpResponse.of(user);
+    }
+
+    /**
+     * 마이 프로필 설정 변경(서비스 이용 알림, 이벤트 알림)
+     */
+    @Transactional
+//    @CachePut(cacheNames = "mypage", key = "'user:'+'#email'")
+    @CacheEvict(cacheNames = "mypage", key = "'user:'+'#email'")
+    public void updateMyPageSetUp(String email,
+        MyPageAlertUpdate myPageAlertUpdate) {
+
+        log.info("updateMyPageSetUp");
+        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        user.updateAlertTypes(myPageAlertUpdate.serviceAlertType(),
+            myPageAlertUpdate.eventAlertType());
     }
 }

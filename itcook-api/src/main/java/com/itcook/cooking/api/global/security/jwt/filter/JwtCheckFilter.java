@@ -7,11 +7,16 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.ROLES_CLAIM;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itcook.cooking.api.domains.security.AuthenticationUser;
+import com.itcook.cooking.api.domains.security.CommonUser;
+import com.itcook.cooking.api.domains.security.ProviderUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
+import com.itcook.cooking.domain.domains.user.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import java.io.IOException;
 import java.util.List;
@@ -125,14 +130,13 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             .map(SimpleGrantedAuthority::new)
             .toList();
 
-        UserDetails user = User.withUsername(username)
-            .password("")
-            .authorities(authorities)
+        AuthenticationUser authenticationUser = AuthenticationUser.builder()
+            .providerUser(CommonUser.of(username))
             .build();
 
         UsernamePasswordAuthenticationToken authenticated
             = UsernamePasswordAuthenticationToken.authenticated(
-            user, null, authorities);
+            authenticationUser, null, authorities);
 
         SecurityContextHolder.getContext().setAuthentication(authenticated);
     }

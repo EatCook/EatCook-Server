@@ -83,8 +83,8 @@ public class ItCookUser extends BaseTimeEntity {
 
     @Builder
     private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
-                      String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
-                      ServiceAlertType serviceAlertType, EventAlertType eventAlertType
+        String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
+        ServiceAlertType serviceAlertType, EventAlertType eventAlertType
     ) {
         Assert.hasText(email, "Email is Not Empty");
         Assert.isTrue(email.matches(EMAIL_REGEXP), "유효한 이메일 형식이 아닙니다");
@@ -103,8 +103,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.badge = UserBadge.GIBBAB_GOSU;
         this.follow = new ArrayList<>();
         this.lifeType = lifeType;
-        this.serviceAlertType = serviceAlertType;
-        this.eventAlertType = eventAlertType;
+        this.serviceAlertType = ServiceAlertType.DISABLED;
+        this.eventAlertType = EventAlertType.DISABLED;
     }
 
     public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
@@ -117,7 +117,7 @@ public class ItCookUser extends BaseTimeEntity {
         this.password = newPassword;
     }
 
-    public void  addFollowing(Long userId) {
+    public void addFollowing(Long userId) {
         getFollow().add(userId);
     }
 
@@ -137,4 +137,12 @@ public class ItCookUser extends BaseTimeEntity {
         this.nickName = nickName;
     }
 
+    public void updateAlertTypes
+    (
+        ServiceAlertType serviceAlertType,
+        EventAlertType eventAlertType
+    ) {
+        this.serviceAlertType = serviceAlertType;
+        this.eventAlertType = eventAlertType;
+    }
 }

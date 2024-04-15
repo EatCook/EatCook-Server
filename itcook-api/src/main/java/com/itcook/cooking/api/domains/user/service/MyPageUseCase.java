@@ -51,7 +51,7 @@ public class MyPageUseCase {
         ItCookUser user = findExistingUserByEmail(userRepository,
             passwordServiceDto.getEmail());
 
-        validateCurrentPassword(passwordServiceDto, user.getPassword());
+        checkCurrentPassword(passwordServiceDto, user.getPassword());
 
         user.changePassword(passwordEncoder.encode(passwordServiceDto.getNewPassword()));
     }
@@ -62,7 +62,7 @@ public class MyPageUseCase {
             "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
     }
 
-    private void validateCurrentPassword(MyPagePasswordServiceDto passwordServiceDto,
+    private void checkCurrentPassword(MyPagePasswordServiceDto passwordServiceDto,
         String userPassword) {
         String currentPassword = passwordServiceDto.getCurrentPassword();
 

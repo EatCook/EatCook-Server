@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.user.controller;
 
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
+import com.itcook.cooking.api.domains.user.dto.request.MyPageAlertUpdateRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
@@ -8,6 +9,7 @@ import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -77,5 +79,28 @@ public class MyPageController {
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("회원 탈퇴하였습니다"))
             ;
+    }
+
+    @Operation(summary = "마이페이지 프로필 설정 요청", description = "마이페이지 프로필 설정 요청")
+    @GetMapping("/v1/mypage/setting")
+    public ResponseEntity<ApiResponse<MyPageSetUpResponse>> getMyPageSetting(
+        @AuthenticationPrincipal AuthenticationUser authenticationUser
+    ) {
+        MyPageSetUpResponse myPageSetUpResponse = userDomainService.getMyPageSetUp(
+            authenticationUser.getUsername());
+
+        return ResponseEntity.ok(ApiResponse.OK(myPageSetUpResponse));
+    }
+
+    @Operation(summary = "마이페이지 프로필 설정 변경 요청", description = "마이페이지 프로필 설정 변경 요청")
+    @PatchMapping("/v1/mypage/setting")
+    public ResponseEntity<ApiResponse> updateMyPageSetting(
+        @AuthenticationPrincipal AuthenticationUser authenticationUser,
+        @RequestBody @Valid MyPageAlertUpdateRequest myPageAlertUpdateRequest
+    ) {
+        userDomainService.updateMyPageSetUp(authenticationUser.getUsername(),
+            myPageAlertUpdateRequest.toServiceDto()
+        );
+        return ResponseEntity.ok(ApiResponse.OK("알림 설정 변경 성공했습니다"));
     }
 }

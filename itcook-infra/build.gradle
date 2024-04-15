@@ -1,5 +1,7 @@
 dependencies {
+    // redis
     api 'org.springframework.boot:spring-boot-starter-data-redis'
+    api 'org.springframework.boot:spring-boot-starter-cache'
     // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses
     implementation 'com.amazonaws:aws-java-sdk-ses:1.12.665'
     // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
