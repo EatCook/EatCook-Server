@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.domains.post.service;
+package com.itcook.cooking.domain.domains.post.helper;
 
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;

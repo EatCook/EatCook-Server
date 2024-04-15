@@ -14,7 +14,7 @@ import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
-import com.itcook.cooking.domain.domains.post.service.PostServiceHelper;
+import com.itcook.cooking.domain.domains.post.helper.PostServiceHelper;
 import com.itcook.cooking.infra.redis.event.RealTimeSearchWords;
 import com.itcook.cooking.infra.redis.RedisService;
 import java.util.ArrayList;

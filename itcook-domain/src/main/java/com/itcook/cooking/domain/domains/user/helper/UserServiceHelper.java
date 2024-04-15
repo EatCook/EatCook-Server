@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.domains.user.service;
+package com.itcook.cooking.domain.domains.user.helper;
 
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;

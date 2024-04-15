@@ -1,9 +1,9 @@
 package com.itcook.cooking.domain.domains.user.service;
 
-import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.checkDuplicateEmail;
-import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.checkDuplicateNickname;
-import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserByEmail;
-import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserById;
+import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.checkDuplicateEmail;
+import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.checkDuplicateNickname;
+import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.findExistingUserByEmail;
+import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.findExistingUserById;
 
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
@@ -11,7 +11,6 @@ import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-import com.itcook.cooking.domain.domains.user.repository.mapping.CookTalkUserMapping;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
@@ -23,7 +22,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

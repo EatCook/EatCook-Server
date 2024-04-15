@@ -43,8 +43,7 @@ public class AddSignupRequest {
     @Size(max = 3, message = "최대 3개까지 선택 가능합니다.")
     @Schema(description = "요리 유형", example = "[\"한식\", \"중식\", \"일식\"]")
     private List<String> cookingType;
-    // TODO 넘어가기?
-    @NotEmpty(message = "생활 유형을 선택해주세요")
+
     @Schema(description = "생활 유형", example = "다이어트만 n번째")
     private String lifeType;
 

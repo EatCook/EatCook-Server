@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import static com.itcook.cooking.domain.common.constant.UserConstant.PASSWORD_REGEXP;
-import static com.itcook.cooking.domain.domains.user.service.UserServiceHelper.findExistingUserByEmail;
+import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.findExistingUserByEmail;
 
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
