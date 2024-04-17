@@ -2,40 +2,56 @@ package com.itcook.cooking.domain.domains.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.IntegrationTestSupport;
+import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
+import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import com.itcook.cooking.infra.redis.event.UserLeaveEventListener;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
+class   UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserDomainService userDomainService;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserCookingThemeRepository userCookingThemeRepository;
+
+    @MockBean
+    private CacheManager cacheManager;
 
     @MockBean
     private UserLeaveEventListener userLeaveEventListener;
@@ -138,16 +154,144 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
     }
 
+    @Test
+    @DisplayName("이메일과, 관심 요리를 받아서,유저 생활타입과, cookingthemes 업데이트를 한다")
+    void updateInterestCook() {
+        //given
+        //캐시 모의
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("interestCook")).thenReturn(cache);
+        doNothing().when(cache).evict(any());
+
+        ItCookUser user = createUser("user1@test.com", "잇쿡1");
+        createCookingTheme(user.getId(), CookingType.BUNSIK);
+        createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
+
+        UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
+            .lifeType(LifeType.CONVENIENCE_STORE)
+            .cookingTypes(
+                List.of(CookingType.BUNSIK, CookingType.DESERT, CookingType.LATE_NIGHT_SNACK))
+            .build();
+
+        //when
+        userDomainService.updateInterestCook(user.getEmail(), updateInterestCook);
+
+        //then
+        ItCookUser findUser = userRepository.findById(user.getId()).get();
+        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
+            user.getId());
+
+        verify(cache, times(1)).evict("user1@test.com");
+        assertThat(findUser.getLifeType()).isEqualTo(updateInterestCook.lifeType());
+        assertThat(cookingThemes).hasSize(3)
+            .extracting("userId", "cookingType")
+            .containsExactlyInAnyOrder(
+                tuple(user.getId(), updateInterestCook.cookingTypes().get(0)),
+                tuple(user.getId(), updateInterestCook.cookingTypes().get(1)),
+                tuple(user.getId(), updateInterestCook.cookingTypes().get(2))
+            )
+            ;
+    }
+    @Test
+    @DisplayName("빈 요청을 받아서 받아서,유저 생활타입과, cookingthemes 업데이트를 한다")
+    void updateInterestCookEmtpy() {
+        //given
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("interestCook")).thenReturn(cache);
+        doNothing().when(cache).evict(any());
+
+        ItCookUser user = createUser("user1@test.com", "잇쿡1");
+        createCookingTheme(user.getId(), CookingType.BUNSIK);
+        createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
+
+        UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
+            .cookingTypes(
+                List.of()
+            )
+            .build();
+
+        //when
+        userDomainService.updateInterestCook(user.getEmail(), updateInterestCook);
+
+        //then
+        ItCookUser findUser = userRepository.findById(user.getId()).get();
+        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
+            user.getId());
+
+        verify(cache, times(1)).evict("user1@test.com");
+        assertThat(findUser.getLifeType()).isNull();
+        assertThat(cookingThemes).isEmpty();
+    }
+
+    @Test
+    @DisplayName("관심요리 조회")
+    void getInterestCook() {
+        //given
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("interestCook")).thenReturn(cache);
+        when(cache.get(any())).thenReturn(null);
+
+        ItCookUser user = createUser("user1@test.com", "잇쿡1");
+        createCookingTheme(user.getId(), CookingType.BUNSIK);
+        createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
+
+        //when
+        UserReadInterestCookResponse response = userDomainService.getInterestCook(
+            user.getEmail());
+
+        //then
+        verify(cache, times(1)).get("user1@test.com");
+        assertThat(response.lifeType()).isEqualTo("배달음식 단골고객");
+        assertThat(response.cookingTypes()).hasSize(2)
+            .contains("분식", "중식")
+        ;
+    }
+    @Test
+    @DisplayName("비어있는 관심요리 조회")
+    void getInterestCookEmpty() {
+        //given
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("interestCook")).thenReturn(cache);
+        when(cache.get(any())).thenReturn(null);
+
+        ItCookUser user = ItCookUser.builder()
+            .email("user1@test.com")
+            .password("cook12345")
+            .providerType(ProviderType.COMMON)
+            .nickName("잇쿡1")
+            .userRole(UserRole.USER)
+            .build();
+        userRepository.save(user);
+
+        //when
+        UserReadInterestCookResponse response = userDomainService.getInterestCook(
+            user.getEmail());
+        System.out.println("response = " + response);
+
+        //then
+        verify(cache, times(1)).get("user1@test.com");
+        assertThat(response.lifeType()).isNull();
+        assertThat(response.cookingTypes()).isEmpty();
+        ;
+    }
+
     private ItCookUser createUser(String username, String nickName) {
         ItCookUser user = ItCookUser.builder()
             .email(username)
             .password("cook12345")
             .providerType(ProviderType.COMMON)
             .nickName(nickName)
+            .lifeType(LifeType.DELIVERY_FOOD)
             .userRole(UserRole.USER)
             .build();
 
         return userRepository.save(user);
+    }
+
+    public void createCookingTheme(Long userId, CookingType cookingType) {
+        UserCookingTheme userCookingTheme = UserCookingTheme.createUserCookingTheme(userId,
+            cookingType);
+        userCookingThemeRepository.save(userCookingTheme);
     }
 
 }

@@ -3,9 +3,6 @@ package com.itcook.cooking.domain.domains.user.entity;
 import static com.itcook.cooking.domain.common.constant.UserConstant.*;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
-import com.itcook.cooking.domain.common.constant.UserConstant;
-import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
@@ -13,10 +10,7 @@ import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -28,7 +22,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import javax.swing.text.html.Option;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -145,8 +138,22 @@ public class ItCookUser extends BaseTimeEntity {
         this.serviceAlertType = serviceAlertType;
         this.eventAlertType = eventAlertType;
     }
+
     public void updateFollow(List<Long> follow) {
         this.follow = follow;
+    }
+
+    public String getLifeTypeName() {
+        if (lifeType == null) {
+            return null;
+        }
+        return lifeType.getLifeTypeName();
+    }
+
+    public void updateLifeType(
+        LifeType lifeType
+    ) {
+        this.lifeType = lifeType;
     }
 
 }

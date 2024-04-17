@@ -2,8 +2,10 @@ package com.itcook.cooking.domain.domains.post.enums;
 
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum CookingType {
 
     KOREAN_FOOD("한식"),
@@ -18,11 +20,7 @@ public enum CookingType {
     ;
 
 
-    private String cookingTypeName;
-
-    CookingType(String cookingTypeName) {
-        this.cookingTypeName = cookingTypeName;
-    }
+    private final String cookingTypeName;
 
     public static CookingType getByName(String cookingTypeName) {
         for (CookingType cookingType : CookingType.values()) {

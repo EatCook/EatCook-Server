@@ -15,7 +15,9 @@ import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
+import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import java.util.List;
 
@@ -70,11 +72,11 @@ public class UserDomainService {
             return;
         }
 
-        cookingTypes.forEach(cookingType -> {
-            UserCookingTheme cookingTheme = UserCookingTheme.createUserCookingTheme(user.getId(),
-                cookingType);
-            userCookingThemeRepository.save(cookingTheme);
-        });
+        List<UserCookingTheme> userCookingThemes = cookingTypes.stream()
+            .map(cookingType ->
+                UserCookingTheme.createUserCookingTheme(user.getId(), cookingType))
+            .toList();
+        userCookingThemeRepository.saveAll(userCookingThemes);
     }
 
     private ItCookUser updateNickNameAndLifeType(ItCookUser user) {
@@ -127,7 +129,6 @@ public class UserDomainService {
      * 마이 프로필 설정 변경(서비스 이용 알림, 이벤트 알림)
      */
     @Transactional
-//    @CachePut(cacheNames = "mypage", key = "'user:'+'#email'")
     @CacheEvict(cacheNames = "mypage", key = "'user:'+'#email'")
     public void updateMyPageSetUp(String email,
         MyPageAlertUpdate myPageAlertUpdate) {
@@ -137,9 +138,40 @@ public class UserDomainService {
         user.updateAlertTypes(myPageAlertUpdate.serviceAlertType(),
             myPageAlertUpdate.eventAlertType());
     }
-  
+
     public ItCookUser fetchFindByUserId(Long userId) {
         return findExistingUserById(userRepository, userId);
     }
 
+    /**
+     * 캐싱 CacheEvict
+     */
+    @Transactional
+    @CacheEvict(cacheNames = "interestCook", key = "#email")
+    public void updateInterestCook(
+        String email,
+        UserUpdateInterestCook userUpdateInterestCook
+    ) {
+        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        user.updateLifeType(userUpdateInterestCook.lifeType());
+        updateCookingThemes(userUpdateInterestCook, user);
+    }
+
+    private void updateCookingThemes(UserUpdateInterestCook userUpdateInterestCook, ItCookUser user) {
+        userCookingThemeRepository.deleteAllByUserId(user.getId());
+        createCookingThemes(user, userUpdateInterestCook.cookingTypes());
+    }
+    
+    /**
+     * 관심요리 조회
+     */
+    @Cacheable(cacheNames = "interestCook", key = "#email")
+    public UserReadInterestCookResponse getInterestCook(
+        String email
+    ) {
+        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
+            user.getId());
+        return UserReadInterestCookResponse.of(user, cookingThemes);
+    }
 }

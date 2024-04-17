@@ -4,12 +4,14 @@ import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageAlertUpdateRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
+import com.itcook.cooking.api.domains.user.dto.request.UserUpdateInterestCookRequest;
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
+import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -102,5 +105,25 @@ public class MyPageController {
             myPageAlertUpdateRequest.toServiceDto()
         );
         return ResponseEntity.ok(ApiResponse.OK("알림 설정 변경 성공했습니다"));
+    }
+
+    @Operation(summary = "마이페이지 설정의 관심 요리 조회", description = "마이페이지 설정의 관심 요리 조회")
+    @GetMapping("/v1/mypage/setting/interest-cook")
+    public ResponseEntity<ApiResponse<UserReadInterestCookResponse>> getInterestCook(
+        @AuthenticationPrincipal AuthenticationUser authenticationUser
+    ) {
+        UserReadInterestCookResponse response = userDomainService.getInterestCook(
+            authenticationUser.getUsername());
+        return ResponseEntity.ok(ApiResponse.OK(response));
+    }
+
+    @Operation(summary = "마이페이지 설정의 관심 요리 업데이트", description = "마이페이지 설정의 관심 요리 업데이트")
+    @PostMapping("/v1/mypage/setting/interest-cook")
+    public ResponseEntity<ApiResponse> updateInterestCook(
+        @AuthenticationPrincipal AuthenticationUser authenticationUser,
+        @RequestBody @Valid UserUpdateInterestCookRequest request
+    ) {
+        userDomainService.updateInterestCook(authenticationUser.getUsername(), request.toServiceDto());
+        return ResponseEntity.ok(ApiResponse.OK("관심 요리 설정이 변경됐습니다"));
     }
 }

@@ -40,9 +40,6 @@ class UserDomainServiceTest {
     @Mock
     private UserCookingThemeRepository userCookingThemeRepository;
 
-//    @BeforeEach
-//    void setUp() {
-//    }
 
     @Test
     @DisplayName("이메일 조회 테스트")
@@ -181,9 +178,6 @@ class UserDomainServiceTest {
 
         given(userRepository.findByNickName("test")).willReturn(Optional.empty());
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
-        given(userCookingThemeRepository.save(any())).willReturn(cookingThemes.get(0));
-        given(userCookingThemeRepository.save(any())).willReturn(cookingThemes.get(1));
-        given(userCookingThemeRepository.save(any())).willReturn(cookingThemes.get(2));
 
 
         //when

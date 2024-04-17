@@ -29,8 +29,7 @@ public class UserCookingTheme {
     private Long userId;
 
     @Builder
-    public UserCookingTheme(Long id, CookingType cookingType, Long userId) {
-        this.id = id;
+    private UserCookingTheme(Long id, CookingType cookingType, Long userId) {
         this.cookingType = cookingType;
         this.userId = userId;
     }
@@ -41,4 +40,15 @@ public class UserCookingTheme {
             .cookingType(cookingType)
             .build();
     }
+
+    public String getCookingTypeName() {
+        return cookingType.getCookingTypeName();
+    }
+
+    public void updateInterestCook(
+        CookingType cookingType
+    ) {
+        this.cookingType = cookingType;
+    }
+
 }
