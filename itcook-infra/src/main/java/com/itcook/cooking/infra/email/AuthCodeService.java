@@ -1,5 +1,7 @@
 package com.itcook.cooking.infra.email;
 
+import javax.mail.MessagingException;
+
 public interface AuthCodeService {
 
     void sentAuthCode(EmailSendEvent emailSendEvent);

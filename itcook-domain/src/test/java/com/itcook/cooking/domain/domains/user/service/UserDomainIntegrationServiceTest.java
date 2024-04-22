@@ -1,5 +1,8 @@
 package com.itcook.cooking.domain.domains.user.service;
 
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.KOREAN_FOOD;
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.SIDE_DISH;
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.WESTERN_FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
@@ -39,7 +42,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class   UserDomainIntegrationServiceTest extends IntegrationTestSupport {
+class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserDomainService userDomainService;
@@ -121,6 +124,39 @@ class   UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .hasMessage("이미 존재하는 닉네임입니다.")
             ;
 
+    }
+
+    @Test
+    @DisplayName("추가 회원가입 요청 성공")
+    void addSignup() {
+        //given
+        ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
+        List<CookingType> cookingTypes = List.of(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
+        ItCookUser user = ItCookUser.builder()
+            .id(saveUser.getId())
+            .email(saveUser.getEmail())
+            .password("cook12345")
+            .providerType(ProviderType.COMMON)
+            .nickName("뉴잇쿡")
+            .userRole(UserRole.USER)
+            .build();
+
+        //when
+        ItCookUser addSignupUser = userDomainService.addSignup(user, cookingTypes);
+
+        //then
+        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
+            saveUser.getId());
+
+        assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
+        assertThat(cookingThemes).hasSize(3)
+            .extracting("cookingType")
+            .containsExactlyInAnyOrder(
+                KOREAN_FOOD,
+                SIDE_DISH,
+                WESTERN_FOOD
+            )
+            ;
     }
 
     @Test

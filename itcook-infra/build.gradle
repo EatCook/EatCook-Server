@@ -2,8 +2,10 @@ dependencies {
     // redis
     api 'org.springframework.boot:spring-boot-starter-data-redis'
     api 'org.springframework.boot:spring-boot-starter-cache'
-    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses
+    // mail
     implementation 'com.amazonaws:aws-java-sdk-ses:1.12.665'
+    api 'org.springframework.boot:spring-boot-starter-mail'
+    api 'com.sun.mail:javax.mail:1.6.2'
     // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.667'
 

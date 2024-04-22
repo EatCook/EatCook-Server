@@ -24,11 +24,9 @@ public class AwsSesService implements AuthCodeService{
     private final String from = "eatcook.noreply@gmail.com";
 
     @Override
-    @Async
-    @TransactionalEventListener
+//    @Async
+//    @TransactionalEventListener
     public void sentAuthCode(EmailSendEvent emailSendEvent) {
-//        log.info("{}", TransactionSynchronizationManager.getCurrentTransactionName());
-//        log.info("{}", TransactionSynchronizationManager.isSynchronizationActive());
         try {
         SendEmailRequest sendEmailRequest = createSendEmailRequest(emailSendEvent);
         amazonSimpleEmailService.sendEmail(sendEmailRequest);

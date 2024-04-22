@@ -1,7 +1,10 @@
 package com.itcook.cooking.api;
 
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
+import com.itcook.cooking.infra.email.JavaMailConfig;
+import com.itcook.cooking.infra.email.JavaMailService;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -9,5 +12,12 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @Import(RedisTestContainers.class)
 public abstract class IntegrationRedisContainerSupport {
+
+    @MockBean
+    protected JavaMailService javaMailService;
+
+    @MockBean
+    protected JavaMailConfig javaMailConfig;
+
 
 }

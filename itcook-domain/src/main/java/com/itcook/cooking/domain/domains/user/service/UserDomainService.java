@@ -8,6 +8,7 @@ import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.fi
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeJdbcRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
@@ -39,6 +40,7 @@ public class UserDomainService {
     private final UserRepository userRepository;
     private final UserCookingThemeRepository userCookingThemeRepository;
     private final UserQueryRepository userQueryRepository;
+    private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     public ItCookUser fetchFindByEmail(String email) {
@@ -76,7 +78,8 @@ public class UserDomainService {
             .map(cookingType ->
                 UserCookingTheme.createUserCookingTheme(user.getId(), cookingType))
             .toList();
-        userCookingThemeRepository.saveAll(userCookingThemes);
+//        userCookingThemeRepository.saveAll(userCookingThemes);
+        userCookingThemeJdbcRepository.saveAll(userCookingThemes, user.getId());
     }
 
     private ItCookUser updateNickNameAndLifeType(ItCookUser user) {
@@ -90,12 +93,6 @@ public class UserDomainService {
         long followerCounts = userQueryRepository.getFollowerCounts(user.getId());
         return MyPageUserDto.from(user, followerCounts);
     }
-
-    public String getCurrentPassword(String email) {
-        ItCookUser user = findExistingUserByEmail(userRepository, email);
-        return user.getPassword();
-    }
-
 
     @Transactional
     public void updateProfile(MyPageUpdateProfile myPageUpdateProfile) {

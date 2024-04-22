@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "access-token")
-@RequestMapping("/open-api")
+@RequestMapping("/api")
 @Slf4j
 @Tag(name = "01. User")
 public class SignupController {
