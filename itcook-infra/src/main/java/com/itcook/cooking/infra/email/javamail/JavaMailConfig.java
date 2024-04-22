@@ -1,4 +1,4 @@
-package com.itcook.cooking.infra.email;
+package com.itcook.cooking.infra.email.javamail;
 
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;

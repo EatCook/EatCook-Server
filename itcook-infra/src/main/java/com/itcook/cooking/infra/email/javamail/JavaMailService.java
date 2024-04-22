@@ -1,7 +1,9 @@
-package com.itcook.cooking.infra.email;
+package com.itcook.cooking.infra.email.javamail;
 
 import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
 
+import com.itcook.cooking.infra.email.AuthCodeService;
+import com.itcook.cooking.infra.email.EmailSendEvent;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -18,21 +20,21 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Primary
 @Service
 @RequiredArgsConstructor
-public class JavaMailService implements AuthCodeService{
+public class JavaMailService implements AuthCodeService {
 
     private final JavaMailSender javaMailSender;
+    private static final String SENDER_EMAIL = "noreplycook@gmail.com";
 
     @Override
     @Async
     @TransactionalEventListener
     public void sentAuthCode(EmailSendEvent emailSendEvent) {
-        log.info("mail 시도 ");
+        log.info("메일 전송 시도 ");
         try {
-            String from = "hangs0908@gmail.com";
 
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setFrom(SENDER_EMAIL);
             mimeMessageHelper.setTo(emailSendEvent.getTo());
             mimeMessageHelper.setSubject(emailSendEvent.getSubject());
             mimeMessageHelper.setText(emailSendEvent.getBody(), true);

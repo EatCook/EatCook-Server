@@ -149,6 +149,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             saveUser.getId());
 
         assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
+        assertThat(addSignupUser.getLifeType()).isNull();
         assertThat(cookingThemes).hasSize(3)
             .extracting("cookingType")
             .containsExactlyInAnyOrder(
