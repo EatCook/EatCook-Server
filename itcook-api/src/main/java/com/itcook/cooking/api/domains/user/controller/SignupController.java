@@ -1,12 +1,15 @@
 package com.itcook.cooking.api.domains.user.controller;
 
 import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
+import com.itcook.cooking.api.domains.user.dto.request.FindUserRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
+import com.itcook.cooking.api.domains.user.dto.request.VerifyFindUserRequest;
 import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.SignupUseCase;
+import com.itcook.cooking.api.domains.user.service.dto.response.VerifyFindUserResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -34,7 +37,7 @@ public class SignupController {
     public ResponseEntity<ApiResponse> sendEmailAuthRequest(
         @RequestBody @Valid SendEmailAuthRequest sendEmailAuthRequest
     ) {
-        signupUseCase.sendAuthCode(sendEmailAuthRequest);
+        signupUseCase.sendAuthCodeSignup(sendEmailAuthRequest.toServiceDto());
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("이메일 인증 요청 성공."));
     }
@@ -45,7 +48,7 @@ public class SignupController {
     public ResponseEntity<ApiResponse> verifyEmailAuth(
         @RequestBody @Valid VerifyEmailAuthRequest verifyEmailAuthRequest
     ) {
-        signupUseCase.verifyAuthCode(verifyEmailAuthRequest);
+        signupUseCase.verifyAuthCode(verifyEmailAuthRequest.toServiceDto());
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("이메일 인증 검증 성공."));
     }
@@ -68,5 +71,29 @@ public class SignupController {
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(addUserResponse));
     }
+
+    /**
+     * 계정 찾기 인증 요청
+     */
+    @PostMapping("/v1/users/find")
+    public ResponseEntity<ApiResponse> findUser(
+        @RequestBody @Valid FindUserRequest findUserRequest
+    ) {
+        signupUseCase.findUser(findUserRequest.toServiceDto());
+        return ResponseEntity.ok(ApiResponse.OK("계정 찾기 인증 요청 성공"));
+    }
+
+    /**
+     * 계정 찾기 인증 코드 검증
+     */
+    @PostMapping("/v1/users/find/verify")
+    public ResponseEntity<ApiResponse<VerifyFindUserResponse>> verifyFindUser(
+        @RequestBody @Valid VerifyFindUserRequest verifyFindUserRequest
+    ) {
+        VerifyFindUserResponse response = signupUseCase.verifyFindUser(
+            verifyFindUserRequest.toServiceDto());
+        return ResponseEntity.ok(ApiResponse.OK(response));
+    }
+
 
 }

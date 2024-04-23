@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceHelper {
 
     public static ItCookUser findExistingUserByEmail(UserRepository userRepository, String email) {
-        log.info("findExistingUserByEmail 조회");
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(UserErrorCode.USER_NOT_FOUND));
     }

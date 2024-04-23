@@ -61,6 +61,7 @@ public class SecurityConfig {
             // TODO
             .antMatchers("/api/v1/users/**").permitAll()
             .antMatchers("/api/v1/emails/**").permitAll()
+            .antMatchers("/api/v1/users/find/**").permitAll()
             .anyRequest().hasRole("USER");
 
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
