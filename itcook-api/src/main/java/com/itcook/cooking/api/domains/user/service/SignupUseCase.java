@@ -56,7 +56,7 @@ public class SignupUseCase {
                 .to(sendEmailAuthRequest.getEmail())
                 .build()
         );
-        redisService.setDataWithExpire(sendEmailAuthRequest.getEmail(), authCode, 35L);
+        redisService.setDataWithExpire(sendEmailAuthRequest.getEmail(), authCode, 180L);
     }
 
     /**
