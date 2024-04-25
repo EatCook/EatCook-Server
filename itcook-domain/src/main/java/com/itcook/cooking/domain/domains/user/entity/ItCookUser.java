@@ -3,6 +3,7 @@ package com.itcook.cooking.domain.domains.user.entity;
 import static com.itcook.cooking.domain.common.constant.UserConstant.*;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
+import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
@@ -79,12 +80,6 @@ public class ItCookUser extends BaseTimeEntity {
         String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
         ServiceAlertType serviceAlertType, EventAlertType eventAlertType
     ) {
-        Assert.hasText(email, "Email is Not Empty");
-        Assert.isTrue(email.matches(EMAIL_REGEXP), "유효한 이메일 형식이 아닙니다");
-//        Assert.hasText(password, "Password is Not Empty");
-//        Assert.isTrue(password.matches(PASSWORD_REGEXP), "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
-        Assert.notNull(email, "UserRole is Not Null");
-        Assert.notNull(email, "ProviderType is Not Null");
 
         this.id = id;
         this.email = email;
@@ -98,6 +93,18 @@ public class ItCookUser extends BaseTimeEntity {
         this.lifeType = lifeType;
         this.serviceAlertType = ServiceAlertType.DISABLED;
         this.eventAlertType = EventAlertType.DISABLED;
+    }
+
+    // 회원가입 유저 생성
+    public static ItCookUser signup(String email, String password, UserValidator userValidator) {
+        ItCookUser user = ItCookUser.builder()
+            .email(email)
+            .password(password)
+            .providerType(ProviderType.COMMON)
+            .userRole(UserRole.USER)
+            .build();
+        userValidator.validateSignup(user);
+        return user;
     }
 
     public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {

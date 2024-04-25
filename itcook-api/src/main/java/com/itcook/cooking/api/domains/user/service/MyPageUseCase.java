@@ -6,6 +6,7 @@ import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.fi
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
@@ -14,8 +15,9 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -33,12 +35,12 @@ public class MyPageUseCase {
     /**
      * 마이페이지 조회
      */
-    public MyPageResponse getMyPage(String email) {
+    public MyPageResponse getMyPage(String email, Pageable pageable) {
         MyPageUserDto myPageUserInfo = userDomainService.getMyPageInfo(email);
-        List<PostWithLikedDto> posts = postDomainService.getPostsByUserId(
-            myPageUserInfo.getUserId());
+        Page<PostWithLikedDto> posts = postDomainService.getPostsByUserId(
+            myPageUserInfo.getUserId(), pageable);
 
-        return MyPageResponse.from(myPageUserInfo, posts);
+        return MyPageResponse.from(myPageUserInfo, PageResponse.of(posts));
     }
 
     /**

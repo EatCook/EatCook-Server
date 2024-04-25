@@ -4,10 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
-import com.itcook.cooking.api.domains.user.service.dto.response.MyPagePostResponse;
-import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
@@ -17,10 +16,10 @@ import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +40,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
 
     @Test
     @DisplayName("마이 페이지를 조회한다.")
-    void getMyPage() {
+    void getMyPage() throws JsonProcessingException {
         //given
         String email = "user1@test.com";
 
@@ -51,15 +50,17 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         createPost(user1.getId(), "책제목3", "소개글3");
 
         //when
-        MyPageResponse myPage = myPageUseCase.getMyPage(email);
-        List<MyPagePostResponse> myPagePosts = myPage.getPosts();
+        var myPage = myPageUseCase.getMyPage(email,
+            PageRequest.of(0, 10));
+
 
         //then
+
         assertThat(myPage.getUserId()).isEqualTo(user1.getId());
         assertThat(myPage.getNickName()).isEqualTo(user1.getNickName());
         assertThat(myPage.getBadge()).isEqualTo(UserBadge.GIBBAB_GOSU.getDescription());
-        assertThat(myPagePosts).hasSize(3)
-            .extracting("title","introduction")
+        assertThat(myPage.getPosts().content()).hasSize(3)
+            .extracting("recipeName","introduction")
             .containsExactly(
                 tuple("책제목3", "소개글3"),
                 tuple("책제목2", "소개글2"),

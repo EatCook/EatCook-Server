@@ -10,6 +10,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
+import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
+import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.VerifyFindUserResponse;
@@ -42,6 +44,45 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+
+    @Test
+    @DisplayName("유저 이메일, 비밀번호를 받아서 회원가입을 한다")
+    void signup() {
+        //given
+        SignupRequest signupRequest = SignupRequest.builder()
+            .email("user@test.com")
+            .password("cook1234")
+            .build();
+
+        //when
+        UserResponse response = signupUseCase.signup(signupRequest);
+
+        //then
+        ItCookUser savedUser = userRepository.findByEmail(signupRequest.getEmail()).get();
+        assertThat(savedUser.getId()).isEqualTo(response.getId());
+        assertThat(savedUser.getEmail()).isEqualTo(signupRequest.getEmail());
+        assertThat(savedUser.getPassword()).isNotEqualTo(signupRequest.getPassword());
+
+    }
+
+    @Test
+    @DisplayName("유저 이메일, 비밀번호를 받아서 회원가입을 한다")
+    void signupBlankPassword() {
+        //given
+        SignupRequest signupRequest = SignupRequest.builder()
+            .email("usertest.com")
+            .password("cook1234")
+            .build();
+
+        //when
+        assertThatThrownBy(() -> signupUseCase.signup(signupRequest))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("유효한 이메일 형식이 아닙니다.")
+            ;
+
+
+    }
 
     @Test
     @DisplayName("이메일을 받아서, 계정을 찾는다")

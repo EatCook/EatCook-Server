@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,9 +43,10 @@ public class MyPageController {
     @Operation(summary = "마이페이지 조회 요청", description = "마이페이지 조회 요청")
     @GetMapping("/v1/mypage")
     public ResponseEntity<ApiResponse<MyPageResponse>> getMyPage(
-        @AuthenticationPrincipal AuthenticationUser authenticationUser
+        @AuthenticationPrincipal AuthenticationUser authenticationUser,
+        Pageable pageable
     ) {
-        MyPageResponse response = myPageUseCase.getMyPage(authenticationUser.getUsername());
+        MyPageResponse response = myPageUseCase.getMyPage(authenticationUser.getUsername(), pageable);
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(response))
             ;

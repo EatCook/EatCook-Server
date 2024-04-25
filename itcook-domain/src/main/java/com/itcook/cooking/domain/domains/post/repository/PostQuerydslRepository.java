@@ -12,9 +12,13 @@ import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -26,17 +30,18 @@ public class PostQuerydslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<PostWithLikedDto> findPostsWithLiked(Long userId) {
-        return jpaQueryFactory.select(
-            Projections.constructor(
-                PostWithLikedDto.class,
-                post.id,
-                post.postImagePath,
-                post.recipeName,
-                post.introduction,
-                liked.postId.count()
+    // TODO 페이징 쿼리로 변환 (PageableExecutionUtils)
+    public Page<PostWithLikedDto> findPostsWithLiked(Long userId, Pageable pageable) {
+        List<PostWithLikedDto> posts = jpaQueryFactory.select(
+                Projections.constructor(
+                    PostWithLikedDto.class,
+                    post.id,
+                    post.postImagePath,
+                    post.recipeName,
+                    post.introduction,
+                    liked.postId.count()
+                )
             )
-        )
             .from(post)
             .leftJoin(liked).on(post.id.eq(liked.postId))
             .where(
@@ -45,8 +50,21 @@ public class PostQuerydslRepository {
             )
             .groupBy(post.id)
             .orderBy(post.createdAt.desc())
-            .fetch()
-            ;
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        JPAQuery<Long> countQuery = jpaQueryFactory.select(
+                post.count()
+            )
+            .from(post)
+            .leftJoin(liked).on(post.id.eq(liked.postId))
+            .where(
+                post.userId.eq(userId),
+                post.postFlag.eq(PostFlag.ACTIVATE)
+            );
+
+        return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchOne);
     }
 
     public List<Post> findNamesWithPagination(Long lastId

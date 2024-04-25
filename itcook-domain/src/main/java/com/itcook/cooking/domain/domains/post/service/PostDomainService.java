@@ -57,8 +57,8 @@ public class PostDomainService {
         return findPostData;
     }
 
-    public List<PostWithLikedDto> getPostsByUserId(Long userId) {
-        return postQuerydslRepository.findPostsWithLiked(userId);
+    public Page<PostWithLikedDto> getPostsByUserId(Long userId, Pageable pageable) {
+        return postQuerydslRepository.findPostsWithLiked(userId, pageable);
     }
 
     public Optional<Post> fetchFindByPost(Long postId) {

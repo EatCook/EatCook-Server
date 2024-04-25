@@ -8,6 +8,7 @@ import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.fi
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeJdbcRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
@@ -42,6 +43,7 @@ public class UserDomainService {
     private final UserQueryRepository userQueryRepository;
     private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserValidator userValidator;
 
     public ItCookUser fetchFindByEmail(String email) {
 
@@ -55,6 +57,12 @@ public class UserDomainService {
     @Transactional
     public ItCookUser registerUser(ItCookUser user) {
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public ItCookUser signup(String email, String password) {
+        ItCookUser user = ItCookUser.signup(email, password, userValidator);
+        return registerUser(user);
     }
 
     @Transactional

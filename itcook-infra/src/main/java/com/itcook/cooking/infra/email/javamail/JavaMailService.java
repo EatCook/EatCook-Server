@@ -1,7 +1,5 @@
 package com.itcook.cooking.infra.email.javamail;
 
-import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
-
 import com.itcook.cooking.infra.email.AuthCodeService;
 import com.itcook.cooking.infra.email.EmailSendEvent;
 import javax.mail.MessagingException;
@@ -9,12 +7,12 @@ import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Slf4j
 @Primary
@@ -30,6 +28,7 @@ public class JavaMailService implements AuthCodeService {
     @TransactionalEventListener
     public void sentAuthCode(EmailSendEvent emailSendEvent) {
         log.info("메일 전송 시도 ");
+        log.info("트랜잭션 활성화 : {}", TransactionSynchronizationManager.isActualTransactionActive());
         try {
 
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -41,7 +40,7 @@ public class JavaMailService implements AuthCodeService {
 
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.info("메일 전송 실패 ", e);
+            log.error("메일 전송 실패 ", e);
         }
 
     }

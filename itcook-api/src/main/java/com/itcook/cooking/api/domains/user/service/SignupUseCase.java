@@ -14,6 +14,7 @@ import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.email.EmailTemplate;
@@ -104,13 +105,9 @@ public class SignupUseCase {
 
     @Transactional
     public UserResponse signup(SignupRequest signupRequest) {
-        Assert.isTrue(signupRequest.getPassword().matches(PASSWORD_REGEXP),
-            "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
-
-        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        ItCookUser user = signupRequest.toDomain();
-        ItCookUser savedUser = userDomainService.registerUser(user);
-        return UserResponse.of(savedUser);
+        ItCookUser user = userDomainService.signup(signupRequest.getEmail(),
+            passwordEncoder.encode(signupRequest.getPassword()));
+        return UserResponse.of(user);
     }
 
     @Transactional
