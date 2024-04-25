@@ -4,12 +4,9 @@ import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 @Data
 @NoArgsConstructor
@@ -37,7 +34,7 @@ public class MyPageResponse {
         this.posts = posts;
     }
 
-    public static MyPageResponse from(MyPageUserDto myPageUserInfo,
+    public static MyPageResponse of(MyPageUserDto myPageUserInfo,
         PageResponse<PostWithLikedDto> posts) {
         return MyPageResponse.builder()
             .userId(myPageUserInfo.getUserId())
@@ -46,7 +43,6 @@ public class MyPageResponse {
             .follower(myPageUserInfo.getFollowerCounts())
             .following(myPageUserInfo.getFollowingCounts())
             .providerType(myPageUserInfo.getProviderType())
-//            .posts(posts.stream().map(MyPagePostResponse::from).collect(Collectors.toList()))
             .posts(posts)
             .build()
             ;

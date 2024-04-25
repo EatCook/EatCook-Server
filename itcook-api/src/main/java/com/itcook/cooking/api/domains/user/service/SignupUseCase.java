@@ -1,7 +1,5 @@
 package com.itcook.cooking.api.domains.user.service;
 
-import static com.itcook.cooking.domain.common.constant.UserConstant.PASSWORD_REGEXP;
-
 import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
@@ -14,12 +12,12 @@ import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.email.EmailTemplate;
 import com.itcook.cooking.infra.redis.RedisService;
 import com.itcook.cooking.infra.s3.ImageFileExtension;
+import com.itcook.cooking.infra.s3.ImageService;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import com.itcook.cooking.infra.s3.S3PresignedUrlService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 @Slf4j
@@ -40,14 +37,14 @@ public class SignupUseCase {
     private final RedisService redisService;
     private final ApplicationEventPublisher eventPublisher;
     private final PasswordEncoder passwordEncoder;
-    private final S3PresignedUrlService s3PresignedUrlService;
+    private final ImageService s3PresignedUrlService;
 
 
     /**
      * 이메일 인증 코드 요청 서비스
      */
     public void sendAuthCodeSignup(SendEmailServiceDto sendEmailServiceDto) {
-        userDomainService.findUserByEmail(sendEmailServiceDto.email());
+        userDomainService.checkDuplicateMail(sendEmailServiceDto.email());
         sendAuthCode(sendEmailServiceDto);
     }
 
@@ -55,7 +52,7 @@ public class SignupUseCase {
      * 계정 찾기 요청 서비스
      */
     public void findUser(SendEmailServiceDto sendEmailServiceDto) {
-        userDomainService.fetchFindByEmail(sendEmailServiceDto.email());
+        userDomainService.findUserByEmail(sendEmailServiceDto.email());
         sendAuthCode(sendEmailServiceDto);
     }
 
@@ -96,7 +93,7 @@ public class SignupUseCase {
     }
 
     private String createTemporaryPassword(VerifyEmailServiceDto verifyEmailServiceDto) {
-        ItCookUser itCookUser = userDomainService.fetchFindByEmail(verifyEmailServiceDto.email());
+        ItCookUser itCookUser = userDomainService.findUserByEmail(verifyEmailServiceDto.email());
         String temporaryPassword = RandomCodeUtils.generateTemporaryPassword();
         itCookUser.changePassword(passwordEncoder.encode(temporaryPassword));
         return temporaryPassword;
@@ -112,11 +109,10 @@ public class SignupUseCase {
 
     @Transactional
     public AddUserResponse addSignup(AddSignupRequest addSignupRequest) {
-        ImageUrlDto imageUrlDto = ImageUrlDto.builder().build();
         ItCookUser itCookUser = userDomainService.addSignup(addSignupRequest.toEntity(),
             addSignupRequest.toCookingTypes());
         // fileExension이 있을 경우 프로필 이미지 업로드
-        imageUrlDto = getImageUrlDto(addSignupRequest.getFileExtension(), imageUrlDto, itCookUser);
+        ImageUrlDto imageUrlDto = getImageUrlDto(addSignupRequest.getFileExtension(), itCookUser);
 
         return AddUserResponse.builder()
             .presignedUrl(imageUrlDto.getUrl())
@@ -125,8 +121,10 @@ public class SignupUseCase {
             ;
     }
 
-    private ImageUrlDto getImageUrlDto(String fileExtension, ImageUrlDto imageUrlDto,
+    // TODO 이벤트 핸들러로 리팩토링
+    private ImageUrlDto getImageUrlDto(String fileExtension,
         ItCookUser itCookUser) {
+        ImageUrlDto imageUrlDto = ImageUrlDto.builder().build();
         if (StringUtils.hasText(fileExtension)) {
             ImageFileExtension imageFileExtension = ImageFileExtension.fromFileExtension(
                 fileExtension);

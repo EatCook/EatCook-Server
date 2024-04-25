@@ -4,6 +4,7 @@ import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.ch
 import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.checkDuplicateNickname;
 import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.findExistingUserByEmail;
 import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.findExistingUserById;
+import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.saveUser;
 
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
@@ -45,24 +46,18 @@ public class UserDomainService {
     private final ApplicationEventPublisher eventPublisher;
     private final UserValidator userValidator;
 
-    public ItCookUser fetchFindByEmail(String email) {
-
+    public ItCookUser findUserByEmail(String email) {
         return findExistingUserByEmail(userRepository, email);
     }
 
-    public void findUserByEmail(String email) {
+    public void checkDuplicateMail(String email) {
         checkDuplicateEmail(userRepository, email);
-    }
-
-    @Transactional
-    public ItCookUser registerUser(ItCookUser user) {
-        return userRepository.save(user);
     }
 
     @Transactional
     public ItCookUser signup(String email, String password) {
         ItCookUser user = ItCookUser.signup(email, password, userValidator);
-        return registerUser(user);
+        return saveUser(userRepository, user);
     }
 
     @Transactional
@@ -76,6 +71,11 @@ public class UserDomainService {
 
         return itCookUser;
     }
+    private ItCookUser updateNickNameAndLifeType(ItCookUser user) {
+        ItCookUser itCookUser = findExistingUserById(userRepository, user.getId());
+        itCookUser.updateNickNameAndLifeType(user.getNickName(), user.getLifeType());
+        return itCookUser;
+    }
 
     private void createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
         if (CollectionUtils.isEmpty(cookingTypes)) {
@@ -86,33 +86,27 @@ public class UserDomainService {
             .map(cookingType ->
                 UserCookingTheme.createUserCookingTheme(user.getId(), cookingType))
             .toList();
-//        userCookingThemeRepository.saveAll(userCookingThemes);
         userCookingThemeJdbcRepository.saveAll(userCookingThemes, user.getId());
     }
 
-    private ItCookUser updateNickNameAndLifeType(ItCookUser user) {
-        ItCookUser itCookUser = findExistingUserById(userRepository, user.getId());
-        itCookUser.updateNickNameAndLifeType(user.getNickName(), user.getLifeType());
-        return itCookUser;
-    }
 
     public MyPageUserDto getMyPageInfo(String email) {
         ItCookUser user = findExistingUserByEmail(userRepository, email);
         long followerCounts = userQueryRepository.getFollowerCounts(user.getId());
-        return MyPageUserDto.from(user, followerCounts);
+        return MyPageUserDto.of(user, followerCounts);
     }
 
     @Transactional
     public void updateProfile(MyPageUpdateProfile myPageUpdateProfile) {
         checkDuplicateNickname(userRepository, myPageUpdateProfile.nickName());
-        ItCookUser user = findExistingUserByEmail(userRepository, myPageUpdateProfile.email());
+        ItCookUser user = findUserByEmail(myPageUpdateProfile.email());
         user.updateNickName(myPageUpdateProfile.nickName());
     }
 
     @Transactional
     public void leaveUser(MyPageLeaveUser myPageLeaveUser) {
         ItCookUser user = findExistingUserByEmail(userRepository, myPageLeaveUser.email());
-        userRepository.delete(user);
+        user.delete();
         // 해당 유저 엑세스 토큰 삭제
         eventPublisher.publishEvent(UserLeaveEvent.builder()
             .email(user.getEmail())

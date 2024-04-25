@@ -22,6 +22,6 @@ public enum LifeType {
                 return lifeType;
             }
         }
-        throw new IllegalArgumentException("해당하는 생활 유형이 없습니다.");
+        return null;
     }
 }

@@ -21,7 +21,7 @@ public class LikedUseCase {
 
 
     public void likedAdd(String email, Long reqPostId) {
-        ItCookUser findByItCookUser = userDomainService.fetchFindByEmail(email);
+        ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
 
         LikedDomainDto likedDomainDto = likedDomainService.fetchFindByLikedUserId(findByItCookUser.getId(), reqPostId);
 
@@ -38,7 +38,7 @@ public class LikedUseCase {
     }
 
     public void likedDel(String email, Long reqPostId) {
-        ItCookUser findByItCookUser = userDomainService.fetchFindByEmail(email);
+        ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
 
         LikedDomainDto likedDomainDto = likedDomainService.fetchFindByLikedUserId(findByItCookUser.getId(), reqPostId);
 

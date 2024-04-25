@@ -115,6 +115,7 @@ class MyPageControllerTest {
             )
             .andDo(print())
             .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("비밀번호가 변경되었습니다"))
         ;
     }
 
@@ -138,6 +139,30 @@ class MyPageControllerTest {
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.validation.currentPassword").value("현재 비밀번호를 입력하지 않았습니다."))
+        ;
+    }
+
+    @Test
+    @WithItCookMockUser
+    @DisplayName("새로운 비밀번호 정규표현식 미준수시 예외 발생한다.")
+    void changeNewPasswordValidError() throws Exception {
+        //given
+        MyPageChangePasswordRequest request = MyPageChangePasswordRequest.builder()
+            .currentPassword("cook1234")
+            .newPassword("cook124")
+            .build();
+
+        //when
+
+        //then
+        mockMvc.perform(patch("/api/v1/mypage/profile/password")
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request))
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(
+                jsonPath("$.validation.newPassword").value("패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다."))
         ;
     }
 

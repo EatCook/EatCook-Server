@@ -2,7 +2,6 @@ package com.itcook.cooking.domain.domains.user.service.dto;
 
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +29,7 @@ public class MyPageUserDto {
         this.providerType = providerType;
     }
 
-    public static MyPageUserDto from(ItCookUser itCookUser, Long followerCounts) {
+    public static MyPageUserDto of(ItCookUser itCookUser, Long followerCounts) {
         return MyPageUserDto.builder()
             .userId(itCookUser.getId())
             .nickName(itCookUser.getNickName())

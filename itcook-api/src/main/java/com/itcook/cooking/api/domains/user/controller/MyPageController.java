@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,7 +45,7 @@ public class MyPageController {
     @GetMapping("/v1/mypage")
     public ResponseEntity<ApiResponse<MyPageResponse>> getMyPage(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
-        Pageable pageable
+        @ParameterObject Pageable pageable
     ) {
         MyPageResponse response = myPageUseCase.getMyPage(authenticationUser.getUsername(), pageable);
         return ResponseEntity.status(200)

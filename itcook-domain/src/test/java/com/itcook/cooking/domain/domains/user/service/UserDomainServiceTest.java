@@ -6,10 +6,7 @@ import static com.itcook.cooking.domain.domains.post.enums.CookingType.KOREAN_FO
 import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 import com.itcook.cooking.domain.common.errorcode.ErrorCode;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
@@ -19,7 +16,6 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeJdbcRepository;
-import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
 class UserDomainServiceTest {
@@ -59,7 +54,7 @@ class UserDomainServiceTest {
                 .build()
         ));
         //when
-        ItCookUser itCookUser = userDomainService.fetchFindByEmail("test");
+        ItCookUser itCookUser = userDomainService.findUserByEmail("test");
 
         //then
         assertEquals(1L, itCookUser.getId());
@@ -74,7 +69,7 @@ class UserDomainServiceTest {
 
         //when
         ApiException apiException = assertThrows(ApiException.class,
-            () -> userDomainService.fetchFindByEmail("test"));
+            () -> userDomainService.findUserByEmail("test"));
 
         //then
         assertEquals(UserErrorCode.USER_NOT_FOUND, apiException.getErrorCode());

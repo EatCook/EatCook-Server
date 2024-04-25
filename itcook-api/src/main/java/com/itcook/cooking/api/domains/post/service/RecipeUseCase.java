@@ -50,7 +50,7 @@ public class RecipeUseCase {
     @Transactional
     public RecipeCreateResponse createRecipe(RecipeCreateRequest recipeCreateRequest) {
         //유저 검증
-        ItCookUser itCookUser = userDomainService.fetchFindByEmail(recipeCreateRequest.getEmail());
+        ItCookUser itCookUser = userDomainService.findUserByEmail(recipeCreateRequest.getEmail());
         //Post, RecipeProcess, PostCookingTheme 저장
         Post post = recipeCreateRequest.toPostDomain(itCookUser.getId());
         Post savePostData = postDomainService.createPost(post);
@@ -102,7 +102,7 @@ public class RecipeUseCase {
     //read
     public RecipeReadResponse getReadRecipeV1(String email, Long postId) {
         //조회 요청 한 유저 정보 조회
-        ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(email);
+        ItCookUser findByUserEmail = userDomainService.findUserByEmail(email);
 
         //요청한 게시글 정보
         List<Object[]> recipeReadDomainDto = postDomainService.fetchFindByRecipe(postId);
@@ -283,7 +283,7 @@ public class RecipeUseCase {
 
     @Transactional
     public void deleteRecipe(RecipeDeleteRequest recipeDeleteRequest) {
-        userDomainService.fetchFindByEmail(recipeDeleteRequest.getEmail());
+        userDomainService.findUserByEmail(recipeDeleteRequest.getEmail());
 
         postDomainService.deletePost(recipeDeleteRequest.getPostId());
     }

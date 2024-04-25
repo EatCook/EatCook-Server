@@ -33,4 +33,8 @@ public class UserServiceHelper {
                 });
     }
 
+    public static ItCookUser saveUser(UserRepository userRepository, ItCookUser user) {
+        return userRepository.save(user);
+    }
+
 }

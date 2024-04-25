@@ -10,6 +10,7 @@ import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.enums.UserState;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;
@@ -40,12 +41,11 @@ public class ItCookUser extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
 
     private String password;
 
-    @Column(unique = true)
     private String nickName;
 
     @Enumerated(EnumType.STRING)
@@ -70,6 +70,9 @@ public class ItCookUser extends BaseTimeEntity {
     @Column(nullable = false)
     private ProviderType providerType;
 
+    @Enumerated(EnumType.STRING)
+    private UserState userState;
+
     @ElementCollection
     @CollectionTable(name = "follow", joinColumns = @JoinColumn(name = "from_user", referencedColumnName = "user_id"))
     @Column(name = "to_user")
@@ -78,7 +81,7 @@ public class ItCookUser extends BaseTimeEntity {
     @Builder
     private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
         String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
-        ServiceAlertType serviceAlertType, EventAlertType eventAlertType
+        ServiceAlertType serviceAlertType, EventAlertType eventAlertType, UserState userState
     ) {
 
         this.id = id;
@@ -93,6 +96,7 @@ public class ItCookUser extends BaseTimeEntity {
         this.lifeType = lifeType;
         this.serviceAlertType = ServiceAlertType.DISABLED;
         this.eventAlertType = EventAlertType.DISABLED;
+        this.userState = UserState.ACTIVE;
     }
 
     // 회원가입 유저 생성
@@ -107,14 +111,21 @@ public class ItCookUser extends BaseTimeEntity {
         return user;
     }
 
+    public void delete() {
+        userState = UserState.DELETE;
+        email = null;
+        profile = null;
+        nickName = "탈퇴한 유저";
+    }
+
     public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
         this.nickName = nickName;
         this.lifeType = lifeType;
 
     }
 
-    public void changePassword(String newPassword) {
-        this.password = newPassword;
+    public void changePassword(String newEncodedPassword) {
+        this.password = newEncodedPassword;
     }
 
     public void addFollowing(Long userId) {
@@ -133,8 +144,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.profile = profile;
     }
 
-    public void updateNickName(String nickName) {
-        this.nickName = nickName;
+    public void updateNickName(String newNickName) {
+        this.nickName = newNickName;
     }
 
     public void updateAlertTypes

@@ -1,5 +1,7 @@
 package com.itcook.cooking.domain.domains.user.service;
 
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.BUNSIK;
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.CHINESE_FOOD;
 import static com.itcook.cooking.domain.domains.post.enums.CookingType.KOREAN_FOOD;
 import static com.itcook.cooking.domain.domains.post.enums.CookingType.SIDE_DISH;
 import static com.itcook.cooking.domain.domains.post.enums.CookingType.WESTERN_FOOD;
@@ -22,6 +24,7 @@ import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
@@ -159,23 +162,57 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             )
             ;
     }
+    @Test
+    @DisplayName("넘어가기한 LifeType과 CookingTypes을 받은 ,추가 회원가입 요청 성공")
+    void addSignupEmpty() {
+        //given
+        ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
+        List<CookingType> cookingTypes = List.of();
+        ItCookUser user = ItCookUser.builder()
+            .id(saveUser.getId())
+            .email(saveUser.getEmail())
+            .password("cook12345")
+            .providerType(ProviderType.COMMON)
+            .nickName("뉴잇쿡")
+            .userRole(UserRole.USER)
+            .build();
+
+        //when
+        ItCookUser addSignupUser = userDomainService.addSignup(user, cookingTypes);
+
+        //then
+        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
+            saveUser.getId());
+
+        assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
+        assertThat(addSignupUser.getLifeType()).isNull();
+        assertThat(cookingThemes).isEmpty();
+    }
 
     @Test
     @DisplayName("유저 회원 탈퇴")
     void leaveUser() {
         //given
         ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
+        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
         MyPageLeaveUser leaveUser = MyPageLeaveUser.of(user1.getEmail());
+        MyPageLeaveUser leaveUser2 = MyPageLeaveUser.of(user2.getEmail());
 
         doNothing().when(userLeaveEventListener).deleteToken(any(UserLeaveEvent.class));
 
         //when
         userDomainService.leaveUser(leaveUser);
+        userDomainService.leaveUser(leaveUser2);
 
         //then
         Optional<ItCookUser> findUser = userRepository.findById(user1.getId());
+        ItCookUser deleteUser = userRepository.findDeleteUserById(user1.getId()).get();
 
         assertThat(findUser.isEmpty()).isTrue();
+        assertThat(deleteUser)
+            .extracting("userState","email","profile","nickName")
+            .containsExactly(UserState.DELETE, null, null, "탈퇴한 유저")
+            ;
     }
     @Test
     @DisplayName("유저 회원 탈퇴시 유저가 존재하지 않은 예외 발생")
@@ -201,13 +238,13 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         doNothing().when(cache).evict(any());
 
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingTheme(user.getId(), CookingType.BUNSIK);
+        createCookingTheme(user.getId(), BUNSIK);
         createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
 
         UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
             .lifeType(LifeType.CONVENIENCE_STORE)
             .cookingTypes(
-                List.of(CookingType.BUNSIK, CookingType.DESERT, CookingType.LATE_NIGHT_SNACK))
+                List.of(BUNSIK, CookingType.DESERT, CookingType.LATE_NIGHT_SNACK))
             .build();
 
         //when
@@ -238,7 +275,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         doNothing().when(cache).evict(any());
 
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingTheme(user.getId(), CookingType.BUNSIK);
+        createCookingTheme(user.getId(), BUNSIK);
         createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
 
         UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
@@ -269,7 +306,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         when(cache.get(any())).thenReturn(null);
 
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingTheme(user.getId(), CookingType.BUNSIK);
+        createCookingTheme(user.getId(), BUNSIK);
         createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
 
         //when
@@ -310,6 +347,61 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         assertThat(response.lifeType()).isNull();
         assertThat(response.cookingTypes()).isEmpty();
         ;
+    }
+
+    @Test
+    @DisplayName("이메일과 비밀번호를 받아서, 회원가입을 시도한다.")
+    void signup() {
+        //given
+        String email = "user@test.com";
+        String password = "cook1234";
+
+        //when
+        ItCookUser user = userDomainService.signup(email, password);
+
+        //then
+        ItCookUser findUser = userRepository.findByEmail(email).get();
+        assertThat(findUser)
+            .extracting("email","password","providerType")
+            .containsExactlyInAnyOrder(email, password, ProviderType.COMMON)
+            ;
+    }
+    @Test
+    @DisplayName("이메일 입력받지 않고, 회원가입 시도하여 예외가 발생한다.")
+    void signupBlankEmail() {
+        //given
+        String email = null;
+        String password = "cook1234";
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> userDomainService.signup(email, password))
+            .isInstanceOf(IllegalArgumentException.class)
+            ;
+    }
+
+    @Test
+    @DisplayName("추가 회원가입 로직시, 닉네임이 중복되어 예외가 발생한다")
+    void addSignupDuplicateNickName() {
+        //given
+        createUser("user@test.com", "잇쿡1");
+        ItCookUser addSignupUser = ItCookUser.builder()
+            .email("user1@test.com")
+            .password("cook12345")
+            .providerType(ProviderType.COMMON)
+            .nickName("잇쿡1")
+            .lifeType(LifeType.DELIVERY_FOOD)
+            .userRole(UserRole.USER)
+            .build();
+
+        //when
+        //then
+        assertThatThrownBy(() -> userDomainService.addSignup(addSignupUser, List.of(BUNSIK, CHINESE_FOOD)))
+            .isInstanceOf(ApiException.class)
+            .hasMessage("이미 존재하는 닉네임입니다.")
+            ;
+
     }
 
     private ItCookUser createUser(String username, String nickName) {

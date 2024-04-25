@@ -1,7 +1,10 @@
 package com.itcook.cooking.api.domains.user.service;
 
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.JAPANESE_FOOD;
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.KOREAN_FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -10,17 +13,25 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
+import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
+import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.VerifyFindUserResponse;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.infra.email.EmailSendEvent;
+import java.util.List;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +49,9 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserCookingThemeRepository userCookingThemeRepository;
 
     @Autowired
     private ApplicationEvents applicationEvents;
@@ -67,7 +81,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("유저 이메일, 비밀번호를 받아서 회원가입을 한다")
+    @DisplayName("회원가입시, 비밀번호를 입력받지 않아 예외 발생한다.")
     void signupBlankPassword() {
         //given
         SignupRequest signupRequest = SignupRequest.builder()
@@ -81,6 +95,67 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
             .hasMessage("유효한 이메일 형식이 아닙니다.")
             ;
 
+
+    }
+
+    @Test
+    @DisplayName("빈 LifeType과 CookingType을 받아서,추가 회원가입 요청을 시도한다.")
+    void addSignupEmpty() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+        AddSignupRequest request = AddSignupRequest.builder()
+            .userId(user.getId())
+            .email(user.getEmail())
+            .cookingType(List.of())
+            .nickName("잇쿡2")
+            .build();
+
+        //when
+        AddUserResponse response = signupUseCase.addSignup(request);
+
+        //then
+        ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
+        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
+            user.getId());
+
+        assertThat(response)
+            .extracting("userId","presignedUrl")
+            .containsExactlyInAnyOrder(user.getId(), null);
+        assertThat(findUser.getLifeType()).isNull();
+        assertThat(cookingThemes).isEmpty();
+
+    }
+    @Test
+    @DisplayName("LifeType,CookingType을 받아서,추가 회원가입 요청을 시도한다.")
+    void addSignup() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+        AddSignupRequest request = AddSignupRequest.builder()
+            .userId(user.getId())
+            .email(user.getEmail())
+            .lifeType(LifeType.DIET.getLifeTypeName())
+            .cookingType(List.of(KOREAN_FOOD.getCookingTypeName()))
+            .nickName("잇쿡2")
+            .build();
+
+        //when
+        AddUserResponse response = signupUseCase.addSignup(request);
+
+        //then
+        ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
+        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
+            user.getId());
+
+        assertThat(response)
+            .extracting("userId","presignedUrl")
+            .containsExactlyInAnyOrder(user.getId(), null);
+        assertThat(findUser.getLifeType()).isEqualTo(LifeType.DIET);
+        assertThat(cookingThemes).hasSize(1)
+            .extracting("userId", "cookingType")
+            .containsExactlyInAnyOrder(
+                tuple(user.getId(), KOREAN_FOOD)
+            )
+        ;
 
     }
 

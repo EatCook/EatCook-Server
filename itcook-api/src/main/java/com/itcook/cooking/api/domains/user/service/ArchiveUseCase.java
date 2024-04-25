@@ -11,7 +11,6 @@ import com.itcook.cooking.domain.domains.user.service.ArchiveDomainService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +26,7 @@ public class ArchiveUseCase {
 
     public void archiveAdd(String email, Long postId) {
 
-        ItCookUser findByItCookUser = userDomainService.fetchFindByEmail(email);
+        ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
         Post findByPost = postDomainService.fetchFindByPost(postId).get();
 
         List<Archive> findByArchive = archiveDomainService.getFindByItCookUserId(findByItCookUser.getId());
@@ -51,7 +50,7 @@ public class ArchiveUseCase {
     }
 
     public void archiveDel(String email, Long postId) {
-        ItCookUser findByItCookUser = userDomainService.fetchFindByEmail(email);
+        ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
         Post findByPost = postDomainService.fetchFindByPost(postId).get();
 
         List<Archive> findByArchive = archiveDomainService.getFindByItCookUserId(findByItCookUser.getId());

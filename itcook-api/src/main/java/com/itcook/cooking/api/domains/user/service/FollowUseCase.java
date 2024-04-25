@@ -22,7 +22,7 @@ public class FollowUseCase {
 
     @Transactional
     public void toUserFollowAdd(String fromUserEmail, FollowRequest followRequest) {
-        ItCookUser fromItCookUserData = userDomainService.fetchFindByEmail(fromUserEmail);
+        ItCookUser fromItCookUserData = userDomainService.findUserByEmail(fromUserEmail);
         ItCookUser toItCookUserData = userDomainService.fetchFindByUserId(followRequest.getToUserId());
 
         List<Long> follow = fromItCookUserData.getFollow();
@@ -39,7 +39,7 @@ public class FollowUseCase {
 
     @Transactional
     public void toUserFollowDelete(String fromUserEmail, FollowRequest followRequest) {
-        ItCookUser fromItCookUserData = userDomainService.fetchFindByEmail(fromUserEmail);
+        ItCookUser fromItCookUserData = userDomainService.findUserByEmail(fromUserEmail);
         ItCookUser toItCookUserData = userDomainService.fetchFindByUserId(followRequest.getToUserId());
 
         List<Long> follow = fromItCookUserData.getFollow();

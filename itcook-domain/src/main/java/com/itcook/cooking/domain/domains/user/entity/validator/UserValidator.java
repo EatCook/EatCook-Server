@@ -2,6 +2,8 @@ package com.itcook.cooking.domain.domains.user.entity.validator;
 
 import static com.itcook.cooking.domain.common.constant.UserConstant.EMAIL_REGEXP;
 
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;

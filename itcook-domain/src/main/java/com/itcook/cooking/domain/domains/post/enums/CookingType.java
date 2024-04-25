@@ -28,6 +28,6 @@ public enum CookingType {
                 return cookingType;
             }
         }
-        throw new IllegalArgumentException("해당하는 요리 유형이 없습니다.");
+        return null;
     }
 }
