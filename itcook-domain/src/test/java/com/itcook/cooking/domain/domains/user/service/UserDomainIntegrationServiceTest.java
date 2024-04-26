@@ -205,10 +205,8 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         userDomainService.leaveUser(leaveUser2);
 
         //then
-        Optional<ItCookUser> findUser = userRepository.findById(user1.getId());
-        ItCookUser deleteUser = userRepository.findDeleteUserById(user1.getId()).get();
+        ItCookUser deleteUser = userRepository.findById(user1.getId()).get();
 
-        assertThat(findUser.isEmpty()).isTrue();
         assertThat(deleteUser)
             .extracting("userState","email","profile","nickName")
             .containsExactly(UserState.DELETE, null, null, "탈퇴한 유저")

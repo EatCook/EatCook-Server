@@ -41,7 +41,6 @@ public class ItCookUser extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true)
     private String email;
 
     private String password;
@@ -71,6 +70,7 @@ public class ItCookUser extends BaseTimeEntity {
     private ProviderType providerType;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserState userState;
 
     @ElementCollection
@@ -81,7 +81,7 @@ public class ItCookUser extends BaseTimeEntity {
     @Builder
     private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
         String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
-        ServiceAlertType serviceAlertType, EventAlertType eventAlertType, UserState userState
+        UserState userState
     ) {
 
         this.id = id;
@@ -96,7 +96,7 @@ public class ItCookUser extends BaseTimeEntity {
         this.lifeType = lifeType;
         this.serviceAlertType = ServiceAlertType.DISABLED;
         this.eventAlertType = EventAlertType.DISABLED;
-        this.userState = UserState.ACTIVE;
+        this.userState = userState == null ? UserState.ACTIVE : userState;
     }
 
     // 회원가입 유저 생성
@@ -111,11 +111,14 @@ public class ItCookUser extends BaseTimeEntity {
         return user;
     }
 
+    // 회원탈퇴
     public void delete() {
         userState = UserState.DELETE;
         email = null;
         profile = null;
         nickName = "탈퇴한 유저";
+        serviceAlertType = ServiceAlertType.DISABLED;
+        eventAlertType = EventAlertType.DISABLED;
     }
 
     public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
@@ -149,10 +152,10 @@ public class ItCookUser extends BaseTimeEntity {
     }
 
     public void updateAlertTypes
-    (
-        ServiceAlertType serviceAlertType,
-        EventAlertType eventAlertType
-    ) {
+        (
+            ServiceAlertType serviceAlertType,
+            EventAlertType eventAlertType
+        ) {
         this.serviceAlertType = serviceAlertType;
         this.eventAlertType = eventAlertType;
     }

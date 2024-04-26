@@ -15,6 +15,7 @@ import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.infra.redis.event.RealTimeSearchWords;
 import java.util.List;

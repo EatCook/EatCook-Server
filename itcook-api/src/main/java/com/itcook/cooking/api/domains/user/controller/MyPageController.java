@@ -77,7 +77,7 @@ public class MyPageController {
     }
 
     @Operation(summary = "회원 탈퇴 요청", description = "회원 탈퇴 요청")
-    @DeleteMapping("/v1/mypage/profile/leave")
+    @PatchMapping("/v1/mypage/profile/leave")
     public ResponseEntity<ApiResponse> leaveUser(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {

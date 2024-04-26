@@ -17,7 +17,6 @@ import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.email.EmailTemplate;
 import com.itcook.cooking.infra.redis.RedisService;
 import com.itcook.cooking.infra.s3.ImageFileExtension;
-import com.itcook.cooking.infra.s3.ImageService;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
 import com.itcook.cooking.infra.s3.S3PresignedUrlService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,7 @@ public class SignupUseCase {
     private final RedisService redisService;
     private final ApplicationEventPublisher eventPublisher;
     private final PasswordEncoder passwordEncoder;
-    private final ImageService s3PresignedUrlService;
+    private final S3PresignedUrlService s3PresignedUrlService;
 
 
     /**
@@ -121,7 +120,6 @@ public class SignupUseCase {
             ;
     }
 
-    // TODO 이벤트 핸들러로 리팩토링
     private ImageUrlDto getImageUrlDto(String fileExtension,
         ItCookUser itCookUser) {
         ImageUrlDto imageUrlDto = ImageUrlDto.builder().build();

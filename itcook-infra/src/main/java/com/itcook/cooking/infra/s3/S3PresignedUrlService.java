@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class S3PresignedUrlService implements ImageService{
+public class S3PresignedUrlService {
 
     private final AmazonS3 amazonS3;
     @Value("${aws.s3.bucket}")
