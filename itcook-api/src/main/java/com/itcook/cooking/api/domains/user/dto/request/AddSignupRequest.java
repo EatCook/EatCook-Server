@@ -1,5 +1,6 @@
 package com.itcook.cooking.api.domains.user.dto.request;
 
+import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
@@ -24,10 +25,6 @@ import lombok.NoArgsConstructor;
 @Schema(name = "추가 회원가입 요청")
 public class AddSignupRequest {
 
-    @NotNull
-    @Schema(description = "유저 id", example = "1")
-    private Long userId;
-
     @Schema(description = "이메일", example = "user@gmail.com")
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
@@ -47,19 +44,15 @@ public class AddSignupRequest {
     @Schema(description = "생활 유형", example = "다이어트만 n번째")
     private String lifeType;
 
-    public List<CookingType> toCookingTypes() {
-        return this.cookingType.stream()
-            .map(CookingType::getByName)
-            .toList();
-    }
-
-    public ItCookUser toEntity() {
-        return ItCookUser.builder()
-            .id(userId)
+    public AddSignupServiceDto toServiceDto() {
+        return AddSignupServiceDto.builder()
             .email(email)
-            .nickName(this.nickName)
-            .lifeType(LifeType.getByName(this.lifeType))
-            .build();
+            .fileExtension(fileExtension)
+            .nickName(nickName)
+            .cookingType(cookingType)
+            .lifeType(lifeType)
+            .build()
+            ;
     }
 
 }

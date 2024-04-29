@@ -22,7 +22,6 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,7 +70,7 @@ public class MyPageController {
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
         @RequestBody @Valid MyPageUpdateProfileRequest request
     ) {
-        userDomainService.updateProfile(request.toServiceDto(authenticationUser.getUsername()));
+        myPageUseCase.updateProfile(request.toServiceDto(authenticationUser.getUsername()));
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("프로필이 편집되었습니다"));
     }
@@ -81,7 +80,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse> leaveUser(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        userDomainService.leaveUser(MyPageLeaveUser.of(authenticationUser.getUsername()));
+        myPageUseCase.leaveUser(MyPageLeaveUser.of(authenticationUser.getUsername()));
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("회원 탈퇴하였습니다"))
             ;

@@ -1,8 +1,7 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
-import static com.itcook.cooking.domain.common.constant.UserConstant.*;
-
 import com.itcook.cooking.domain.common.BaseTimeEntity;
+import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
@@ -28,7 +27,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 @Getter
@@ -121,6 +120,37 @@ public class ItCookUser extends BaseTimeEntity {
         eventAlertType = EventAlertType.DISABLED;
     }
 
+    public List<UserCookingTheme> addSignup(
+        String nickName, LifeType lifeType, List<CookingType> cookingTypes,
+        UserValidator userValidator
+    ) {
+        userValidator.validateDuplicateNickName(nickName);
+        this.nickName = nickName;
+        this.lifeType = lifeType;
+        return createCookingThemes(cookingTypes);
+    }
+
+    // 도메인 주도 방식의 관심요리 업데이트
+    public List<UserCookingTheme> updateInterestCook(
+        LifeType lifeType,
+        List<CookingType> cookingTypes
+    ) {
+        updateLifeType(lifeType);
+        return createCookingThemes(cookingTypes);
+    }
+
+    // TODO 애그리게이트 루트인 user -> UserCookingTheme 생성
+    public List<UserCookingTheme> createCookingThemes(List<CookingType> cookingTypes) {
+        if (CollectionUtils.isEmpty(cookingTypes)) {
+            return List.of();
+        }
+        return cookingTypes.stream()
+            .map(cookingType ->
+                UserCookingTheme.createUserCookingTheme(getId(), cookingType))
+            .toList();
+    }
+
+
     public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
         this.nickName = nickName;
         this.lifeType = lifeType;
@@ -147,7 +177,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.profile = profile;
     }
 
-    public void updateNickName(String newNickName) {
+    public void updateNickName(String newNickName, UserValidator userValidator) {
+        userValidator.validateDuplicateNickName(newNickName);
         this.nickName = newNickName;
     }
 

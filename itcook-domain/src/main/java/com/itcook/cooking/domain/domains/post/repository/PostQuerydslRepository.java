@@ -30,7 +30,6 @@ public class PostQuerydslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    // TODO 페이징 쿼리로 변환 (PageableExecutionUtils)
     public Page<PostWithLikedDto> findPostsWithLiked(Long userId, Pageable pageable) {
         List<PostWithLikedDto> posts = jpaQueryFactory.select(
                 Projections.constructor(

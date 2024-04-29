@@ -9,6 +9,9 @@ dependencies {
 
     // springdoc - swagger
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
+    // @AuthenticaionPrincipal 파라미터 무시
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-security', version: '1.7.0'
+
 
     // https://mvnrepository.com/artifact/org.testcontainers/testcontainers
     testImplementation 'org.testcontainers:testcontainers:1.19.3'

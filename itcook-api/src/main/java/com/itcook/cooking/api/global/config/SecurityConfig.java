@@ -58,7 +58,6 @@ public class SecurityConfig {
 
         http.authorizeRequests()
             .antMatchers(SWAGGER_PATTERNS).permitAll()
-            // TODO
             .antMatchers("/api/v1/users/**").permitAll()
             .antMatchers("/api/v1/emails/**").permitAll()
             .antMatchers("/api/v1/users/find/**").permitAll()

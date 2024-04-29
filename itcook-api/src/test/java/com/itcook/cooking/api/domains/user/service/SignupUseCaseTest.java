@@ -17,6 +17,7 @@ import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
+import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.VerifyFindUserResponse;
@@ -61,6 +62,43 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
 
 
     @Test
+    @DisplayName("이메일 인증 코드 검증을 시도한다.")
+    void verifyAuthCode() {
+        //given
+        String authCode = "123456";
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+        VerifyEmailServiceDto serviceDto = VerifyEmailServiceDto.builder()
+            .email(user.getEmail())
+            .authCode(authCode)
+            .build();
+
+        given(redisService.getData(anyString())).willReturn(authCode);
+
+        //when
+        signupUseCase.verifyAuthCode(serviceDto);
+
+        //then
+    }
+    @Test
+    @DisplayName("이미 회원가입한 이메일이 있어서, 인증 코드 요청시 예외가 발생한다.")
+    void verifyAuthCodeDuplicateMail() {
+        //given
+        String authCode = "123456";
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+        SendEmailServiceDto serviceDto = SendEmailServiceDto.builder()
+            .email("user@test.com")
+            .build();
+        given(redisService.getData(anyString())).willReturn(authCode);
+
+        //when
+        //then
+        assertThatThrownBy(() -> signupUseCase.sendAuthCodeSignup(serviceDto))
+            .isInstanceOf(ApiException.class)
+            .hasMessage("이미 가입한 유저입니다.")
+            ;
+    }
+
+    @Test
     @DisplayName("유저 이메일, 비밀번호를 받아서 회원가입을 한다")
     void signup() {
         //given
@@ -103,8 +141,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
     void addSignupEmpty() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡1");
-        AddSignupRequest request = AddSignupRequest.builder()
-            .userId(user.getId())
+        AddSignupServiceDto request = AddSignupServiceDto.builder()
             .email(user.getEmail())
             .cookingType(List.of())
             .nickName("잇쿡2")
@@ -130,8 +167,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
     void addSignup() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡1");
-        AddSignupRequest request = AddSignupRequest.builder()
-            .userId(user.getId())
+        AddSignupServiceDto request = AddSignupServiceDto.builder()
             .email(user.getEmail())
             .lifeType(LifeType.DIET.getLifeTypeName())
             .cookingType(List.of(KOREAN_FOOD.getCookingTypeName()))
@@ -157,6 +193,29 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
             )
         ;
 
+    }
+
+    @Test
+    @DisplayName("지원하지 않는 이미지 확장자로 추가 회원가입시 예외 발생")
+    void addSignupNotSupportImageExtension() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+        String fileExtension = "heic";
+        AddSignupServiceDto request = AddSignupServiceDto.builder()
+            .email(user.getEmail())
+            .fileExtension(fileExtension)
+            .lifeType(LifeType.DIET.getLifeTypeName())
+            .cookingType(List.of(KOREAN_FOOD.getCookingTypeName()))
+            .nickName("잇쿡2")
+            .build();
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> signupUseCase.addSignup(request))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(fileExtension + "는 지원하지 않는 확장자입니다.")
+            ;
     }
 
     @Test
@@ -203,6 +262,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
     void verifyFindUser() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡1");
+        String existingPassword = user.getPassword();
 
         VerifyEmailServiceDto serviceDto = VerifyEmailServiceDto.builder()
             .email(user.getEmail())
@@ -212,12 +272,13 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         given(redisService.getData(anyString())).willReturn("123456");
 
         //when
-        VerifyFindUserResponse response = signupUseCase.verifyFindUser(serviceDto);
+        signupUseCase.verifyFindUser(serviceDto);
 
         //then
         ItCookUser itCookUser = userRepository.findByEmail(user.getEmail()).get();
 
-        assertThat(passwordEncoder.matches(response.password(), itCookUser.getPassword())).isTrue()
+        assertThat(itCookUser.getPassword()).isNotEqualTo(existingPassword);
+//        assertThat(passwordEncoder.matches(response.password(), itCookUser.getPassword())).isTrue()
         ;
     }
 

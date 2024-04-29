@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class UserCookingThemeJdbcRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Transactional
     public void saveAll(List<UserCookingTheme> userCookingThemes, Long userId) {
         jdbcTemplate.batchUpdate(
             "insert into user_cooking_theme (cooking_type, user_id) values (?,?)",

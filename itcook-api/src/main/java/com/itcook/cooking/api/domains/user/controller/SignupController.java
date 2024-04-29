@@ -15,9 +15,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SignupController {
 
     private final SignupUseCase signupUseCase;
+
     @Operation(summary = "이메일 인증 요청", description = "이메일 인증 요청")
     @PostMapping("/v1/emails/request")
     public ResponseEntity<ApiResponse> sendEmailAuthRequest(
@@ -43,7 +47,7 @@ public class SignupController {
     }
 
 
-    @Operation(summary = "이메일 검증 요청",description = "이메일 검증 요청")
+    @Operation(summary = "이메일 검증 요청", description = "이메일 검증 요청")
     @PostMapping("/v1/emails/verify")
     public ResponseEntity<ApiResponse> verifyEmailAuth(
         @RequestBody @Valid VerifyEmailAuthRequest verifyEmailAuthRequest
@@ -67,7 +71,7 @@ public class SignupController {
     public ResponseEntity<ApiResponse<AddUserResponse>> addSignup(
         @RequestBody @Valid AddSignupRequest addSignupRequest
     ) {
-        AddUserResponse addUserResponse = signupUseCase.addSignup(addSignupRequest);
+        AddUserResponse addUserResponse = signupUseCase.addSignup(addSignupRequest.toServiceDto());
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(addUserResponse));
     }
@@ -75,6 +79,7 @@ public class SignupController {
     /**
      * 계정 찾기 인증 요청
      */
+    @Operation(summary = "계정 찾기 인증 요청", description = "계정 찾기 인증 요청")
     @PostMapping("/v1/users/find")
     public ResponseEntity<ApiResponse> findUser(
         @RequestBody @Valid FindUserRequest findUserRequest
@@ -84,15 +89,16 @@ public class SignupController {
     }
 
     /**
-     * 계정 찾기 인증 코드 검증
+     * 계정 찾기 인증 코드 검증 (메일로 임시 비밀번호 발급)
      */
+    @Operation(summary = "계정 찾기 인증코드 검증", description = "계정 찾기 인증 코드 검증 (메일로 임시 비밀번호 발급)")
     @PostMapping("/v1/users/find/verify")
-    public ResponseEntity<ApiResponse<VerifyFindUserResponse>> verifyFindUser(
+    public ResponseEntity<ApiResponse> verifyFindUser(
         @RequestBody @Valid VerifyFindUserRequest verifyFindUserRequest
     ) {
-        VerifyFindUserResponse response = signupUseCase.verifyFindUser(
+        signupUseCase.verifyFindUser(
             verifyFindUserRequest.toServiceDto());
-        return ResponseEntity.ok(ApiResponse.OK(response));
+        return ResponseEntity.ok(ApiResponse.OK("메일로 임시 비밀번호 발급되었습니다."));
     }
 
 

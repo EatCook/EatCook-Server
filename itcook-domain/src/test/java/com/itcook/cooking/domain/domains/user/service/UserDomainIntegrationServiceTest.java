@@ -15,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.IntegrationTestSupport;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
@@ -88,46 +89,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         assertThat(myPageInfo.getFollowerCounts()).isEqualTo(1L);
     }
 
-    @Test
-    @DisplayName("이메일, 닉네임을 받아서 프로필을 업데이트 한다")
-    void updateProfile() {
-        //given
-        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
-//        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
-
-        MyPageUpdateProfile updateProfile = MyPageUpdateProfile.builder()
-            .email(user1.getEmail())
-            .nickName("잇쿡2")
-            .build();
-        //when
-        userDomainService.updateProfile(updateProfile);
-
-        //then
-        ItCookUser findUser = userRepository.findById(user1.getId()).get();
-
-        assertThat(findUser.getNickName()).isEqualTo("잇쿡2");
-    }
-    @Test
-    @DisplayName("프로필 업데이트시 닉네임 중복으로 예외가 발생한다.")
-    void updateProfileDuplicateNick() {
-        //given
-        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
-        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
-
-        MyPageUpdateProfile updateProfile = MyPageUpdateProfile.builder()
-            .email(user1.getEmail())
-            .nickName("잇쿡2")
-            .build();
-        //when
-
-
-        //then
-        assertThatThrownBy(() -> userDomainService.updateProfile(updateProfile))
-            .isInstanceOf(ApiException.class)
-            .hasMessage("이미 존재하는 닉네임입니다.")
-            ;
-
-    }
 
     @Test
     @DisplayName("추가 회원가입 요청 성공")
@@ -163,6 +124,29 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             ;
     }
     @Test
+    @DisplayName("추가 회원가입 요청 성공")
+    void addSignupDuplicateNick() {
+        //given
+        ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
+        createUser("user2@test.com", "잇쿡2");
+        List<CookingType> cookingTypes = List.of(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
+        ItCookUser user = ItCookUser.builder()
+            .id(saveUser.getId())
+            .email(saveUser.getEmail())
+            .password("cook12345")
+            .providerType(ProviderType.COMMON)
+            .nickName("잇쿡2")
+            .userRole(UserRole.USER)
+            .build();
+
+        //when
+        assertThatThrownBy(() -> userDomainService.addSignup(user, cookingTypes))
+            .isInstanceOf(ApiException.class)
+            .hasMessage(UserErrorCode.ALREADY_EXISTS_NICKNAME.getDescription())
+            ;
+
+    }
+    @Test
     @DisplayName("넘어가기한 LifeType과 CookingTypes을 받은 ,추가 회원가입 요청 성공")
     void addSignupEmpty() {
         //given
@@ -195,14 +179,12 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //given
         ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
         ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
-        MyPageLeaveUser leaveUser = MyPageLeaveUser.of(user1.getEmail());
-        MyPageLeaveUser leaveUser2 = MyPageLeaveUser.of(user2.getEmail());
 
-        doNothing().when(userLeaveEventListener).deleteToken(any(UserLeaveEvent.class));
+//        doNothing().when(userLeaveEventListener).deleteToken(any(UserLeaveEvent.class));
 
         //when
-        userDomainService.leaveUser(leaveUser);
-        userDomainService.leaveUser(leaveUser2);
+        userDomainService.leaveUser(user1.getEmail());
+        userDomainService.leaveUser(user2.getEmail());
 
         //then
         ItCookUser deleteUser = userRepository.findById(user1.getId()).get();
@@ -212,20 +194,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .containsExactly(UserState.DELETE, null, null, "탈퇴한 유저")
             ;
     }
-    @Test
-    @DisplayName("유저 회원 탈퇴시 유저가 존재하지 않은 예외 발생")
-    void leaveUserNotFound() {
-        //given
-        MyPageLeaveUser leaveUser = MyPageLeaveUser.of("user@test.com");
-
-        //when
-        assertThatThrownBy(() -> userDomainService.leaveUser(leaveUser))
-            .isInstanceOf(ApiException.class)
-            .hasMessage("유저를 찾을 수 없습니다.")
-            ;
-
-    }
-
     @Test
     @DisplayName("이메일과, 관심 요리를 받아서,유저 생활타입과, cookingthemes 업데이트를 한다")
     void updateInterestCook() {
@@ -286,7 +254,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         userDomainService.updateInterestCook(user.getEmail(), updateInterestCook);
 
         //then
-        ItCookUser findUser = userRepository.findById(user.getId()).get();
+        ItCookUser findUser = userRepository.findByEmail("user1@test.com").get();
         List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
             user.getId());
 
@@ -338,7 +306,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //when
         UserReadInterestCookResponse response = userDomainService.getInterestCook(
             user.getEmail());
-        System.out.println("response = " + response);
 
         //then
         verify(cache, times(1)).get("user1@test.com");
@@ -385,7 +352,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //given
         createUser("user@test.com", "잇쿡1");
         ItCookUser addSignupUser = ItCookUser.builder()
-            .email("user1@test.com")
+            .email("user@test.com")
             .password("cook12345")
             .providerType(ProviderType.COMMON)
             .nickName("잇쿡1")
@@ -400,6 +367,36 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .hasMessage("이미 존재하는 닉네임입니다.")
             ;
 
+    }
+
+    @Test
+    @DisplayName("프로필(닉네임) 업데이트 시도한다")
+    void updateProfile() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡");
+        String newNickName = "잇쿡2";
+
+        //when
+        userDomainService.updateProfile(user.getEmail(), newNickName);
+
+        //then
+        ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
+        assertThat(findUser.getNickName()).isEqualTo("잇쿡2")
+            ;
+    }
+    @Test
+    @DisplayName("프로필(닉네임) 업데이트 시도시 중복닉으로 예외 발생")
+    void updateProfileDuplicateNickName() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡2");
+        String newNickName = "잇쿡2";
+
+        //when
+        //then
+        assertThatThrownBy(() -> userDomainService.updateProfile(user.getEmail(), newNickName))
+            .isInstanceOf(ApiException.class)
+            .hasMessage(UserErrorCode.ALREADY_EXISTS_NICKNAME.getDescription())
+            ;
     }
 
     private ItCookUser createUser(String username, String nickName) {
