@@ -91,7 +91,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<MyPageSetUpResponse>> getMyPageSetting(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        MyPageSetUpResponse myPageSetUpResponse = userDomainService.getMyPageSetUp(
+        MyPageSetUpResponse myPageSetUpResponse = myPageUseCase.getMyPageSetUp(
             authenticationUser.getUsername());
 
         return ResponseEntity.ok(ApiResponse.OK(myPageSetUpResponse));
@@ -103,7 +103,7 @@ public class MyPageController {
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
         @RequestBody @Valid MyPageAlertUpdateRequest myPageAlertUpdateRequest
     ) {
-        userDomainService.updateMyPageSetUp(authenticationUser.getUsername(),
+        myPageUseCase.updateMyPageSetUp(authenticationUser.getUsername(),
             myPageAlertUpdateRequest.toServiceDto()
         );
         return ResponseEntity.ok(ApiResponse.OK("알림 설정 변경 성공했습니다"));
@@ -114,7 +114,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<UserReadInterestCookResponse>> getInterestCook(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        UserReadInterestCookResponse response = userDomainService.getInterestCook(
+        UserReadInterestCookResponse response = myPageUseCase.getInterestCook(
             authenticationUser.getUsername());
         return ResponseEntity.ok(ApiResponse.OK(response));
     }
@@ -125,7 +125,7 @@ public class MyPageController {
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
         @RequestBody @Valid UserUpdateInterestCookRequest request
     ) {
-        userDomainService.updateInterestCook(authenticationUser.getUsername(), request.toServiceDto());
+        myPageUseCase.updateInterestCook(authenticationUser.getUsername(), request.toServiceDto());
         return ResponseEntity.ok(ApiResponse.OK("관심 요리 설정이 변경됐습니다"));
     }
 }

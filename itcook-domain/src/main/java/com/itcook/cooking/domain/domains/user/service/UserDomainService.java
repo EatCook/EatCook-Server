@@ -1,18 +1,16 @@
 package com.itcook.cooking.domain.domains.user.service;
 
-import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.checkDuplicateEmail;
-import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.findExistingUserByEmail;
-import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.findExistingUserById;
-import static com.itcook.cooking.domain.domains.user.helper.UserServiceHelper.saveUser;
-
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import com.itcook.cooking.domain.domains.user.adaptor.UserAdaptor;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
+import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
+import com.itcook.cooking.domain.domains.user.enums.LifeType;
+import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeJdbcRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
-import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
@@ -32,38 +30,38 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserDomainService {
 
-    private final UserRepository userRepository;
     private final UserCookingThemeRepository userCookingThemeRepository;
     private final UserQueryRepository userQueryRepository;
     private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
     private final UserValidator userValidator;
+    private final UserAdaptor userAdaptor;
 
     public ItCookUser findUserByEmail(String email) {
-        return findExistingUserByEmail(userRepository, email);
+        return userAdaptor.queryUserByEmail(email);
     }
 
     public void checkDuplicateMail(String email) {
-        checkDuplicateEmail(userRepository, email);
+        userAdaptor.checkDuplicateEmail(email);
     }
 
     public ItCookUser save(ItCookUser user) {
-        return saveUser(userRepository, user);
+        return userAdaptor.saveUser(user);
     }
 
     @Transactional
-    public void changePassword(ItCookUser user,String password) {
+    public void changePassword(ItCookUser user, String password) {
         user.changePassword(password);
     }
 
     @Transactional
     public ItCookUser signup(String email, String password) {
         ItCookUser user = ItCookUser.signup(email, password, userValidator);
-        return saveUser(userRepository, user);
+        return userAdaptor.saveUser(user);
     }
 
     @Transactional
     public ItCookUser addSignup(ItCookUser user, List<CookingType> cookingTypes) {
-        ItCookUser findUser = findExistingUserByEmail(userRepository, user.getEmail());
+        ItCookUser findUser = userAdaptor.queryUserByEmail(user.getEmail());
         List<UserCookingTheme> userCookingThemes = findUser.addSignup(user.getNickName(),
             user.getLifeType(), cookingTypes, userValidator);
         userCookingThemeJdbcRepository.saveAll(userCookingThemes, findUser.getId());
@@ -71,7 +69,7 @@ public class UserDomainService {
     }
 
     public MyPageUserDto getMyPageInfo(String email) {
-        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        ItCookUser user = userAdaptor.queryUserByEmail(email);
         long followerCounts = userQueryRepository.getFollowerCounts(user.getId());
         return MyPageUserDto.of(user, followerCounts);
     }
@@ -92,10 +90,9 @@ public class UserDomainService {
     /**
      * 마이 프로필 설정(서비스 이용 알림, 이벤트 알림 조회)
      */
-    @Cacheable(cacheNames = "mypage", key = "'user:'+'#email'")
     public MyPageSetUpResponse getMyPageSetUp(String email) {
         log.info("getMyPageSetUp 조회");
-        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        ItCookUser user = userAdaptor.queryUserByEmail(email);
         return MyPageSetUpResponse.of(user);
     }
 
@@ -103,44 +100,44 @@ public class UserDomainService {
      * 마이 프로필 설정 변경(서비스 이용 알림, 이벤트 알림)
      */
     @Transactional
-    @CacheEvict(cacheNames = "mypage", key = "'user:'+'#email'")
     public void updateMyPageSetUp(String email,
-        MyPageAlertUpdate myPageAlertUpdate) {
+        ServiceAlertType serviceAlertType,
+        EventAlertType eventAlertType
+    ) {
         log.info("updateMyPageSetUp");
-        ItCookUser user = findExistingUserByEmail(userRepository, email);
-        user.updateAlertTypes(myPageAlertUpdate.serviceAlertType(),
-            myPageAlertUpdate.eventAlertType());
+        ItCookUser user = userAdaptor.queryUserByEmail(email);
+        user.updateAlertTypes(serviceAlertType,
+            eventAlertType);
     }
 
     public ItCookUser fetchFindByUserId(Long userId) {
-        return findExistingUserById(userRepository, userId);
+        return userAdaptor.queryUserById(userId);
     }
 
     /**
      * 캐싱 CacheEvict
      */
     @Transactional
-    @CacheEvict(cacheNames = "interestCook", key = "#email")
     public void updateInterestCook(
         String email,
-        UserUpdateInterestCook userUpdateInterestCook
+        List<CookingType> cookingTypes,
+        LifeType lifeType
     ) {
-        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        ItCookUser user = userAdaptor.queryUserByEmail(email);
         userCookingThemeRepository.deleteAllByUserId(user.getId());
         List<UserCookingTheme> cookingThemes = user.updateInterestCook(
-            userUpdateInterestCook.lifeType(), userUpdateInterestCook.cookingTypes());
-        saveUser(userRepository, user);
+            lifeType, cookingTypes);
+        userAdaptor.saveUser(user);
         userCookingThemeJdbcRepository.saveAll(cookingThemes, user.getId());
     }
 
     /**
      * 관심요리 조회
      */
-    @Cacheable(cacheNames = "interestCook", key = "#email")
     public UserReadInterestCookResponse getInterestCook(
         String email
     ) {
-        ItCookUser user = findExistingUserByEmail(userRepository, email);
+        ItCookUser user = userAdaptor.queryUserByEmail(email);
         List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
             user.getId());
         return UserReadInterestCookResponse.of(user, cookingThemes);

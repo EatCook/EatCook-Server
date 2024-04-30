@@ -10,11 +10,17 @@ import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
+import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -80,5 +86,46 @@ public class MyPageUseCase {
             myPageUpdateProfile.nickName());
     }
 
+    /**
+     * 마이 프로필 설정 조회 (서비스 이용 알림, 이벤트 알림 조회)
+     */
+    @Cacheable(cacheNames = "mypage", key = "'user:'+'#email'")
+    public MyPageSetUpResponse getMyPageSetUp(String email) {
+        return userDomainService.getMyPageSetUp(email);
+    }
 
+    /**
+     * 마이 프로필 설정 변경(서비스 이용 알림, 이벤트 알림)
+     */
+    @Transactional
+    @CacheEvict(cacheNames = "mypage", key = "'user:'+'#email'")
+    public void updateMyPageSetUp(String email,
+        MyPageAlertUpdate myPageAlertUpdate) {
+        userDomainService.updateMyPageSetUp(email, myPageAlertUpdate.serviceAlertType(),
+            myPageAlertUpdate.eventAlertType());
+    }
+
+    /**
+     * 관심요리 조회
+     */
+    @Cacheable(cacheNames = "interestCook", key = "#email")
+    public UserReadInterestCookResponse getInterestCook(
+        String email
+    ) {
+        return userDomainService.getInterestCook(email);
+    }
+
+
+    /**
+     * 관심요리 업데이트
+     */
+    @Transactional
+    @CacheEvict(cacheNames = "interestCook", key = "#email")
+    public void updateInterestCook(
+        String email,
+        UserUpdateInterestCook userUpdateInterestCook
+    ) {
+        userDomainService.updateInterestCook(email, userUpdateInterestCook.cookingTypes(),
+            userUpdateInterestCook.lifeType());
+    }
 }

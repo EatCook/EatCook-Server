@@ -327,6 +327,8 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         ;
     }
 
+
+
     private ItCookUser createUser(String username, String nickName) {
         ItCookUser user = ItCookUser.builder()
             .email(username)

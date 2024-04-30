@@ -3,6 +3,12 @@ package com.itcook.cooking.api.domains.user.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.itcook.cooking.api.IntegrationTestSupport;
@@ -19,14 +25,19 @@ import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.event.ApplicationEvents;
@@ -52,9 +63,12 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
     @Autowired
     private ApplicationEvents applicationEvents;
 
+    @MockBean
+    private CacheManager cacheManager;
+
     @Test
     @DisplayName("마이 페이지를 조회한다.")
-    void getMyPage() throws JsonProcessingException {
+    void getMyPage()  {
         //given
         String email = "user1@test.com";
 
@@ -181,6 +195,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
                 ServiceAlertType.DISABLED, EventAlertType.DISABLED)
         ;
     }
+
     @Test
     @DisplayName("회원 탈퇴를 시도하지만, 유저가 존재하지 않아 예외 발")
     void leaveUserNotFoundUser() {
@@ -190,7 +205,6 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
             .build();
 
         //when
-
 
         //then
         assertThatThrownBy(() -> myPageUseCase.leaveUser(leaveUser))
@@ -215,6 +229,54 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         //then
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
         assertThat(findUser.getNickName()).isEqualTo("잇쿡2");
+    }
+
+    @Test
+    @DisplayName("마이 프로필 조회 요청")
+    void getMyPageSetUp() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡");
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("mypage")).thenReturn(cache);
+        when(cache.get(any())).thenReturn(null);
+
+        //when
+        MyPageSetUpResponse response = myPageUseCase.getMyPageSetUp(user.getEmail());
+
+        //then
+        verify(cache, times(1)).get("user:#email");
+        assertThat(response)
+            .extracting("serviceAlertType","eventAlertType")
+            .containsExactly(ServiceAlertType.DISABLED, EventAlertType.DISABLED)
+            ;
+
+    }
+
+    @Test
+    @DisplayName("마이 프로필 설정 변경을 시도한다.")
+    void updateMyPageSetUp() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡");
+        MyPageAlertUpdate myPageAlertUpdate = MyPageAlertUpdate.builder()
+            .serviceAlertType(ServiceAlertType.ACTIVATE)
+            .eventAlertType(EventAlertType.ACTIVATE)
+            .build();
+
+        Cache cache = mock(Cache.class);
+        when(cacheManager.getCache("mypage")).thenReturn(cache);
+        doNothing().when(cache).evict(any());
+
+        //when
+        myPageUseCase.updateMyPageSetUp(user.getEmail(), myPageAlertUpdate);
+
+        //then
+        ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
+
+        verify(cache, times(1)).evict("user:#email");
+        assertThat(findUser)
+            .extracting("serviceAlertType","eventAlertType")
+            .containsExactly(ServiceAlertType.ACTIVATE, EventAlertType.ACTIVATE)
+            ;
     }
 
     private ItCookUser createUser(String username, String nickName) {

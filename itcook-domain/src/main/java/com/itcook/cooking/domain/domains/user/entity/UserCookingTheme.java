@@ -34,7 +34,7 @@ public class UserCookingTheme {
         this.userId = userId;
     }
 
-    public static UserCookingTheme createUserCookingTheme(Long userId, CookingType cookingType)  {
+    protected static UserCookingTheme createUserCookingTheme(Long userId, CookingType cookingType)  {
         return UserCookingTheme.builder()
             .userId(userId)
             .cookingType(cookingType)

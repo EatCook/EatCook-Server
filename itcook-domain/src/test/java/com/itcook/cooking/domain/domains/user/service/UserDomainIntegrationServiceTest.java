@@ -44,6 +44,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Transactional
 class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
@@ -121,8 +122,9 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
                 SIDE_DISH,
                 WESTERN_FOOD
             )
-            ;
+        ;
     }
+
     @Test
     @DisplayName("추가 회원가입 요청 성공")
     void addSignupDuplicateNick() {
@@ -143,9 +145,10 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> userDomainService.addSignup(user, cookingTypes))
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.ALREADY_EXISTS_NICKNAME.getDescription())
-            ;
+        ;
 
     }
+
     @Test
     @DisplayName("넘어가기한 LifeType과 CookingTypes을 받은 ,추가 회원가입 요청 성공")
     void addSignupEmpty() {
@@ -190,22 +193,22 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser deleteUser = userRepository.findById(user1.getId()).get();
 
         assertThat(deleteUser)
-            .extracting("userState","email","profile","nickName")
+            .extracting("userState", "email", "profile", "nickName")
             .containsExactly(UserState.DELETE, null, null, "탈퇴한 유저")
-            ;
+        ;
     }
+
     @Test
     @DisplayName("이메일과, 관심 요리를 받아서,유저 생활타입과, cookingthemes 업데이트를 한다")
     void updateInterestCook() {
         //given
         //캐시 모의
-        Cache cache = mock(Cache.class);
-        when(cacheManager.getCache("interestCook")).thenReturn(cache);
-        doNothing().when(cache).evict(any());
+//        Cache cache = mock(Cache.class);
+//        when(cacheManager.getCache("interestCook")).thenReturn(cache);
+//        doNothing().when(cache).evict(any());
 
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingTheme(user.getId(), BUNSIK);
-        createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
+        createCookingThemes(user, List.of(BUNSIK, CHINESE_FOOD));
 
         UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
             .lifeType(LifeType.CONVENIENCE_STORE)
@@ -214,14 +217,15 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        userDomainService.updateInterestCook(user.getEmail(), updateInterestCook);
+        userDomainService.updateInterestCook(user.getEmail(), updateInterestCook.cookingTypes(),
+            updateInterestCook.lifeType());
 
         //then
         ItCookUser findUser = userRepository.findById(user.getId()).get();
         List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
             user.getId());
 
-        verify(cache, times(1)).evict("user1@test.com");
+//        verify(cache, times(1)).evict("user1@test.com");
         assertThat(findUser.getLifeType()).isEqualTo(updateInterestCook.lifeType());
         assertThat(cookingThemes).hasSize(3)
             .extracting("userId", "cookingType")
@@ -230,19 +234,19 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
                 tuple(user.getId(), updateInterestCook.cookingTypes().get(1)),
                 tuple(user.getId(), updateInterestCook.cookingTypes().get(2))
             )
-            ;
+        ;
     }
+
     @Test
     @DisplayName("빈 요청을 받아서 받아서,유저 생활타입과, cookingthemes 업데이트를 한다")
     void updateInterestCookEmtpy() {
         //given
-        Cache cache = mock(Cache.class);
-        when(cacheManager.getCache("interestCook")).thenReturn(cache);
-        doNothing().when(cache).evict(any());
+//        Cache cache = mock(Cache.class);
+//        when(cacheManager.getCache("interestCook")).thenReturn(cache);
+//        doNothing().when(cache).evict(any());
 
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingTheme(user.getId(), BUNSIK);
-        createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
+        createCookingThemes(user, List.of(BUNSIK, CHINESE_FOOD));
 
         UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
             .cookingTypes(
@@ -251,14 +255,15 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        userDomainService.updateInterestCook(user.getEmail(), updateInterestCook);
+        userDomainService.updateInterestCook(user.getEmail(), updateInterestCook.cookingTypes(),
+            updateInterestCook.lifeType());
 
         //then
         ItCookUser findUser = userRepository.findByEmail("user1@test.com").get();
         List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
             user.getId());
 
-        verify(cache, times(1)).evict("user1@test.com");
+//        verify(cache, times(1)).evict("user1@test.com");
         assertThat(findUser.getLifeType()).isNull();
         assertThat(cookingThemes).isEmpty();
     }
@@ -267,32 +272,32 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("관심요리 조회")
     void getInterestCook() {
         //given
-        Cache cache = mock(Cache.class);
-        when(cacheManager.getCache("interestCook")).thenReturn(cache);
-        when(cache.get(any())).thenReturn(null);
+//        Cache cache = mock(Cache.class);
+//        when(cacheManager.getCache("interestCook")).thenReturn(cache);
+//        when(cache.get(any())).thenReturn(null);
 
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingTheme(user.getId(), BUNSIK);
-        createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
+        createCookingThemes(user, List.of(BUNSIK, CHINESE_FOOD));
 
         //when
         UserReadInterestCookResponse response = userDomainService.getInterestCook(
             user.getEmail());
 
         //then
-        verify(cache, times(1)).get("user1@test.com");
+//        verify(cache, times(1)).get("user1@test.com");
         assertThat(response.lifeType()).isEqualTo("배달음식 단골고객");
         assertThat(response.cookingTypes()).hasSize(2)
             .contains("분식", "중식")
         ;
     }
+
     @Test
     @DisplayName("비어있는 관심요리 조회")
     void getInterestCookEmpty() {
         //given
-        Cache cache = mock(Cache.class);
-        when(cacheManager.getCache("interestCook")).thenReturn(cache);
-        when(cache.get(any())).thenReturn(null);
+//        Cache cache = mock(Cache.class);
+//        when(cacheManager.getCache("interestCook")).thenReturn(cache);
+//        when(cache.get(any())).thenReturn(null);
 
         ItCookUser user = ItCookUser.builder()
             .email("user1@test.com")
@@ -308,7 +313,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             user.getEmail());
 
         //then
-        verify(cache, times(1)).get("user1@test.com");
+//        verify(cache, times(1)).get("user1@test.com");
         assertThat(response.lifeType()).isNull();
         assertThat(response.cookingTypes()).isEmpty();
         ;
@@ -327,10 +332,11 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //then
         ItCookUser findUser = userRepository.findByEmail(email).get();
         assertThat(findUser)
-            .extracting("email","password","providerType")
+            .extracting("email", "password", "providerType")
             .containsExactlyInAnyOrder(email, password, ProviderType.COMMON)
-            ;
+        ;
     }
+
     @Test
     @DisplayName("이메일 입력받지 않고, 회원가입 시도하여 예외가 발생한다.")
     void signupBlankEmail() {
@@ -343,7 +349,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //then
         assertThatThrownBy(() -> userDomainService.signup(email, password))
             .isInstanceOf(IllegalArgumentException.class)
-            ;
+        ;
     }
 
     @Test
@@ -362,10 +368,11 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
         //when
         //then
-        assertThatThrownBy(() -> userDomainService.addSignup(addSignupUser, List.of(BUNSIK, CHINESE_FOOD)))
+        assertThatThrownBy(
+            () -> userDomainService.addSignup(addSignupUser, List.of(BUNSIK, CHINESE_FOOD)))
             .isInstanceOf(ApiException.class)
             .hasMessage("이미 존재하는 닉네임입니다.")
-            ;
+        ;
 
     }
 
@@ -382,8 +389,9 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //then
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
         assertThat(findUser.getNickName()).isEqualTo("잇쿡2")
-            ;
+        ;
     }
+
     @Test
     @DisplayName("프로필(닉네임) 업데이트 시도시 중복닉으로 예외 발생")
     void updateProfileDuplicateNickName() {
@@ -396,7 +404,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> userDomainService.updateProfile(user.getEmail(), newNickName))
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.ALREADY_EXISTS_NICKNAME.getDescription())
-            ;
+        ;
     }
 
     private ItCookUser createUser(String username, String nickName) {
@@ -412,10 +420,10 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         return userRepository.save(user);
     }
 
-    public void createCookingTheme(Long userId, CookingType cookingType) {
-        UserCookingTheme userCookingTheme = UserCookingTheme.createUserCookingTheme(userId,
-            cookingType);
-        userCookingThemeRepository.save(userCookingTheme);
+
+    public void createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
+        List<UserCookingTheme> cookingThemes = user.createCookingThemes(cookingTypes);
+        userCookingThemeRepository.saveAll(cookingThemes);
     }
 
 }

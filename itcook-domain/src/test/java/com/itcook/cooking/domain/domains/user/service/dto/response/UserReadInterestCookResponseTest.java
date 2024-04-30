@@ -1,5 +1,6 @@
 package com.itcook.cooking.domain.domains.user.service.dto.response;
 
+import static com.itcook.cooking.domain.domains.post.enums.CookingType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
@@ -9,7 +10,6 @@ import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,12 +21,12 @@ class UserReadInterestCookResponseTest {
     void of() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡1");
-        UserCookingTheme cookingTheme = createCookingTheme(user.getId(), CookingType.BUNSIK);
-        UserCookingTheme cookingTheme1 = createCookingTheme(user.getId(), CookingType.CHINESE_FOOD);
+        List<UserCookingTheme> cookingThemes = createCookingThemes(user,
+            List.of(BUNSIK, CHINESE_FOOD));
 
         //when
         UserReadInterestCookResponse response = UserReadInterestCookResponse.of(
-            user, List.of(cookingTheme, cookingTheme1));
+            user, cookingThemes);
 
         //then
         assertEquals(response.lifeType(),"배달음식 단골고객");
@@ -46,10 +46,9 @@ class UserReadInterestCookResponseTest {
             .build();
     }
 
-    public UserCookingTheme createCookingTheme(Long userId, CookingType cookingType) {
-        return UserCookingTheme.createUserCookingTheme(userId,
-            cookingType)
-            ;
+    public List<UserCookingTheme> createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
+        return user.createCookingThemes(cookingTypes);
     }
+
 
 }
