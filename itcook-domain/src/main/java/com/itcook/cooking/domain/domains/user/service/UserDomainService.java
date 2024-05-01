@@ -66,7 +66,7 @@ public class UserDomainService {
 
     public MyPageUserDto getMyPageInfo(String email) {
         ItCookUser user = userAdaptor.queryUserByEmail(email);
-        long followerCounts = userQueryRepository.getFollowerCounts(user.getId());
+        long followerCounts = userAdaptor.getFollowerCounts(user.getId());
         return MyPageUserDto.of(user, followerCounts);
     }
 

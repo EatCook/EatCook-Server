@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotBlank;
 import lombok.Builder;
 
-@Schema(name = "마이페이지 프로필 변경 요청")
+@Schema(name = "마이페이지 프로필(닉네임) 변경 요청")
 @Builder
 public record MyPageUpdateProfileRequest(
     @NotBlank(message = "닉네임을 입력해야합니다.")

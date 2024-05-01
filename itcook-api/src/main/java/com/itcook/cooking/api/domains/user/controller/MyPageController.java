@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MyPageController {
 
     private final MyPageUseCase myPageUseCase;
-    private final UserDomainService userDomainService;
 
     @Operation(summary = "마이페이지 조회 요청", description = "마이페이지 조회 요청")
     @GetMapping("/v1/mypage")

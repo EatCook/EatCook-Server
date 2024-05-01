@@ -3,6 +3,7 @@ package com.itcook.cooking.domain.domains.user.adaptor;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class UserAdaptor {
 
     private final UserRepository userRepository;
+    private final UserQueryRepository userQueryRepository;
 
     public ItCookUser queryUserByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -39,6 +41,10 @@ public class UserAdaptor {
 
     public ItCookUser saveUser(ItCookUser user) {
         return userRepository.save(user);
+    }
+
+    public long getFollowerCounts(Long userId) {
+        return userQueryRepository.getFollowerCounts(userId);
     }
 
 }

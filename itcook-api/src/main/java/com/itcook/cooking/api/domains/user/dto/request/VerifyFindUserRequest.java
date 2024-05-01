@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-@Schema(name = "계정 찾기 검증 요청")
+@Schema(name = "계정 찾기 인증코드 검증 요청")
 public record VerifyFindUserRequest(
     @Schema(description = "이메일", example = "user@test.com")
     @Email(message = "이메일 형식에 맞게 입력해주세요.")

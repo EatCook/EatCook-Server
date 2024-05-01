@@ -2,21 +2,20 @@ package com.itcook.cooking.domain.domains.post.service;
 
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.post.adaptor.PostAdaptor;
 import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.infra.s3.ImageUrlDto;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,7 +24,7 @@ import java.util.Optional;
 public class PostDomainService {
 
     private final PostRepository postRepository;
-    private final PostQuerydslRepository postQuerydslRepository;
+    private final PostAdaptor postAdaptor;
 
     public Page<Object[]> fetchFindAllByCookTalkFeedV2(Long userId, Pageable pageable) {
         Page<Object[]> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
@@ -58,7 +57,7 @@ public class PostDomainService {
     }
 
     public Page<PostWithLikedDto> getPostsByUserId(Long userId, Pageable pageable) {
-        return postQuerydslRepository.findPostsWithLiked(userId, pageable);
+        return postAdaptor.findPostsWithLiked(userId, pageable);
     }
 
     public Optional<Post> fetchFindByPost(Long postId) {
@@ -102,11 +101,11 @@ public class PostDomainService {
         postEntity.deletePost();
     }
 
-    public List<Post> searchByRecipeNameOrIngredients(
-            Long lastId, List<String> names, Integer size
-    ) {
-        return postQuerydslRepository.findNamesWithPagination(lastId, names, size);
-    }
+//    public List<Post> searchByRecipeNameOrIngredients(
+//            Long lastId, List<String> names, Integer size
+//    ) {
+//        return postQuerydslRepository.findNamesWithPagination(lastId, names, size);
+//    }
 
 
 }

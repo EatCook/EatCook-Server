@@ -4,19 +4,18 @@ package com.itcook.cooking.api.domains.post.service;
 import static java.util.stream.Collectors.toList;
 
 import com.itcook.cooking.api.domains.post.dto.response.SearchRankResponse;
+import com.itcook.cooking.api.domains.post.dto.response.SearchResponse;
 import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
+import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.api.domains.post.service.dto.PostSearchServiceDto;
 import com.itcook.cooking.api.global.annotation.UseCase;
-import com.itcook.cooking.api.domains.post.dto.response.SearchResponse;
+import com.itcook.cooking.domain.domains.post.adaptor.PostAdaptor;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
-import com.itcook.cooking.domain.domains.post.repository.PostRepository;
-import com.itcook.cooking.domain.domains.post.service.PostDomainService;
-import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
-import com.itcook.cooking.domain.domains.post.helper.PostServiceHelper;
-import com.itcook.cooking.infra.redis.event.RealTimeSearchWords;
+import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.infra.redis.event.RealTimeSearchWords;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -38,8 +37,8 @@ public class SearchUseCase {
     private final PostDomainService postDomainService;
     private final ApplicationEventPublisher eventPublisher;
     private final RedisService redisService;
-    private final PostRepository postRepository;
     private final PostQuerydslRepository postQuerydslRepository;
+    private final PostAdaptor postAdaptor;
 
     /**
      * 검색 리스트 하나로 RecipeName, IngredientName을 모두 검색한다.
@@ -47,12 +46,13 @@ public class SearchUseCase {
     public List<SearchResponse> search(
         Long lastId, List<String> names, Integer size
     ) {
-        List<Post> posts = postDomainService.searchByRecipeNameOrIngredients(lastId, names, size);
-        eventPublisher.publishEvent(
-            RealTimeSearchWords.builder()
-                .searchWords(names)
-                .build());
-        return posts.stream().map(SearchResponse::of).toList();
+//        List<Post> posts = postDomainService.searchByRecipeNameOrIngredients(lastId, names, size);
+//        eventPublisher.publishEvent(
+//            RealTimeSearchWords.builder()
+//                .searchWords(names)
+//                .build());
+//        return posts.stream().map(SearchResponse::of).toList();
+        return null;
     }
 
     public List<SearchPostResponse> searchV4(PostSearchServiceDto postSearchServiceDto) {
@@ -87,7 +87,7 @@ public class SearchUseCase {
 
         return postDtos.stream()
             .map(searchPostResponse -> {
-                Post post = PostServiceHelper.findExistingPostByIdAndPostFlag(postRepository, searchPostResponse.getPostId());
+                Post post = postAdaptor.queryPostByIdAndPostFlag(searchPostResponse.getPostId());
                 return SearchPostResponse.from(searchPostResponse, post.getFoodIngredients());
             })
             .collect(toList());
