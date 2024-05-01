@@ -36,7 +36,7 @@ public class SignupController {
 
     private final SignupUseCase signupUseCase;
 
-    @Operation(summary = "이메일 인증 요청", description = "이메일 인증 요청")
+    @Operation(summary = "이메일 인증 요청", description = "가입할 이메일 인증 요청")
     @PostMapping("/v1/emails/request")
     public ResponseEntity<ApiResponse> sendEmailAuthRequest(
         @RequestBody @Valid SendEmailAuthRequest sendEmailAuthRequest
@@ -47,7 +47,7 @@ public class SignupController {
     }
 
 
-    @Operation(summary = "이메일 검증 요청", description = "이메일 검증 요청")
+    @Operation(summary = "이메일 검증 요청", description = "가입할 이메일과 인증코드를 검증하는 요청")
     @PostMapping("/v1/emails/verify")
     public ResponseEntity<ApiResponse> verifyEmailAuth(
         @RequestBody @Valid VerifyEmailAuthRequest verifyEmailAuthRequest
@@ -57,7 +57,7 @@ public class SignupController {
             .body(ApiResponse.OK("이메일 인증 검증 성공."));
     }
 
-    @Operation(summary = "회원가입 요청", description = "회원가입 요청")
+    @Operation(summary = "회원가입 요청", description = "이메일과 비밀번호를 받아 회원가입을 요청")
     @PostMapping("/v1/users")
     public ResponseEntity<ApiResponse<UserResponse>> signup(
         @RequestBody @Valid SignupRequest signupRequest
@@ -79,7 +79,7 @@ public class SignupController {
     /**
      * 계정 찾기 인증 요청
      */
-    @Operation(summary = "계정 찾기 인증 요청", description = "계정 찾기 인증 요청")
+    @Operation(summary = "계정 찾기 인증 요청", description = "이메일을 받아 계정 찾기 인증 요청")
     @PostMapping("/v1/users/find")
     public ResponseEntity<ApiResponse> findUser(
         @RequestBody @Valid FindUserRequest findUserRequest

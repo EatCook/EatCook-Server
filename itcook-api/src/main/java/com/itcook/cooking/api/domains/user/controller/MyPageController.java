@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,19 +40,20 @@ public class MyPageController {
 
     private final MyPageUseCase myPageUseCase;
 
-    @Operation(summary = "마이페이지 조회 요청", description = "마이페이지 조회 요청")
+    @Operation(summary = "마이페이지 조회 요청", description = "PageNum과 PageSize를 받아서 마이페이지 조회 요청")
     @GetMapping("/v1/mypage")
     public ResponseEntity<ApiResponse<MyPageResponse>> getMyPage(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
-        @ParameterObject Pageable pageable
+        @ParameterObject @PageableDefault Pageable pageable
     ) {
-        MyPageResponse response = myPageUseCase.getMyPage(authenticationUser.getUsername(), pageable);
+        MyPageResponse response = myPageUseCase.getMyPage(authenticationUser.getUsername(),
+            pageable);
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(response))
             ;
     }
 
-    @Operation(summary = "비밀번호 변경 요청", description = "비밀번호 변경 요청")
+    @Operation(summary = "비밀번호 변경 요청", description = "현재 비밀번호와 새로운 비밀번호를 받아서 비밀번호 변경 요청")
     @PatchMapping("/v1/mypage/profile/password")
     public ResponseEntity<ApiResponse> changePassword(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
@@ -63,7 +65,7 @@ public class MyPageController {
             ;
     }
 
-    @Operation(summary = "프로필 편집 요청", description = "프로필 편집 요청")
+    @Operation(summary = "프로필 편집 요청", description = "닉네임을 받아 프로필 편집 요청을 한")
     @PatchMapping("/v1/mypage/profile")
     public ResponseEntity<ApiResponse> updateProfile(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
@@ -85,7 +87,7 @@ public class MyPageController {
             ;
     }
 
-    @Operation(summary = "마이페이지 프로필 설정 요청", description = "마이페이지 프로필 설정 요청")
+    @Operation(summary = "마이페이지 프로필 설정(서비스 알림, 이벤트 알림) 조회 요청", description = "마이페이지 프로필 설정 요청")
     @GetMapping("/v1/mypage/setting")
     public ResponseEntity<ApiResponse<MyPageSetUpResponse>> getMyPageSetting(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
@@ -96,7 +98,7 @@ public class MyPageController {
         return ResponseEntity.ok(ApiResponse.OK(myPageSetUpResponse));
     }
 
-    @Operation(summary = "마이페이지 프로필 설정 변경 요청", description = "마이페이지 프로필 설정 변경 요청")
+    @Operation(summary = "마이페이지 프로필 설정(서비스 알림, 이벤트 알림) 변경 요청", description = "마이페이지 프로필 설정 변경 요청")
     @PatchMapping("/v1/mypage/setting")
     public ResponseEntity<ApiResponse> updateMyPageSetting(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
@@ -118,7 +120,7 @@ public class MyPageController {
         return ResponseEntity.ok(ApiResponse.OK(response));
     }
 
-    @Operation(summary = "마이페이지 설정의 관심 요리 업데이트", description = "마이페이지 설정의 관심 요리 업데이트")
+    @Operation(summary = "마이페이지 설정의 관심 요리 업데이트", description = "생활 유형과 요리 유형을 받아 마이페이지 설정의 관심 요리 업데이트")
     @PostMapping("/v1/mypage/setting/interest-cook")
     public ResponseEntity<ApiResponse> updateInterestCook(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
