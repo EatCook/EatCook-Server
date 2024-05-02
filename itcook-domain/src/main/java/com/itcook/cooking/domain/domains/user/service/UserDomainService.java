@@ -10,7 +10,6 @@ import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeJdbcRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
-import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDomainService {
 
     private final UserCookingThemeRepository userCookingThemeRepository;
-    private final UserQueryRepository userQueryRepository;
     private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
     private final UserValidator userValidator;
     private final UserAdaptor userAdaptor;
