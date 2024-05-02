@@ -30,9 +30,9 @@ public class PostDomainService {
     public Page<Object[]> fetchFindAllByCookTalkFeedV2(Long userId, Pageable pageable) {
         Page<Object[]> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
 
-        if (!findPostAllData.hasContent()) {
-            throw new ApiException(PostErrorCode.POST_200_NOT_EXIST);
-        }
+//        if (!findPostAllData.hasContent()) {
+//            throw new ApiException(PostErrorCode.POST_200_NOT_EXIST);
+//        }
 
         return findPostAllData;
     }
@@ -40,9 +40,9 @@ public class PostDomainService {
     public Page<Object[]> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
         Page<Object[]> findFollowingCookTalkData = postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
 
-        if (!findFollowingCookTalkData.hasContent()) {
-            throw new ApiException(PostErrorCode.POST_200_NOT_EXIST);
-        }
+//        if (!findFollowingCookTalkData.hasContent()) {
+//            throw new ApiException(PostErrorCode.POST_200_NOT_EXIST);
+//        }
 
         return findFollowingCookTalkData;
     }
