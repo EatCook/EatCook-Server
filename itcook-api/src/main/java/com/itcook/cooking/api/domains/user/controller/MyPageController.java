@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,7 +78,7 @@ public class MyPageController {
     }
 
     @Operation(summary = "회원 탈퇴 요청", description = "회원 탈퇴 요청")
-    @PatchMapping("/v1/mypage/profile/leave")
+    @DeleteMapping("/v1/mypage/profile/leave")
     public ResponseEntity<ApiResponse> leaveUser(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
@@ -121,7 +122,7 @@ public class MyPageController {
     }
 
     @Operation(summary = "마이페이지 설정의 관심 요리 업데이트", description = "생활 유형과 요리 유형을 받아 마이페이지 설정의 관심 요리 업데이트")
-    @PostMapping("/v1/mypage/setting/interest-cook")
+    @PatchMapping("/v1/mypage/setting/interest-cook")
     public ResponseEntity<ApiResponse> updateInterestCook(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
         @RequestBody @Valid UserUpdateInterestCookRequest request
