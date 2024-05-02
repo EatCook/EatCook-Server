@@ -1,6 +1,7 @@
 package com.itcook.cooking.domain.common.errorcode;
 
 import static com.itcook.cooking.domain.common.constant.StatusCode.BAD_REQUEST;
+import static com.itcook.cooking.domain.common.constant.StatusCode.OK;
 
 import com.itcook.cooking.domain.common.constant.StatusCode;
 import lombok.AllArgsConstructor;
