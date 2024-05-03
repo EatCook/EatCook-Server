@@ -31,7 +31,7 @@ public class CookTalkUseCase {
     private final PostValidationUseCase postValidationUseCase;
 
     public CookTalkResponse getCookTalkFeed(String email, Pageable pageable) {
-        ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(email);
+        ItCookUser findByUserEmail = userDomainService.findUserByEmail(email);
 
         Page<Object[]> findAllPostAndUserData = postDomainService.fetchFindAllByCookTalkFeedV2(findByUserEmail.getId(), pageable);
 
@@ -39,7 +39,7 @@ public class CookTalkUseCase {
     }
 
     public CookTalkResponse getFollowingTalk(String email, Pageable pageable) {
-        ItCookUser findByUserEmail = userDomainService.fetchFindByEmail(email);
+        ItCookUser findByUserEmail = userDomainService.findUserByEmail(email);
 
         Page<Object[]> cookTalkFeedDtos = postDomainService.fetchFindFollowingCookTalk(findByUserEmail.getFollow(), pageable);
 

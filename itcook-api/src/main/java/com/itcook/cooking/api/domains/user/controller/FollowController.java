@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @SecurityRequirement(name = "access-token")
-@Tag(name = "04. Follow")
+@Tag(name = "07. Follow")
 public class FollowController {
 
     private final FollowUseCase followUseCase;

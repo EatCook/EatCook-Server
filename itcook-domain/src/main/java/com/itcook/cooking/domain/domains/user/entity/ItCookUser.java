@@ -1,22 +1,17 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
-import static com.itcook.cooking.domain.common.constant.UserConstant.*;
-
 import com.itcook.cooking.domain.common.BaseTimeEntity;
-import com.itcook.cooking.domain.common.constant.UserConstant;
-import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.enums.UserState;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -28,12 +23,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-import javax.swing.text.html.Option;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 @Getter
@@ -46,12 +40,10 @@ public class ItCookUser extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
 
-    @Column(unique = true)
     private String nickName;
 
     @Enumerated(EnumType.STRING)
@@ -76,6 +68,10 @@ public class ItCookUser extends BaseTimeEntity {
     @Column(nullable = false)
     private ProviderType providerType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserState userState;
+
     @ElementCollection
     @CollectionTable(name = "follow", joinColumns = @JoinColumn(name = "from_user", referencedColumnName = "user_id"))
     @Column(name = "to_user")
@@ -84,14 +80,8 @@ public class ItCookUser extends BaseTimeEntity {
     @Builder
     private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
         String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
-        ServiceAlertType serviceAlertType, EventAlertType eventAlertType
+        UserState userState
     ) {
-        Assert.hasText(email, "Email is Not Empty");
-        Assert.isTrue(email.matches(EMAIL_REGEXP), "유효한 이메일 형식이 아닙니다");
-//        Assert.hasText(password, "Password is Not Empty");
-//        Assert.isTrue(password.matches(PASSWORD_REGEXP), "패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다.");
-        Assert.notNull(email, "UserRole is Not Null");
-        Assert.notNull(email, "ProviderType is Not Null");
 
         this.id = id;
         this.email = email;
@@ -105,7 +95,61 @@ public class ItCookUser extends BaseTimeEntity {
         this.lifeType = lifeType;
         this.serviceAlertType = ServiceAlertType.DISABLED;
         this.eventAlertType = EventAlertType.DISABLED;
+        this.userState = userState == null ? UserState.ACTIVE : userState;
     }
+
+    // 회원가입 유저 생성
+    public static ItCookUser signup(String email, String password, UserValidator userValidator) {
+        ItCookUser user = ItCookUser.builder()
+            .email(email)
+            .password(password)
+            .providerType(ProviderType.COMMON)
+            .userRole(UserRole.USER)
+            .build();
+        userValidator.validateSignup(user);
+        return user;
+    }
+
+    // 회원탈퇴
+    public void delete() {
+        userState = UserState.DELETE;
+        email = null;
+        profile = null;
+        nickName = "탈퇴한 유저";
+        serviceAlertType = ServiceAlertType.DISABLED;
+        eventAlertType = EventAlertType.DISABLED;
+    }
+
+    public List<UserCookingTheme> addSignup(
+        String nickName, LifeType lifeType, List<CookingType> cookingTypes,
+        UserValidator userValidator
+    ) {
+        userValidator.validateDuplicateNickName(nickName);
+        this.nickName = nickName;
+        this.lifeType = lifeType;
+        return createCookingThemes(cookingTypes);
+    }
+
+    // 도메인 주도 방식의 관심요리 업데이트
+    public List<UserCookingTheme> updateInterestCook(
+        LifeType lifeType,
+        List<CookingType> cookingTypes
+    ) {
+        updateLifeType(lifeType);
+        return createCookingThemes(cookingTypes);
+    }
+
+    // TODO 애그리게이트 루트인 user -> UserCookingTheme 생성
+    public List<UserCookingTheme> createCookingThemes(List<CookingType> cookingTypes) {
+        if (CollectionUtils.isEmpty(cookingTypes)) {
+            return List.of();
+        }
+        return cookingTypes.stream()
+            .map(cookingType ->
+                UserCookingTheme.createUserCookingTheme(getId(), cookingType))
+            .toList();
+    }
+
 
     public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
         this.nickName = nickName;
@@ -113,8 +157,8 @@ public class ItCookUser extends BaseTimeEntity {
 
     }
 
-    public void changePassword(String newPassword) {
-        this.password = newPassword;
+    public void changePassword(String newEncodedPassword) {
+        this.password = newEncodedPassword;
     }
 
     public void addFollowing(Long userId) {
@@ -133,20 +177,35 @@ public class ItCookUser extends BaseTimeEntity {
         this.profile = profile;
     }
 
-    public void updateNickName(String nickName) {
-        this.nickName = nickName;
+    public void updateNickName(String newNickName, UserValidator userValidator) {
+        userValidator.validateDuplicateNickName(newNickName);
+        this.nickName = newNickName;
     }
 
     public void updateAlertTypes
-    (
-        ServiceAlertType serviceAlertType,
-        EventAlertType eventAlertType
-    ) {
+        (
+            ServiceAlertType serviceAlertType,
+            EventAlertType eventAlertType
+        ) {
         this.serviceAlertType = serviceAlertType;
         this.eventAlertType = eventAlertType;
     }
+
     public void updateFollow(List<Long> follow) {
         this.follow = follow;
+    }
+
+    public String getLifeTypeName() {
+        if (lifeType == null) {
+            return null;
+        }
+        return lifeType.getLifeTypeName();
+    }
+
+    public void updateLifeType(
+        LifeType lifeType
+    ) {
+        this.lifeType = lifeType;
     }
 
 }

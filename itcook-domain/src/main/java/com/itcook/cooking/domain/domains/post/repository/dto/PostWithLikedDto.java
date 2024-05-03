@@ -25,14 +25,4 @@ public class PostWithLikedDto {
         this.introduction = introduction;
         this.likeCounts = likeCounts;
     }
-//
-//    public PostWithLikedDto from(PostWithLikedDto post) {
-//        return PostWithLikedDto.builder()
-//            .postId(post.getPostId())
-//            .postImagePath(post.getPostImagePath())
-//            .recipeName(post.getRecipeName())
-//            .introduction(post.getIntroduction())
-//            .likeCounts(post.getLikeCounts())
-//            .build();
-//    }
 }

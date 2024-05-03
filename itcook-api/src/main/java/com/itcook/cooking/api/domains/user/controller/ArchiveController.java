@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/archive")
 @SecurityRequirement(name = "access-token")
-@Tag(name = "04. Archive")
+@Tag(name = "06. Archive")
 public class ArchiveController {
 
     private final ArchiveUseCase archiveUseCase;

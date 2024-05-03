@@ -1,4 +1,4 @@
-package com.itcook.cooking.infra.email;
+package com.itcook.cooking.infra.email.ses;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

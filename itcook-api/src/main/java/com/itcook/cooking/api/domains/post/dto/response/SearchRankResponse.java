@@ -12,18 +12,18 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "검색어 랭킹 응답")
+//@Schema(name = "검색어 랭킹 응답")
 public class SearchRankResponse {
 
-    @Schema(description = "검색어", example = "김치찌개")
+//    @Schema(description = "검색어", example = "김치찌개")
     private String searchWord;
-    @Schema(description = "검색 횟수", example = "10")
+//    @Schema(description = "검색 횟수", example = "10")
     private Long searchCount;
 
     public static SearchRankResponse of(TypedTuple<Object> typedTuple) {
         return SearchRankResponse.builder()
             .searchWord(String.valueOf(typedTuple.getValue()))
-            .searchCount(typedTuple.getScore().longValue())
+            .searchCount(Double.valueOf(typedTuple.getScore()).longValue())
             .build();
     }
 }

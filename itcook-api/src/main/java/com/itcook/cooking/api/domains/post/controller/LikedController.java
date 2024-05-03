@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/liked")
 @SecurityRequirement(name = "access-token")
-@Tag(name = "04. Liked")
+@Tag(name = "08. Liked")
 public class LikedController {
 
     private final LikedUseCase likedUseCase;

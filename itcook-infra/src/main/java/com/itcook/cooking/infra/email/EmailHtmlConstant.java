@@ -2,8 +2,8 @@ package com.itcook.cooking.infra.email;
 
 public class EmailHtmlConstant {
 
-    private static String HEADER_TITLE = "<span style=\"font-weight: bold;font-size: 48px;\">" +
-        "<span style=\"color:#007bd9\">잇쿡</span>\n" +
+    private static final String HEADER_TITLE = "<span style=\"font-weight: bold;font-size: 48px;\">" +
+        "<span style=\"color:#ff8c00\">잇쿡</span>\n" +
         "</span>\n";
     private static String TAIL = "<hr>\n" +
         "<br>\n" +

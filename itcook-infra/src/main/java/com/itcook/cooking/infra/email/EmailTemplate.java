@@ -11,7 +11,15 @@ public enum EmailTemplate {
         "  <br>\n" +
             "  <br>\n" +
             "  <span style=\"font-size:18px;\">안녕하세요, 잇쿡 계정 생성을 환영합니다! <br>요청하신 인증코드는 아래와 같습니다 <br>\n" +
-            "  <span style=\"font-size: 30px;color:#007bd9;font-weight: bold\">%s</span>\n" +
+            "  <span style=\"font-size: 30px;color:#ff8c00;font-weight: bold\">%s</span>\n" +
+            "  <br>\n" +
+            "  <br>\n"
+    )),
+    PASSWORD_EMAIL("잇쿡 이메일 임시 비밀번호 발급 요청입니다.", MAIL_BASIC_FORMAT.formatted(
+        "  <br>\n" +
+            "  <br>\n" +
+            "  <span style=\"font-size:18px;\">안녕하세요, 잇쿡 계정 생성을 환영합니다! <br>요청하신 임시 비밀번호는 아래와 같습니다 <br>\n" +
+            "  <span style=\"font-size: 30px;color:#ff8c00;font-weight: bold\">%s</span>\n" +
             "  <br>\n" +
             "  <br>\n"
     ))

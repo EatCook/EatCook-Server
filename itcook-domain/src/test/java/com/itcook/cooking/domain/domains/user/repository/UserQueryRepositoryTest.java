@@ -6,7 +6,9 @@ import com.itcook.cooking.domain.domains.IntegrationTestSupport;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.enums.UserState;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,12 +57,27 @@ class UserQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(user3Followers).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("test")
+    void test() {
+        //given
+        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
+        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
+        ItCookUser user3 = createUser("user3@test.com", "잇쿡3");
+        //when
+        Optional<ItCookUser> byEmail = userRepository.findByEmail(user1.getEmail());
+        System.out.println("byEmail.isPresent() = " + byEmail.isPresent());
+
+        //then
+    }
+
     private ItCookUser createUser(String username, String nickName) {
         ItCookUser user = ItCookUser.builder()
             .email(username)
             .password("cook12345")
             .providerType(ProviderType.COMMON)
             .nickName(nickName)
+            .userState(UserState.ACTIVE)
             .userRole(UserRole.USER)
             .build();
 

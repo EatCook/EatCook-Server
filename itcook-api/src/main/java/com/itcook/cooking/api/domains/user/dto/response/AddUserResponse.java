@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "추가 회원가입 응답")
+//@Schema(name = "추가 회원가입 응답")
 public class AddUserResponse {
 
     private Long userId;

@@ -1,6 +1,10 @@
 package com.itcook.cooking.api.domains.user.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -10,12 +14,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
+import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.config.SecurityConfig;
 import com.itcook.cooking.api.global.config.WithItCookMockUser;
+import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtCheckFilter;
+import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -101,12 +110,13 @@ class MyPageControllerTest {
 
         //then
         mockMvc.perform(patch("/api/v1/mypage/profile/password")
-            .contentType(APPLICATION_JSON_VALUE)
-            .content(objectMapper.writeValueAsString(request))
-        )
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request))
+            )
             .andDo(print())
             .andExpect(status().isOk())
-            ;
+            .andExpect(jsonPath("$.message").value("비밀번호가 변경되었습니다"))
+        ;
     }
 
 
@@ -123,18 +133,38 @@ class MyPageControllerTest {
 
         //then
         mockMvc.perform(patch("/api/v1/mypage/profile/password")
-            .contentType(APPLICATION_JSON_VALUE)
-            .content(objectMapper.writeValueAsString(request))
-        )
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request))
+            )
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.validation.currentPassword").value("현재 비밀번호를 입력하지 않았습니다."))
-            ;
+        ;
     }
 
-    /**
-     * TODO 레디스 캐싱 설정
-     * 
-     */
+    @Test
+    @WithItCookMockUser
+    @DisplayName("새로운 비밀번호 정규표현식 미준수시 예외 발생한다.")
+    void changeNewPasswordValidError() throws Exception {
+        //given
+        MyPageChangePasswordRequest request = MyPageChangePasswordRequest.builder()
+            .currentPassword("cook1234")
+            .newPassword("cook124")
+            .build();
+
+        //when
+
+        //then
+        mockMvc.perform(patch("/api/v1/mypage/profile/password")
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request))
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(
+                jsonPath("$.validation.newPassword").value("패스워드는 8자리 이상이어야 하며, 영문과 숫자를 포함해야 합니다."))
+        ;
+    }
+
 
 }

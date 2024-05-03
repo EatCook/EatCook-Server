@@ -16,6 +16,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -47,8 +49,8 @@ public class PostRepositoryTest extends IntegrationTestSupport {
         createLike(user2.getId(), post2.getId());
         createLike(user1.getId(), post2.getId());
         //when
-        List<PostWithLikedDto> posts = postQuerydslRepository.findPostsWithLiked(
-            user1.getId());
+        Page<PostWithLikedDto> posts = postQuerydslRepository.findPostsWithLiked(
+            user1.getId(), PageRequest.of(0, 10));
 
         //then
         assertThat(posts).hasSize(2)

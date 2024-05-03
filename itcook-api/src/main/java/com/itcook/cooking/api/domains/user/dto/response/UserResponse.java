@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "회원가입 응답")
+//@Schema(name = "회원가입 응답")
 public class UserResponse {
 
-    @Schema(description = "유저 id", example = "1")
+//    @Schema(description = "유저 id", example = "1")
     private Long id;
-    @Schema(description = "유저 email", example = "user1@gmail.com")
+//    @Schema(description = "유저 email", example = "user1@gmail.com")
     private String email;
     public static UserResponse of(ItCookUser user) {
         return UserResponse.builder()

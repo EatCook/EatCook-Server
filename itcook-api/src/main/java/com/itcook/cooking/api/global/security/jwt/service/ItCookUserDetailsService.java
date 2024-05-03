@@ -5,6 +5,7 @@ import static com.itcook.cooking.domain.common.errorcode.UserErrorCode.USER_NOT_
 import com.itcook.cooking.api.domains.security.CommonUser;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class ItCookUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("로그인 시도");
-        ItCookUser itCookUser = userRepository.findByEmail(username)
+        ItCookUser itCookUser = userRepository.findByEmailAndUserState(username, UserState.ACTIVE)
             .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
         CommonUser commonUser = CommonUser.of(itCookUser);

@@ -5,16 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Schema(description = "응답 공통 Response Dto")
+//@Schema(description = "응답 공통 Response Dto")
 public class ApiResponse<T> {
 
-    @Schema(description = "성공 여부 입니다.", example = "true")
+//    @Schema(description = "성공 여부 입니다.", example = "true")
     private final boolean success;
-    @Schema(description = "응답 코드 입니다.", example = "200")
+//    @Schema(description = "응답 코드 입니다.", example = "200")
     private final String code;
-    @Schema(title = "응답 메시지", example = "성공")
+//    @Schema(title = "응답 메시지", example = "성공")
     private final String message;
-    @Schema(title = "응답 데이터")
+//    @Schema(title = "응답 데이터")
     private final T data;
 
 
