@@ -75,7 +75,7 @@ public class ItCookUser extends BaseTimeEntity {
     @ElementCollection
     @CollectionTable(name = "follow", joinColumns = @JoinColumn(name = "from_user", referencedColumnName = "user_id"))
     @Column(name = "to_user")
-    private List<Long> follow;
+    private List<Long> follow = new ArrayList<>();
 
     @Builder
     private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
@@ -91,7 +91,7 @@ public class ItCookUser extends BaseTimeEntity {
         this.profile = profile;
         this.providerType = providerType;
         this.badge = UserBadge.GIBBAB_GOSU;
-        this.follow = new ArrayList<>();
+        this.follow.addAll(follow);
         this.lifeType = lifeType;
         this.serviceAlertType = ServiceAlertType.DISABLED;
         this.eventAlertType = EventAlertType.DISABLED;
