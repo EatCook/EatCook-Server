@@ -1,5 +1,6 @@
 package com.itcook.cooking.api.domains.user.service.dto;
 
+import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,7 +9,16 @@ import lombok.Data;
 public class MyPagePasswordServiceDto {
 
     private String email;
-    private String currentPassword;
+    private String rawCurrentPassword;
     private String newPassword;
+
+    public UserUpdatePassword toDomainService() {
+        return UserUpdatePassword.builder()
+            .email(email)
+            .rawCurrentPassword(rawCurrentPassword)
+            .newPassword(newPassword)
+            .build()
+            ;
+    }
 
 }

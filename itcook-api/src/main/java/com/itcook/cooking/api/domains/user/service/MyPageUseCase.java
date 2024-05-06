@@ -8,7 +8,6 @@ import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
@@ -53,30 +52,32 @@ public class MyPageUseCase {
      */
     @Transactional
     public void changePassword(MyPagePasswordServiceDto passwordServiceDto) {
-        ItCookUser user = userDomainService.findUserByEmail(passwordServiceDto.getEmail());
-        checkCurrentPassword(passwordServiceDto, user.getPassword());
-        user.changePassword(passwordEncoder.encode(passwordServiceDto.getNewPassword()));
+//        ItCookUser user = userDomainService.findUserByEmail(passwordServiceDto.getEmail());
+//        checkCurrentPassword(passwordServiceDto, user.getPassword());
+//        user.changePassword(passwordEncoder.encode(passwordServiceDto.getNewPassword()));
+
+        userDomainService.changePassword(passwordServiceDto.toDomainService());
     }
 
-    private void checkCurrentPassword(MyPagePasswordServiceDto passwordServiceDto,
-        String userPassword) {
-        String currentPassword = passwordServiceDto.getCurrentPassword();
-
-        if (!passwordEncoder
-            .matches(currentPassword, userPassword)) {
-            throw new ApiException(UserErrorCode.NOT_EQUAL_PASSWORD);
-        }
-    }
+//    private void checkCurrentPassword(MyPagePasswordServiceDto passwordServiceDto,
+//        String userPassword) {
+//        String inputPassword = passwordServiceDto.getInputPassword();
+//
+//        if (!passwordEncoder
+//            .matches(inputPassword, userPassword)) {
+//            throw new ApiException(UserErrorCode.NOT_EQUAL_PASSWORD);
+//        }
+//    }
 
     /**
      * 회원 탈퇴
      */
     @Transactional
-    public void leaveUser(MyPageLeaveUser myPageLeaveUser) {
-        userDomainService.leaveUser(myPageLeaveUser.email());
+    public void leaveUser(String email) {
+        userDomainService.leaveUser(email);
         // 해당 유저 엑세스 토큰 삭제
         eventPublisher.publishEvent(UserLeaveEvent.builder()
-            .email(myPageLeaveUser.email())
+            .email(email)
             .build());
     }
 
