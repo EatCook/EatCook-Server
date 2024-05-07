@@ -5,9 +5,9 @@ import com.itcook.cooking.domain.common.errorcode.ArchiveErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
-import com.itcook.cooking.domain.domains.user.entity.Archive;
+import com.itcook.cooking.domain.domains.archive.entity.Archive;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.service.ArchiveDomainService;
+import com.itcook.cooking.domain.domains.archive.service.ArchiveDomainService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class ArchiveUseCase {
         ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
         Post findByPost = postDomainService.fetchFindByPost(postId).get();
 
-        List<Archive> findByArchive = archiveDomainService.getFindByItCookUserId(findByItCookUser.getId());
+        List<Archive> findByArchive = archiveDomainService.getFindByUserId(findByItCookUser.getId());
 
 
         boolean archiveValid = false;
@@ -53,7 +53,7 @@ public class ArchiveUseCase {
         ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
         Post findByPost = postDomainService.fetchFindByPost(postId).get();
 
-        List<Archive> findByArchive = archiveDomainService.getFindByItCookUserId(findByItCookUser.getId());
+        List<Archive> findByArchive = archiveDomainService.getFindByUserId(findByItCookUser.getId());
 
         boolean archiveValid = false;
         Long archiveId = null;

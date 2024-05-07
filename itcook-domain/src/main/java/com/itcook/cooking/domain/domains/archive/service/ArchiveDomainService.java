@@ -1,9 +1,9 @@
-package com.itcook.cooking.domain.domains.user.service;
+package com.itcook.cooking.domain.domains.archive.service;
 
-import com.itcook.cooking.domain.common.errorcode.ArchiveErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.user.entity.Archive;
-import com.itcook.cooking.domain.domains.user.repository.ArchiveRepository;
+import com.itcook.cooking.domain.domains.archive.dto.ArchivePost;
+import com.itcook.cooking.domain.domains.archive.entity.Archive;
+import com.itcook.cooking.domain.domains.archive.repository.ArchiveQuerydslRepository;
+import com.itcook.cooking.domain.domains.archive.repository.ArchiveRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,9 @@ import java.util.List;
 public class ArchiveDomainService {
 
     private final ArchiveRepository archiveRepository;
+    private final ArchiveQuerydslRepository archiveQuerydslRepository;
 
-    public List<Archive> getFindByItCookUserId(Long userId) {
+    public List<Archive> getFindByUserId(Long userId) {
         return archiveRepository.findByItCookUserId(userId);
     }
 
@@ -31,5 +32,9 @@ public class ArchiveDomainService {
     @Transactional
     public void removeArchive(Long archiveId) {
         archiveRepository.deleteById(archiveId);
+    }
+
+    public List<ArchivePost> getArchivesPosts(Long userId) {
+        return archiveQuerydslRepository.findPostsByUserId(userId);
     }
 }

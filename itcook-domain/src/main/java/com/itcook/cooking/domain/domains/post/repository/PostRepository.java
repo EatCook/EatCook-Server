@@ -12,32 +12,37 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
+
     @Query("SELECT p, u " +
-            "FROM Post p JOIN ItCookUser u ON p.userId = u.id " +
-            "WHERE NOT u.id = :userId AND p.postFlag = :postFlag")
+        "FROM Post p JOIN ItCookUser u ON p.userId = u.id " +
+        "WHERE NOT u.id = :userId AND p.postFlag = :postFlag")
     Page<Object[]> findAllByUserIdNotAndPostFlag(
-            @Param("userId") Long userId,
-            @Param("postFlag") PostFlag postFlag,
-            Pageable pageable);
+        @Param("userId") Long userId,
+        @Param("postFlag") PostFlag postFlag,
+        Pageable pageable);
 
     @Query("select p, u " +
-            "FROM Post p JOIN ItCookUser u ON p.userId = u.id " +
-            "WHERE p.userId IN :userId AND p.postFlag = :postFlag")
-    Page<Object[]> findByUserIdInAndPostFlag(List<Long> userId, PostFlag postFlag, Pageable pageable);
+        "FROM Post p JOIN ItCookUser u ON p.userId = u.id " +
+        "WHERE p.userId IN :userId AND p.postFlag = :postFlag")
+    Page<Object[]> findByUserIdInAndPostFlag(List<Long> userId, PostFlag postFlag,
+        Pageable pageable);
 
     @Query("SELECT p, u, pct, rp, l, a " +
-            "FROM Post p " +
-            "JOIN FETCH ItCookUser u ON p.userId = u.id " +
-            "JOIN FETCH PostCookingTheme pct ON pct.post.id = p.id " +
-            "JOIN FETCH RecipeProcess rp on rp.post.id = p.id " +
-            "left JOIN FETCH Liked l on l.postId = p.id " +
-            "left JOIN FETCH Archive a on a.postId = p.id " +
-            "WHERE p.id = :postId AND p.postFlag = :postFlag")
+        "FROM Post p " +
+        "JOIN FETCH ItCookUser u ON p.userId = u.id " +
+        "JOIN FETCH PostCookingTheme pct ON pct.post.id = p.id " +
+        "JOIN FETCH RecipeProcess rp on rp.post.id = p.id " +
+        "left JOIN FETCH Liked l on l.postId = p.id " +
+        "left JOIN FETCH Archive a on a.postId = p.id " +
+        "WHERE p.id = :postId AND p.postFlag = :postFlag")
     List<Object[]> findRecipeData(
-            @Param("postId") Long postId,
+        @Param("postId") Long postId,
 //            @Param("userId") Long userId,
-            @Param("postFlag") PostFlag postFlag
+        @Param("postFlag") PostFlag postFlag
     );
 
     Optional<Post> findByIdAndPostFlag(Long postId, PostFlag postFlag);
+//
+//    @Query(value = "select * from Post where post_id in (:postIds) order by field(p.id, :postIds)", nativeQuery = true)
+//    List<Post> findByIdIn(List<Long> postIds);
 }

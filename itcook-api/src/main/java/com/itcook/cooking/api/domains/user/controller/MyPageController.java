@@ -6,14 +6,15 @@ import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordReque
 import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
 import com.itcook.cooking.api.domains.user.dto.request.UserUpdateInterestCookRequest;
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
+import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePostsResponse;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -129,4 +130,17 @@ public class MyPageController {
         myPageUseCase.updateInterestCook(authenticationUser.getUsername(), request.toServiceDto());
         return ResponseEntity.ok(ApiResponse.OK("관심 요리 설정이 변경됐습니다"));
     }
+
+    @Operation(summary = "마이페이지 보관함 조회", description = "토큰의 이메일을로 마이페이지 보관함을 조회한다.")
+    @GetMapping("/v1/mypage/archives")
+    public ResponseEntity<ApiResponse<List<MyPageArchivePostsResponse>>> getArchivePosts(
+        @AuthenticationPrincipal AuthenticationUser authenticationUser
+    ) {
+        List<MyPageArchivePostsResponse> response = myPageUseCase.getArchivePosts(
+            authenticationUser.getUsername());
+        return ResponseEntity.status(200)
+            .body(ApiResponse.OK(response))
+            ;
+    }
+
 }
