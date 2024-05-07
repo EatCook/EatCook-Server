@@ -312,6 +312,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
             .itCookUserId(userId)
             .build();
 
+        
         archiveRepository.save(archive);
     }
 
