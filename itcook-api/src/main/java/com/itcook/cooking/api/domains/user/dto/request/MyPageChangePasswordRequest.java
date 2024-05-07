@@ -33,7 +33,7 @@ public class MyPageChangePasswordRequest {
     public MyPagePasswordServiceDto toServiceDto(String email) {
         return MyPagePasswordServiceDto.builder()
             .email(email)
-            .currentPassword(currentPassword)
+            .rawCurrentPassword(currentPassword)
             .newPassword(currentPassword)
             .build();
     }

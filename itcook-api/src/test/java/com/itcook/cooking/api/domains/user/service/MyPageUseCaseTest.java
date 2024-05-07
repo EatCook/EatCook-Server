@@ -10,7 +10,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
 import com.itcook.cooking.domain.common.exception.ApiException;
@@ -29,7 +28,6 @@ import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
-import com.itcook.cooking.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -108,7 +106,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
 
         MyPagePasswordServiceDto passwordServiceDto = MyPagePasswordServiceDto.builder()
             .email(user.getEmail())
-            .currentPassword(currentPassword)
+            .rawCurrentPassword(currentPassword)
             .newPassword(newPassword)
             .build();
         ;
@@ -135,7 +133,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
 
         MyPagePasswordServiceDto passwordServiceDto = MyPagePasswordServiceDto.builder()
             .email(user.getEmail())
-            .currentPassword(currentPassword)
+            .rawCurrentPassword(currentPassword)
             .newPassword(newPassword)
             .build();
         ;
@@ -159,7 +157,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
 
         MyPagePasswordServiceDto passwordServiceDto = MyPagePasswordServiceDto.builder()
             .email(user.getEmail())
-            .currentPassword(currentPassword)
+            .rawCurrentPassword(currentPassword)
             .newPassword(newPassword)
             .build();
         ;
@@ -176,12 +174,9 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
     void leaveUser() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡");
-        MyPageLeaveUser leaveUser = MyPageLeaveUser.builder()
-            .email(user.getEmail())
-            .build();
 
         //when
-        myPageUseCase.leaveUser(leaveUser);
+        myPageUseCase.leaveUser(user.getEmail());
 
         //then
         long count = applicationEvents.stream(UserLeaveEvent.class).count();
@@ -200,14 +195,10 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
     @DisplayName("회원 탈퇴를 시도하지만, 유저가 존재하지 않아 예외 발")
     void leaveUserNotFoundUser() {
         //given
-        MyPageLeaveUser leaveUser = MyPageLeaveUser.builder()
-            .email("user@test.com")
-            .build();
-
         //when
 
         //then
-        assertThatThrownBy(() -> myPageUseCase.leaveUser(leaveUser))
+        assertThatThrownBy(() -> myPageUseCase.leaveUser("user@test.com"))
             .isInstanceOf(ApiException.class)
             .hasMessage("유저를 찾을 수 없습니다.")
         ;

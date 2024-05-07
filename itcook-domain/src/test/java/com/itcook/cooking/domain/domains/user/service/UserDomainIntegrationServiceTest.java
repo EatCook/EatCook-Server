@@ -15,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.itcook.cooking.domain.common.constant.UserConstant;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.IntegrationTestSupport;
@@ -32,17 +33,20 @@ import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
+import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import com.itcook.cooking.infra.redis.event.UserLeaveEventListener;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -61,8 +65,8 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @MockBean
     private CacheManager cacheManager;
 
-    @MockBean
-    private UserLeaveEventListener userLeaveEventListener;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("마이페이지를 조회시, 유저 정보는 닉네임, 뱃지, 팔로워, 팔로잉을 반환한다.")
@@ -405,6 +409,80 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.ALREADY_EXISTS_NICKNAME.getDescription())
         ;
+    }
+
+    @Test
+    @DisplayName("현재비밀번호와 새로운 비밀번호를 받아 비밀번호 변경을 시도한다.")
+    void changePassword() {
+        //given
+        ItCookUser user = createUser("user@test.com", "cook1234", "잇쿡2");
+
+        UserUpdatePassword updatePassword = UserUpdatePassword.builder()
+            .email(user.getEmail())
+            .rawCurrentPassword("cook1234")
+            .newPassword("test1234")
+            .build();
+
+        //when
+        userDomainService.changePassword(updatePassword);
+
+        //then
+        ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
+
+        assertThat(passwordEncoder.matches("test1234", findUser.getPassword()))
+            .isTrue();
+
+    }
+    @Test
+    @DisplayName("현재비밀번호와 새로운 비밀번호를 받아 비밀번호 변경을 시도하지만, 현재 비밀번호가 맞지 않아 예외 발생한다.")
+    void changePasswordNotEqualCurrentPassword() {
+        //given
+        ItCookUser user = createUser("user@test.com", "cook1234", "잇쿡2");
+
+        UserUpdatePassword updatePassword = UserUpdatePassword.builder()
+            .email(user.getEmail())
+            .rawCurrentPassword("cook124")
+            .newPassword("test1234")
+            .build();
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> userDomainService.changePassword(updatePassword))
+            .isInstanceOf(ApiException.class)
+            .hasMessage(UserErrorCode.NOT_EQUAL_PASSWORD.getDescription())
+            ;
+
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 재발급을 시도한다.")
+    void issueTemporaryPassword() {
+        //given
+        ItCookUser user = createUser("user@test.com", "cook1234", "잇쿡2");
+
+        //when
+        String temporaryPassword = userDomainService.issueTemporaryPassword(user.getEmail());
+
+        //then
+        ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
+
+        assertThat(passwordEncoder.matches(temporaryPassword, findUser.getPassword()))
+            .isTrue();
+    }
+
+    private ItCookUser createUser(String username, String password, String nickName) {
+        ItCookUser user = ItCookUser.builder()
+            .email(username)
+            .password(passwordEncoder.encode(password))
+            .providerType(ProviderType.COMMON)
+            .nickName(nickName)
+            .lifeType(LifeType.DELIVERY_FOOD)
+            .userRole(UserRole.USER)
+            .build();
+
+        return userRepository.save(user);
     }
 
     private ItCookUser createUser(String username, String nickName) {

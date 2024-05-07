@@ -63,19 +63,12 @@ public class SignupUseCase {
     @Transactional
     public void verifyFindUser(VerifyEmailServiceDto verifyEmailServiceDto) {
         authCodeRedisService.verifyAuthCode(verifyEmailServiceDto.email(), verifyEmailServiceDto.authCode());
-        String temporaryPassword = createTemporaryPassword(verifyEmailServiceDto);
+        String temporaryPassword = userDomainService.issueTemporaryPassword(
+            verifyEmailServiceDto.email());
         eventPublisher.publishEvent(
             EmailSendEvent.of(PASSWORD_EMAIL.getSub(), PASSWORD_EMAIL.formatBody(temporaryPassword),
                 verifyEmailServiceDto.email()));
     }
-
-    private String createTemporaryPassword(VerifyEmailServiceDto verifyEmailServiceDto) {
-        ItCookUser itCookUser = userDomainService.findUserByEmail(verifyEmailServiceDto.email());
-        String temporaryPassword = RandomCodeUtils.generateTemporaryPassword();
-        userDomainService.changePassword(itCookUser, passwordEncoder.encode(temporaryPassword));
-        return temporaryPassword;
-    }
-
 
     @Transactional
     public UserResponse signup(SignupRequest signupRequest) {

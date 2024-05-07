@@ -1,5 +1,6 @@
 package com.itcook.cooking.domain.domains.user.service;
 
+import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.adaptor.UserAdaptor;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
@@ -11,11 +12,13 @@ import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeJdbcRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ public class UserDomainService {
     private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
     private final UserValidator userValidator;
     private final UserAdaptor userAdaptor;
+    private final PasswordEncoder passwordEncoder;
 
     public ItCookUser findUserByEmail(String email) {
         return userAdaptor.queryUserByEmail(email);
@@ -42,9 +46,28 @@ public class UserDomainService {
         return userAdaptor.saveUser(user);
     }
 
+    /**
+     * 재발급
+     *
+     */
     @Transactional
-    public void changePassword(ItCookUser user, String password) {
-        user.changePassword(password);
+    public String issueTemporaryPassword(String email) {
+        ItCookUser user = userAdaptor.queryUserByEmail(email);
+        String temporaryPassword = RandomCodeUtils.generateTemporaryPassword();
+        user.changePassword(passwordEncoder.encode(temporaryPassword));
+        return temporaryPassword;
+    }
+
+    /**
+     *  비밀번호 변경
+     */
+    @Transactional
+    public void changePassword(UserUpdatePassword userUpdatePassword) {
+        String newEncodedPassword = passwordEncoder.encode(userUpdatePassword.newPassword());
+        String rawCurrentPassword = userUpdatePassword.rawCurrentPassword();
+
+        ItCookUser user = findUserByEmail(userUpdatePassword.email());
+        user.changePassword(newEncodedPassword, rawCurrentPassword, userValidator);
     }
 
     @Transactional

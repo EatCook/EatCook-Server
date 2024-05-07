@@ -91,8 +91,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.profile = profile;
         this.providerType = providerType;
         this.badge = UserBadge.GIBBAB_GOSU;
-        this.follow.addAll(follow);
         this.lifeType = lifeType;
+        if (!CollectionUtils.isEmpty(follow)) this.follow.addAll(follow);
         this.serviceAlertType = ServiceAlertType.DISABLED;
         this.eventAlertType = EventAlertType.DISABLED;
         this.userState = userState == null ? UserState.ACTIVE : userState;
@@ -138,8 +138,6 @@ public class ItCookUser extends BaseTimeEntity {
         updateLifeType(lifeType);
         return createCookingThemes(cookingTypes);
     }
-
-    // TODO 애그리게이트 루트인 user -> UserCookingTheme 생성
     public List<UserCookingTheme> createCookingThemes(List<CookingType> cookingTypes) {
         if (CollectionUtils.isEmpty(cookingTypes)) {
             return List.of();
@@ -151,14 +149,15 @@ public class ItCookUser extends BaseTimeEntity {
     }
 
 
-    public void updateNickNameAndLifeType(String nickName, LifeType lifeType) {
-        this.nickName = nickName;
-        this.lifeType = lifeType;
-
+    // TODO
+    public void changePassword(String newEncodedPassword, String rawCurrentPassword,
+        UserValidator userValidator) {
+        userValidator.validateCurrentPassword(this, rawCurrentPassword);
+        password = newEncodedPassword;
     }
 
     public void changePassword(String newEncodedPassword) {
-        this.password = newEncodedPassword;
+        password = newEncodedPassword;
     }
 
     public void addFollowing(Long userId) {

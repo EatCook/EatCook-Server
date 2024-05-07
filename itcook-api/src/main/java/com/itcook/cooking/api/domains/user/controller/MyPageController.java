@@ -8,7 +8,6 @@ import com.itcook.cooking.api.domains.user.dto.request.UserUpdateInterestCookReq
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
@@ -26,7 +25,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,7 +80,8 @@ public class MyPageController {
     public ResponseEntity<ApiResponse> leaveUser(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        myPageUseCase.leaveUser(MyPageLeaveUser.of(authenticationUser.getUsername()));
+        // TODO 이메일로
+        myPageUseCase.leaveUser(authenticationUser.getUsername());
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("회원 탈퇴하였습니다"))
             ;
