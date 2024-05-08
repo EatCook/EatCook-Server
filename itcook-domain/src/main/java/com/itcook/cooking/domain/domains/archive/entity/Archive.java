@@ -1,5 +1,6 @@
-package com.itcook.cooking.domain.domains.user.entity;
+package com.itcook.cooking.domain.domains.archive.entity;
 
+import com.itcook.cooking.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Archive {
+public class Archive extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "archive_id")

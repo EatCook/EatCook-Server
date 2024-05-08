@@ -1,29 +1,31 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
+import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePostsResponse;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.api.global.dto.PageResponse;
-import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.archive.dto.ArchivePost;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.archive.service.ArchiveDomainService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @UseCase
@@ -33,7 +35,7 @@ public class MyPageUseCase {
 
     private final UserDomainService userDomainService;
     private final PostDomainService postDomainService;
-    private final PasswordEncoder passwordEncoder;
+    private final ArchiveDomainService archiveDomainService;
     private final ApplicationEventPublisher eventPublisher;
 
     /**
@@ -52,22 +54,8 @@ public class MyPageUseCase {
      */
     @Transactional
     public void changePassword(MyPagePasswordServiceDto passwordServiceDto) {
-//        ItCookUser user = userDomainService.findUserByEmail(passwordServiceDto.getEmail());
-//        checkCurrentPassword(passwordServiceDto, user.getPassword());
-//        user.changePassword(passwordEncoder.encode(passwordServiceDto.getNewPassword()));
-
         userDomainService.changePassword(passwordServiceDto.toDomainService());
     }
-
-//    private void checkCurrentPassword(MyPagePasswordServiceDto passwordServiceDto,
-//        String userPassword) {
-//        String inputPassword = passwordServiceDto.getInputPassword();
-//
-//        if (!passwordEncoder
-//            .matches(inputPassword, userPassword)) {
-//            throw new ApiException(UserErrorCode.NOT_EQUAL_PASSWORD);
-//        }
-//    }
 
     /**
      * 회원 탈퇴
@@ -129,4 +117,14 @@ public class MyPageUseCase {
         userDomainService.updateInterestCook(email, userUpdateInterestCook.cookingTypes(),
             userUpdateInterestCook.lifeType());
     }
+
+    /**
+     * 북마크 보관함 조회
+     */
+    public List<MyPageArchivePostsResponse> getArchivePosts(String email) {
+        ItCookUser user = userDomainService.findUserByEmail(email);
+        List<ArchivePost> archivesPosts = archiveDomainService.getArchivesPosts(user.getId());
+        return archivesPosts.stream().map(MyPageArchivePostsResponse::of).toList();
+    }
+
 }

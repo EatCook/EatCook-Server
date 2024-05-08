@@ -12,7 +12,10 @@ import static org.mockito.Mockito.when;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
+import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePostsResponse;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.archive.entity.Archive;
+import com.itcook.cooking.domain.domains.archive.repository.ArchiveRepository;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
@@ -29,6 +32,7 @@ import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
+import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,6 +64,9 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
 
     @Autowired
     private ApplicationEvents applicationEvents;
+
+    @Autowired
+    private ArchiveRepository archiveRepository;
 
     @MockBean
     private CacheManager cacheManager;
@@ -270,6 +277,45 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
             ;
     }
 
+    @Test
+    @DisplayName("내가 저장한 북마크 보관함 조회")
+    void getArchivePosts() {
+        //given
+        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
+        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
+
+        Post post1 = createPost(user2.getId(), "요리1", "상세1");
+        Post post2 = createPost(user2.getId(), "요리2", "상세2");
+        Post post3 = createPost(user2.getId(), "요리3", "상세3");
+
+        createArchive(post1.getId(), user1.getId());
+        createArchive(post2.getId(), user1.getId());
+        createArchive(post3.getId(), user1.getId());
+
+        //when
+        List<MyPageArchivePostsResponse> response = myPageUseCase.getArchivePosts(
+            user1.getEmail());
+
+        //then
+        assertThat(response)
+            .extracting("postId","postImagePath")
+            .containsExactly(
+                tuple(post3.getId(), post3.getPostImagePath()),
+                tuple(post2.getId(), post2.getPostImagePath()),
+                tuple(post1.getId(), post1.getPostImagePath())
+            );
+    }
+
+    private void createArchive(Long postId, Long userId) {
+        Archive archive = Archive.builder()
+            .postId(postId)
+            .itCookUserId(userId)
+            .build();
+
+        
+        archiveRepository.save(archive);
+    }
+
     private ItCookUser createUser(String username, String nickName) {
         ItCookUser user = ItCookUser.builder()
             .email(username)
@@ -282,7 +328,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         return userRepository.save(user);
     }
 
-    private void createPost(Long userId, String title, String introduction) {
+    private Post createPost(Long userId, String title, String introduction) {
         Post post = Post.builder()
             .recipeName(title)
             .introduction(introduction)
@@ -290,7 +336,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
             .userId(userId)
             .postFlag(PostFlag.ACTIVATE)
             .build();
-        postRepository.save(post);
+        return postRepository.save(post);
     }
 
 
