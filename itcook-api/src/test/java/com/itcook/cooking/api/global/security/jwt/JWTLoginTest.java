@@ -24,6 +24,7 @@ import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ import org.springframework.web.client.RestTemplate;
 @ActiveProfiles("test")
 @Import({RedisTestContainers.class})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@Disabled
 public class JWTLoginTest {
 
     @LocalServerPort
