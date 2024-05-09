@@ -5,7 +5,6 @@ build/
 !**/src/test/**/build/
 
 application-local.yml
-application-test.yml
 generated/
 
 ### IntelliJ IDEA ###
