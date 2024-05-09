@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Gradle Clean & Build
-        run: ./gradlew clean --stacktrace --info build
+        run: ./gradlew clean build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
