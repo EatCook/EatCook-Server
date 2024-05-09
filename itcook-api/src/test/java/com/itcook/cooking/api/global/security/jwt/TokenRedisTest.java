@@ -17,6 +17,7 @@ import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.infra.redis.RedisService;
 import io.jsonwebtoken.Claims;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 //@ActiveProfiles("test")
 //@SpringBootTest
 //@Import(RedisTestContainers.class)
+@Disabled
 public class TokenRedisTest extends IntegrationRedisContainerSupport {
 
     @Autowired

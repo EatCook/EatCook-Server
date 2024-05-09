@@ -44,7 +44,7 @@ jobs:
           context: ./itcook-api
           push: true
           args: --build-arg PROFILE=$ACTIVE_PROFILE
-          tags: hangs0908/itcook-api-dev:${{ github.run_number }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-dev:${{ github.run_number }}
 
   deploy:
     needs: build
