@@ -27,16 +27,4 @@ public abstract class IntegrationTestSupport {
     @MockBean
     protected S3PresignedUrlService s3PresignedUrlService;
 
-    @MockBean
-    protected SwaggerConfig swaggerConfig;
-
-    @MockBean
-    protected AwsSesConfig awsSesConfig;
-
-    @MockBean
-    protected JavaMailConfig javaMailConfig;
-
-    @MockBean
-    protected S3Config s3Config;
-
 }
