@@ -9,7 +9,6 @@ import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.api.global.annotation.UseCase;
-import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.AuthCodeRedisService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
