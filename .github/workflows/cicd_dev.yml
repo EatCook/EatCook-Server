@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Start containers
-        run: docker-compose -f docker-compose-dev.yml up -d
+        run: docker-compose -f docker-compose-local.yml up -d
 
       - name: Gradle Clean & Build
         run: ./gradlew clean build
