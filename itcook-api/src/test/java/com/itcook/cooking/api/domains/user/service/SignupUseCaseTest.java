@@ -21,6 +21,7 @@ import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.VerifyFindUserResponse;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
@@ -78,6 +79,27 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         signupUseCase.verifyAuthCode(serviceDto);
 
         //then
+    }
+
+    @Test
+    @DisplayName("이메일 인증 코드가 맞지 않아 예외 발생한다.")
+    void verifyAuthCodeNotEqual() {
+        //given
+        String authCode = "123456";
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+        VerifyEmailServiceDto serviceDto = VerifyEmailServiceDto.builder()
+            .email(user.getEmail())
+            .authCode(authCode)
+            .build();
+
+        given(redisService.getData(anyString())).willReturn("123457");
+
+        //when
+        //then
+        assertThatThrownBy(() -> signupUseCase.verifyAuthCode(serviceDto))
+            .isInstanceOf(ApiException.class)
+            .hasMessage(UserErrorCode.EMAIL_VERIFY_FAIL.getDescription())
+            ;
     }
     @Test
     @DisplayName("이미 회원가입한 이메일이 있어서, 인증 코드 요청시 예외가 발생한다.")
