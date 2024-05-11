@@ -57,19 +57,6 @@ class UserQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(user3Followers).isEqualTo(1);
     }
 
-    @Test
-    @DisplayName("test")
-    void test() {
-        //given
-        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
-        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
-        ItCookUser user3 = createUser("user3@test.com", "잇쿡3");
-        //when
-        Optional<ItCookUser> byEmail = userRepository.findByEmail(user1.getEmail());
-        System.out.println("byEmail.isPresent() = " + byEmail.isPresent());
-
-        //then
-    }
 
     private ItCookUser createUser(String username, String nickName) {
         ItCookUser user = ItCookUser.builder()
@@ -77,7 +64,7 @@ class UserQueryRepositoryTest extends IntegrationTestSupport {
             .password("cook12345")
             .providerType(ProviderType.COMMON)
             .nickName(nickName)
-            .userState(UserState.ACTIVE)
+//            .userState(UserState.ACTIVE)
             .userRole(UserRole.USER)
             .build();
 

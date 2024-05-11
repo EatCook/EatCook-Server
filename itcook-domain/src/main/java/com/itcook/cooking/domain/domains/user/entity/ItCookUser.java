@@ -47,13 +47,13 @@ public class ItCookUser extends BaseTimeEntity {
     private String nickName;
 
     @Enumerated(EnumType.STRING)
-    private UserBadge badge;
+    private UserBadge badge = UserBadge.GIBBAB_GOSU;
 
     @Enumerated(EnumType.STRING)
-    private ServiceAlertType serviceAlertType;
+    private ServiceAlertType serviceAlertType = ServiceAlertType.DISABLED;
 
     @Enumerated(EnumType.STRING)
-    private EventAlertType eventAlertType;
+    private EventAlertType eventAlertType = EventAlertType.DISABLED;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -70,7 +70,7 @@ public class ItCookUser extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserState userState;
+    private UserState userState = UserState.ACTIVE;
 
     @ElementCollection
     @CollectionTable(name = "follow", joinColumns = @JoinColumn(name = "from_user", referencedColumnName = "user_id"))
@@ -79,8 +79,7 @@ public class ItCookUser extends BaseTimeEntity {
 
     @Builder
     private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
-        String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
-        UserState userState
+        String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
     ) {
 
         this.id = id;
@@ -90,12 +89,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.userRole = userRole;
         this.profile = profile;
         this.providerType = providerType;
-        this.badge = UserBadge.GIBBAB_GOSU;
         this.lifeType = lifeType;
         if (!CollectionUtils.isEmpty(follow)) this.follow.addAll(follow);
-        this.serviceAlertType = ServiceAlertType.DISABLED;
-        this.eventAlertType = EventAlertType.DISABLED;
-        this.userState = userState == null ? UserState.ACTIVE : userState;
     }
 
     // 회원가입 유저 생성
