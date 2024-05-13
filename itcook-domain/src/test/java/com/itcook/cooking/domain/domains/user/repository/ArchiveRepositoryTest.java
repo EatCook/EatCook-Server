@@ -73,7 +73,7 @@ class ArchiveRepositoryTest extends IntegrationTestSupport {
             .password("cook12345")
             .providerType(ProviderType.COMMON)
             .nickName(nickName)
-            .userState(UserState.ACTIVE)
+//            .userState(UserState.ACTIVE)
             .userRole(UserRole.USER)
             .build();
 
