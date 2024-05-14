@@ -24,6 +24,11 @@ public class UserValidator {
         Assert.hasText(user.getPassword(), "비밀번호를 입력해야합니다.");
         Assert.notNull(user.getUserRole(), "UserRole is Not Null");
         Assert.notNull(user.getProviderType(), "ProviderType is Not Null");
+        validateDuplicateEmail(user.getEmail());
+    }
+
+    private void validateDuplicateEmail(String email) {
+        userAdaptor.checkDuplicateEmail(email);
     }
 
     public void validateDuplicateNickName(String nickName) {

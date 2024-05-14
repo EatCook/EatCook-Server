@@ -5,6 +5,6 @@ import lombok.Builder;
 @Builder
 public record UserLeaveEvent(
     String email
-) {
+){
 
 }

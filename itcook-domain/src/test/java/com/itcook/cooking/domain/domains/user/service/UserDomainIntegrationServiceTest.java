@@ -355,6 +355,18 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .isInstanceOf(IllegalArgumentException.class)
         ;
     }
+    @Test
+    @DisplayName("중복 이메일로 회원가입 시도시 예외가 발생한다.")
+    void signupDuplicateEmail() {
+        //given
+        createUser("user@test.com","잇쿡");
+
+        //when //then
+        assertThatThrownBy(() -> userDomainService.signup("user@test.com", "cook1234"))
+            .isInstanceOf(ApiException.class)
+            .hasMessage(UserErrorCode.ALREADY_EXISTS_USER.getDescription())
+        ;
+    }
 
     @Test
     @DisplayName("추가 회원가입 로직시, 닉네임이 중복되어 예외가 발생한다")

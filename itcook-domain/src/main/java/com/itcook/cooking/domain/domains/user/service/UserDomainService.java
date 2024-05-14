@@ -100,7 +100,8 @@ public class UserDomainService {
     @Transactional
     public void leaveUser(String email) {
         ItCookUser user = findUserByEmail(email);
-        user.delete();
+        user.delete(email);
+        userAdaptor.saveUser(user); // 이벤트 발생을 위한 save 호출
     }
 
 
