@@ -9,9 +9,11 @@ import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @UseCase
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class NotificationUseCase {
 

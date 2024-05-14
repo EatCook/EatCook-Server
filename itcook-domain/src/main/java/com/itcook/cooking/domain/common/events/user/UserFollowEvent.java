@@ -8,8 +8,8 @@ import lombok.ToString;
 @ToString
 public class UserFollowEvent {
 
-    private String followerNickName;
-    private Long followingId;
+    private final String followerNickName;
+    private final Long followingId;
 
     @Builder
     public UserFollowEvent(String followerNickName, Long followingId) {

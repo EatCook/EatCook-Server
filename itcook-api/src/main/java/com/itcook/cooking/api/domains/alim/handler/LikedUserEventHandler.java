@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.alim.handler;
 
-import com.itcook.cooking.domain.common.events.user.UserFollowEvent;
+import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
 import com.itcook.cooking.domain.domains.notification.adapter.NotificationAdapter;
 import com.itcook.cooking.domain.domains.notification.entity.Notification;
 import com.itcook.cooking.domain.domains.notification.entity.NotificationType;
@@ -12,26 +12,24 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-/**
- * 팔로우 요청시 발생하는 이벤트
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FollowUserEventHandler {
+public class LikedUserEventHandler {
 
     private final NotificationAdapter notificationAdapter;
 
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
-    public void handlerFollowUserEvent(UserFollowEvent userFollowEvent) {
-        log.info("{}의 팔로잉 요청 알림 생성", userFollowEvent.getFollowerNickName());
-        Notification alarm = Notification.createFollowAlarm(userFollowEvent.getFollowerNickName(),
-            NotificationType.FOLLOW,
-            userFollowEvent.getFollowingId());
-        notificationAdapter.save(alarm);
+    public void handlerLikedUserEvent(UserLikedEvent userLikedEvent) {
+        log.info("{}의 좋아요 요청 알림 생성", userLikedEvent.getFromUserNickName());
+        Notification likeAlarm = Notification.createLikeAlarm(
+            userLikedEvent.getFromUserNickName(),
+            NotificationType.LIKE,
+            userLikedEvent.getToUserId(),
+            userLikedEvent.getPostId()
+        );
+        notificationAdapter.save(likeAlarm);
     }
-
-
 }

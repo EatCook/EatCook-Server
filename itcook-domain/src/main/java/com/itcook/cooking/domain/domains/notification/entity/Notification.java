@@ -25,20 +25,22 @@ public class Notification extends BaseTimeEntity {
     private Boolean checked = Boolean.FALSE;
 
     private Long userId;
+    private Long postId;
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
     @Builder
-    public Notification(String title, String message, Long userId,
-        NotificationType notificationType) {
+    public Notification(String title, String message, Long userId, Long postId
+        ,NotificationType notificationType) {
         this.title = title;
         this.message = message;
         this.userId = userId;
+        this.postId = postId;
         this.notificationType = notificationType;
     }
 
-    public static Notification createAlarm(String subject, NotificationType notificationType,
+    public static Notification createFollowAlarm(String subject, NotificationType notificationType,
         Long userId) {
         return Notification.builder()
             .title(notificationType.getTitle())
@@ -46,7 +48,18 @@ public class Notification extends BaseTimeEntity {
             .userId(userId)
             .build()
             ;
+    }public static Notification createLikeAlarm(String subject, NotificationType notificationType,
+        Long userId, Long postId) {
+        return Notification.builder()
+            .title(notificationType.getTitle())
+            .postId(postId)
+            .message(NotificationType.createMessage(subject, notificationType))
+            .userId(userId)
+            .build()
+            ;
     }
+
+
 
 
 }

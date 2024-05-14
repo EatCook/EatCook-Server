@@ -13,8 +13,11 @@ public class NotificationAdapter {
     private final NotificationRepository notificationRepository;
 
     public List<Notification> queryNotiByUserIdWithUnchecked(Long userId) {
-        return notificationRepository.findByUserIdAndChecked(userId, false)
+        return notificationRepository.findByUserIdAndCheckedOrderByIdDesc(userId, false)
             ;
     }
 
+    public Notification save(Notification notification) {
+        return notificationRepository.save(notification);
+    }
 }
