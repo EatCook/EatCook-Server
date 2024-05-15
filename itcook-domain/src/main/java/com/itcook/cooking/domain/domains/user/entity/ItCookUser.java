@@ -10,6 +10,7 @@ import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
+import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;
@@ -47,7 +48,7 @@ public class ItCookUser extends BaseTimeEntity {
     private String nickName;
 
     @Enumerated(EnumType.STRING)
-    private UserBadge badge = UserBadge.GIBBAB_GOSU;
+    private UserBadge badge = UserBadge.GIBBAB_NORMAL;
 
     @Enumerated(EnumType.STRING)
     private ServiceAlertType serviceAlertType = ServiceAlertType.DISABLED;
@@ -106,13 +107,17 @@ public class ItCookUser extends BaseTimeEntity {
     }
 
     // 회원탈퇴
-    public void delete() {
+    public void delete(String email) {
         userState = UserState.DELETE;
-        email = null;
+        this.email = null;
         profile = null;
         nickName = "탈퇴한 유저";
         serviceAlertType = ServiceAlertType.DISABLED;
         eventAlertType = EventAlertType.DISABLED;
+
+        registerEvent(UserLeaveEvent.builder()
+            .email(email)
+            .build());
     }
 
     public List<UserCookingTheme> addSignup(

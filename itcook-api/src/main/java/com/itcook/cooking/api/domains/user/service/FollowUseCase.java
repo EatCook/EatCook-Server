@@ -3,11 +3,13 @@ package com.itcook.cooking.api.domains.user.service;
 import com.itcook.cooking.api.domains.user.dto.request.follow.FollowRequest;
 import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.events.user.UserFollowEvent;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 public class FollowUseCase {
 
     private final UserDomainService userDomainService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void toUserFollowAdd(String fromUserEmail, FollowRequest followRequest) {
@@ -35,6 +38,9 @@ public class FollowUseCase {
         follow.add(toItCookUserData.getId());
 
         fromItCookUserData.updateFollow(follow);
+
+        eventPublisher.publishEvent(UserFollowEvent.of(fromItCookUserData.getNickName(),
+            followRequest.getToUserId()));
     }
 
     @Transactional

@@ -88,7 +88,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //then
         assertThat(myPageInfo.getUserId()).isEqualTo(user1.getId());
         assertThat(myPageInfo.getNickName()).isEqualTo("잇쿡1");
-        assertThat(myPageInfo.getBadge()).isEqualTo(UserBadge.GIBBAB_GOSU.getDescription());
+        assertThat(myPageInfo.getBadge()).isEqualTo(UserBadge.GIBBAB_NORMAL.getDescription());
         assertThat(myPageInfo.getProviderType()).isEqualTo(ProviderType.COMMON);
         assertThat(myPageInfo.getFollowingCounts()).isEqualTo(2L);
         assertThat(myPageInfo.getFollowerCounts()).isEqualTo(1L);
@@ -353,6 +353,18 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //then
         assertThatThrownBy(() -> userDomainService.signup(email, password))
             .isInstanceOf(IllegalArgumentException.class)
+        ;
+    }
+    @Test
+    @DisplayName("중복 이메일로 회원가입 시도시 예외가 발생한다.")
+    void signupDuplicateEmail() {
+        //given
+        createUser("user@test.com","잇쿡");
+
+        //when //then
+        assertThatThrownBy(() -> userDomainService.signup("user@test.com", "cook1234"))
+            .isInstanceOf(ApiException.class)
+            .hasMessage(UserErrorCode.ALREADY_EXISTS_USER.getDescription())
         ;
     }
 

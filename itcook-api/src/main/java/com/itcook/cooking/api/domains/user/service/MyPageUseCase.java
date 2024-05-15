@@ -62,10 +62,6 @@ public class MyPageUseCase {
     @Transactional
     public void leaveUser(String email) {
         userDomainService.leaveUser(email);
-        // 해당 유저 엑세스 토큰 삭제
-        eventPublisher.publishEvent(UserLeaveEvent.builder()
-            .email(email)
-            .build());
     }
 
     @Transactional

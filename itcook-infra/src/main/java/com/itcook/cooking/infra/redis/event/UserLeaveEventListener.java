@@ -7,6 +7,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+/**
+ * 회원 탈퇴 이벤트 핸들러
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
