@@ -87,7 +87,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
         List<CookingType> cookingTypes = List.of(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
         ItCookUser user = ItCookUser.builder()
-            .id(saveUser.getId())
             .email(saveUser.getEmail())
             .password("cook12345")
             .providerType(ProviderType.COMMON)
@@ -122,7 +121,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         createUser("user2@test.com", "잇쿡2");
         List<CookingType> cookingTypes = List.of(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
         ItCookUser user = ItCookUser.builder()
-            .id(saveUser.getId())
             .email(saveUser.getEmail())
             .password("cook12345")
             .providerType(ProviderType.COMMON)
@@ -145,7 +143,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
         List<CookingType> cookingTypes = List.of();
         ItCookUser user = ItCookUser.builder()
-            .id(saveUser.getId())
             .email(saveUser.getEmail())
             .password("cook12345")
             .providerType(ProviderType.COMMON)

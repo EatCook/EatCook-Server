@@ -7,4 +7,9 @@ public record UserLeaveEvent(
     String email
 ){
 
+    public static UserLeaveEvent of(String email) {
+        return UserLeaveEvent.builder()
+            .email(email)
+            .build();
+    }
 }
