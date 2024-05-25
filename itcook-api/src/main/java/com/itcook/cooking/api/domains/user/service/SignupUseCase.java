@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.user.service;
 
-import static com.itcook.cooking.infra.email.EmailTemplate.PASSWORD_EMAIL;
+import static com.itcook.cooking.domain.infra.email.EmailTemplate.PASSWORD_EMAIL;
 
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
@@ -13,8 +13,8 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.AuthCodeRedisService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.domain.domains.user.service.UserImageRegisterService;
-import com.itcook.cooking.infra.email.EmailSendEvent;
-import com.itcook.cooking.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.infra.email.EmailSendEvent;
+import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

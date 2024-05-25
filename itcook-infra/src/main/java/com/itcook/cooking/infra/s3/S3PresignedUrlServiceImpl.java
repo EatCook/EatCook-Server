@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 
+import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class S3PresignedUrlService {
+public class S3PresignedUrlServiceImpl implements S3PresignedUrlService {
 
     private final AmazonS3 amazonS3;
     @Value("${aws.s3.bucket}")

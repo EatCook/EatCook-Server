@@ -1,11 +1,10 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.itcook.cooking.domain.infra.redis.dto.RankingWords;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 
 @Data
@@ -20,10 +19,10 @@ public class SearchRankResponse {
 //    @Schema(description = "검색 횟수", example = "10")
     private Long searchCount;
 
-    public static SearchRankResponse of(TypedTuple<Object> typedTuple) {
+    public static SearchRankResponse of(RankingWords rankingWords) {
         return SearchRankResponse.builder()
-            .searchWord(String.valueOf(typedTuple.getValue()))
-            .searchCount(Double.valueOf(typedTuple.getScore()).longValue())
+            .searchWord(rankingWords.searchWord())
+            .searchCount(rankingWords.searchCount())
             .build();
     }
 }

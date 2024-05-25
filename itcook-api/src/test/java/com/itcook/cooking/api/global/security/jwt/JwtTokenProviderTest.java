@@ -7,20 +7,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
+import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import com.itcook.cooking.domain.common.errorcode.ErrorCode;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
-import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
-import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.domain.infra.redis.RedisService;
+import com.itcook.cooking.infra.redis.RedisServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class JwtTokenProviderTest {
     private JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService = mock(RedisService.class);
+    private final RedisService redisService = mock(RedisServiceImpl.class);
     @BeforeEach
     void init() {
         String key = "testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey";

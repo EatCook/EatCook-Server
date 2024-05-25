@@ -1,4 +1,4 @@
-package com.itcook.cooking.infra.redis.event;
+package com.itcook.cooking.domain.common.events.user;
 
 import lombok.Builder;
 

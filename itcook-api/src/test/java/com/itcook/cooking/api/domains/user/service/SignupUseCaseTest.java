@@ -1,6 +1,5 @@
 package com.itcook.cooking.api.domains.user.service;
 
-import static com.itcook.cooking.domain.domains.post.enums.CookingType.JAPANESE_FOOD;
 import static com.itcook.cooking.domain.domains.post.enums.CookingType.KOREAN_FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -13,17 +12,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
-import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
-import com.itcook.cooking.api.domains.user.service.dto.response.VerifyFindUserResponse;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
@@ -31,9 +27,8 @@ import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-import com.itcook.cooking.infra.email.EmailSendEvent;
+import com.itcook.cooking.domain.infra.email.EmailSendEvent;
 import java.util.List;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

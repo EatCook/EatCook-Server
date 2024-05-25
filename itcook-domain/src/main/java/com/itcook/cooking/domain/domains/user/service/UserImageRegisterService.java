@@ -1,9 +1,9 @@
 package com.itcook.cooking.domain.domains.user.service;
 
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.infra.s3.ImageFileExtension;
-import com.itcook.cooking.infra.s3.ImageUrlDto;
-import com.itcook.cooking.infra.s3.S3PresignedUrlService;
+import com.itcook.cooking.domain.infra.s3.ImageFileExtension;
+import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

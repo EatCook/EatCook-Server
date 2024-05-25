@@ -1,6 +1,6 @@
-package com.itcook.cooking.infra.email;
+package com.itcook.cooking.domain.infra.email;
 
-import static com.itcook.cooking.infra.email.EmailHtmlConstant.MAIL_BASIC_FORMAT;
+import static com.itcook.cooking.domain.infra.email.EmailHtmlConstant.MAIL_BASIC_FORMAT;
 
 import lombok.Getter;
 

@@ -5,13 +5,13 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ROLES_CLAIM;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.TOKEN_ISSUER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
-import static io.jsonwebtoken.SignatureAlgorithm.*;
+import static io.jsonwebtoken.SignatureAlgorithm.HS512;
 
+import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
-import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.domain.infra.redis.RedisService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

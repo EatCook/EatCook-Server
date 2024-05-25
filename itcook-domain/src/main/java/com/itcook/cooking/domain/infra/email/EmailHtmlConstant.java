@@ -1,4 +1,4 @@
-package com.itcook.cooking.infra.email;
+package com.itcook.cooking.domain.infra.email;
 
 public class EmailHtmlConstant {
 

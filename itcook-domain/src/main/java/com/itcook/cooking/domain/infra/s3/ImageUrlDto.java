@@ -1,4 +1,4 @@
-package com.itcook.cooking.infra.s3;
+package com.itcook.cooking.domain.infra.s3;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

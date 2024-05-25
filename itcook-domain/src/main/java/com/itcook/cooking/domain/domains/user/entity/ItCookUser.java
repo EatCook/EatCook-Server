@@ -10,7 +10,7 @@ import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
-import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
+import com.itcook.cooking.domain.common.events.user.UserLeaveEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;

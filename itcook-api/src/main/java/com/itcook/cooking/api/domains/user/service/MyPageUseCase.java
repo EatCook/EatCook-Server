@@ -17,7 +17,6 @@ import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
-import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;

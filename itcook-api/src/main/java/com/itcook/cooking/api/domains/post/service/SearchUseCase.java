@@ -8,22 +8,20 @@ import com.itcook.cooking.api.domains.post.dto.response.SearchResponse;
 import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
 import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.api.domains.post.service.dto.PostSearchServiceDto;
+import com.itcook.cooking.api.domains.search.dto.RealTimeSearchWords;
 import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.domains.post.adaptor.PostAdaptor;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
-import com.itcook.cooking.domain.domains.post.service.PostDomainService;
-import com.itcook.cooking.infra.redis.RedisService;
-import com.itcook.cooking.infra.redis.event.RealTimeSearchWords;
+import com.itcook.cooking.domain.infra.redis.RedisService;
+import com.itcook.cooking.domain.infra.redis.dto.RankingWords;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiPredicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -34,7 +32,6 @@ import org.springframework.util.ObjectUtils;
 @Slf4j
 public class SearchUseCase {
 
-    private final PostDomainService postDomainService;
     private final ApplicationEventPublisher eventPublisher;
     private final RedisService redisService;
     private final PostQuerydslRepository postQuerydslRepository;
@@ -98,7 +95,7 @@ public class SearchUseCase {
      * 검색어 랭킹을 가져온다.
      */
     public List<SearchRankResponse> getRankingWords() {
-        Set<TypedTuple<Object>> rankingWords = redisService.getRankingWords();
+        List<RankingWords> rankingWords = redisService.getRankingWords();
         return rankingWords.stream().map(SearchRankResponse::of).toList();
     }
 

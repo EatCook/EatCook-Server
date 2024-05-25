@@ -1,6 +1,6 @@
 package com.itcook.cooking.api;
 
-import com.itcook.cooking.infra.redis.event.SearchWordsEventListener;
+import com.itcook.cooking.api.domains.search.handler.SearchWordsEventHandler;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -10,6 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 public abstract class IntegrationMockTestSupport {
 
     @MockBean
-    private SearchWordsEventListener searchWordsEventListener;
+    private SearchWordsEventHandler searchWordsEventListener;
 
 }
