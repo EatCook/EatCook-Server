@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Archive extends BaseTimeEntity {
+public class Archive extends BaseTimeEntity<Archive> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "archive_id")

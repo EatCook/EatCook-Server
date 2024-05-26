@@ -1,5 +1,6 @@
 package com.itcook.cooking.infra.redis;
 
+import com.amazonaws.util.CollectionUtils;
 import com.itcook.cooking.domain.infra.redis.RedisService;
 import com.itcook.cooking.domain.infra.redis.dto.RankingWords;
 import java.util.List;
@@ -46,7 +47,7 @@ public class RedisServiceImpl implements RedisService {
         Set<TypedTuple<Object>> searchWords = redisTemplate.opsForZSet()
             .reverseRangeWithScores("searchWords", 0, 9);
 
-        if (searchWords == null) {
+        if (CollectionUtils.isNullOrEmpty(searchWords)) {
             return List.of();
         }
 
