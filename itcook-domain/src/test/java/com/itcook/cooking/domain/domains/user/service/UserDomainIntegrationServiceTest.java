@@ -8,14 +8,7 @@ import static com.itcook.cooking.domain.domains.post.enums.CookingType.WESTERN_F
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import com.itcook.cooking.domain.common.constant.UserConstant;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.IntegrationTestSupport;
@@ -29,26 +22,18 @@ import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageLeaveUser;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
-import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
-import com.itcook.cooking.infra.redis.event.UserLeaveEventListener;
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Transactional
 class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
@@ -102,7 +87,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
         List<CookingType> cookingTypes = List.of(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
         ItCookUser user = ItCookUser.builder()
-            .id(saveUser.getId())
             .email(saveUser.getEmail())
             .password("cook12345")
             .providerType(ProviderType.COMMON)
@@ -137,7 +121,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         createUser("user2@test.com", "잇쿡2");
         List<CookingType> cookingTypes = List.of(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
         ItCookUser user = ItCookUser.builder()
-            .id(saveUser.getId())
             .email(saveUser.getEmail())
             .password("cook12345")
             .providerType(ProviderType.COMMON)
@@ -160,7 +143,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
         List<CookingType> cookingTypes = List.of();
         ItCookUser user = ItCookUser.builder()
-            .id(saveUser.getId())
             .email(saveUser.getEmail())
             .password("cook12345")
             .providerType(ProviderType.COMMON)

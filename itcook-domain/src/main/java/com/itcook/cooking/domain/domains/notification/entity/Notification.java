@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notification extends BaseTimeEntity {
+public class Notification extends BaseTimeEntity<Notification> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +48,9 @@ public class Notification extends BaseTimeEntity {
             .userId(userId)
             .build()
             ;
-    }public static Notification createLikeAlarm(String subject, NotificationType notificationType,
+    }
+
+    public static Notification createLikeAlarm(String subject, NotificationType notificationType,
         Long userId, Long postId) {
         return Notification.builder()
             .title(notificationType.getTitle())
@@ -59,7 +61,9 @@ public class Notification extends BaseTimeEntity {
             ;
     }
 
-
+    public void updateCheck() {
+        checked = true;
+    }
 
 
 }

@@ -5,7 +5,7 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
-import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.domain.infra.redis.RedisService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.lang.Assert;
 import java.util.Date;

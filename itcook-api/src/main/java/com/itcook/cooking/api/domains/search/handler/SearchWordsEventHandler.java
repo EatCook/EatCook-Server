@@ -1,6 +1,7 @@
-package com.itcook.cooking.infra.redis.event;
+package com.itcook.cooking.api.domains.search.handler;
 
-import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.api.domains.search.dto.RealTimeSearchWords;
+import com.itcook.cooking.domain.infra.redis.RedisService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SearchWordsEventListener {
+public class SearchWordsEventHandler {
 
     private final RedisService redisService;
 

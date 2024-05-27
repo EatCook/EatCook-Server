@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
                 @Tag(name = "06. Archive", description = "보관함 관련된 APIs"),
                 @Tag(name = "07. Follow", description = "팔로우 관련된 APIs"),
                 @Tag(name = "08. Liked", description = "좋아요 관련된 APIs"),
+                @Tag(name = "09. Notification", description = "알림 관련된 APIs"),
         }
 )
 public class SwaggerConfig {

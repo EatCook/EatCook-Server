@@ -1,29 +1,24 @@
 package com.itcook.cooking.api.global.security.jwt;
 
-import static com.itcook.cooking.api.global.consts.ItCookConstants.*;
+import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAIM;
 import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.itcook.cooking.api.IntegrationRedisContainerSupport;
-import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
-import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.infra.redis.RedisService;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 //@ActiveProfiles("test")
 //@SpringBootTest

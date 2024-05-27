@@ -7,8 +7,8 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-
 public record NotificationResponse(
+    Long notificationId,
     String title,
     String message,
     @JsonInclude(Include.NON_NULL)
@@ -23,6 +23,7 @@ public record NotificationResponse(
     }
     private static NotificationResponse of(Notification notification) {
         return NotificationResponse.builder()
+            .notificationId(notification.getId())
             .title(notification.getTitle())
             .message(notification.getMessage())
             .build();

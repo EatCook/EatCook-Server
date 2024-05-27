@@ -1,8 +1,7 @@
 package com.itcook.cooking.infra.mock;
 
-import com.itcook.cooking.infra.email.AuthCodeService;
-import com.itcook.cooking.infra.email.EmailSendEvent;
-import lombok.RequiredArgsConstructor;
+import com.itcook.cooking.domain.infra.email.AuthCodeService;
+import com.itcook.cooking.domain.infra.email.EmailSendEvent;
 
 public class FakeEmailSendService implements AuthCodeService {
 

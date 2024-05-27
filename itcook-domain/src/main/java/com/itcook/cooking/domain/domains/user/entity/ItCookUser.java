@@ -10,7 +10,7 @@ import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
-import com.itcook.cooking.infra.redis.event.UserLeaveEvent;
+import com.itcook.cooking.domain.common.events.user.UserLeaveEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;
@@ -34,7 +34,7 @@ import org.springframework.util.CollectionUtils;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "itcook_user")
-public class ItCookUser extends BaseTimeEntity {
+public class ItCookUser extends BaseTimeEntity<ItCookUser> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,11 +79,10 @@ public class ItCookUser extends BaseTimeEntity {
     private List<Long> follow = new ArrayList<>();
 
     @Builder
-    private ItCookUser(Long id, String email, String password, String nickName, UserRole userRole,
+    private ItCookUser(String email, String password, String nickName, UserRole userRole,
         String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
     ) {
 
-        this.id = id;
         this.email = email;
         this.password = password;
         this.nickName = nickName;
@@ -115,9 +114,7 @@ public class ItCookUser extends BaseTimeEntity {
         serviceAlertType = ServiceAlertType.DISABLED;
         eventAlertType = EventAlertType.DISABLED;
 
-        registerEvent(UserLeaveEvent.builder()
-            .email(email)
-            .build());
+        registerEvent(UserLeaveEvent.of(email));
     }
 
     public List<UserCookingTheme> addSignup(

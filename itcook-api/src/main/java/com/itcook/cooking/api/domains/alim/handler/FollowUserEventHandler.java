@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
- * 팔로우 요청시 발생하는 이벤트
+ * 팔로우 요청시 발생하는 이벤트 핸들
  */
 @Slf4j
 @Component

@@ -1,4 +1,4 @@
-package com.itcook.cooking.infra.redis.event;
+package com.itcook.cooking.api.domains.search.dto;
 
 import java.util.List;
 import lombok.Builder;

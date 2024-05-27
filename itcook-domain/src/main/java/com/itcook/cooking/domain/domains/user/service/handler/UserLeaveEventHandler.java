@@ -1,6 +1,7 @@
-package com.itcook.cooking.infra.redis.event;
+package com.itcook.cooking.domain.domains.user.service.handler;
 
-import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.domain.infra.redis.RedisService;
+import com.itcook.cooking.domain.common.events.user.UserLeaveEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -13,7 +14,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class UserLeaveEventListener {
+public class UserLeaveEventHandler {
 
     private final RedisService redisService;
 

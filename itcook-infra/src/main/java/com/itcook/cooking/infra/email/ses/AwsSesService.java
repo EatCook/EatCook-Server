@@ -6,16 +6,13 @@ import com.amazonaws.services.simpleemail.model.Content;
 import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
-import com.itcook.cooking.infra.email.AuthCodeService;
-import com.itcook.cooking.infra.email.EmailSendEvent;
+import com.itcook.cooking.domain.infra.email.AuthCodeService;
+import com.itcook.cooking.domain.infra.email.EmailSendEvent;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @Slf4j

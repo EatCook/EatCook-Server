@@ -2,6 +2,8 @@ package com.itcook.cooking.infra.email;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.itcook.cooking.domain.infra.email.AuthCodeService;
+import com.itcook.cooking.domain.infra.email.EmailSendEvent;
 import com.itcook.cooking.infra.mock.FakeEmailSendService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

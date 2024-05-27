@@ -1,7 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.recipe;
 
-import com.itcook.cooking.infra.s3.ImageUrlDto;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -4,15 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.itcook.cooking.api.IntegrationRedisContainerSupport;
-import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
-import com.itcook.cooking.infra.redis.RedisService;
+import com.itcook.cooking.domain.infra.redis.RedisService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 //@ActiveProfiles("test")
 //@Import(RedisTestContainers.class)

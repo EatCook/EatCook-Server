@@ -21,4 +21,9 @@ public class NotificationDomainService {
             userId);
     }
 
+    @Transactional
+    public void updateCheck(Long notificationId) {
+        Notification notification = notificationAdapter.findById(notificationId);
+        notification.updateCheck();
+    }
 }

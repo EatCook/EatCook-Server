@@ -28,4 +28,7 @@ public class NotificationUseCase {
         return NotificationResponse.of(uncheckedNotis);
     }
 
+    public void updateCheck(Long notificationId) {
+        notificationDomainService.updateCheck(notificationId);
+    }
 }

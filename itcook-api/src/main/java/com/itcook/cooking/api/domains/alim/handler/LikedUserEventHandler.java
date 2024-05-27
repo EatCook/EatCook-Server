@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+/**
+ *  좋아요 요청 알림 이벤트 핸들러
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
