@@ -73,7 +73,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //then
         assertThat(myPageInfo.getUserId()).isEqualTo(user1.getId());
         assertThat(myPageInfo.getNickName()).isEqualTo("잇쿡1");
-        assertThat(myPageInfo.getBadge()).isEqualTo(UserBadge.GIBBAB_NORMAL.getDescription());
+        assertThat(myPageInfo.getBadge()).isEqualTo(UserBadge.GIBBAB_FIRST.getDescription());
         assertThat(myPageInfo.getProviderType()).isEqualTo(ProviderType.COMMON);
         assertThat(myPageInfo.getFollowingCounts()).isEqualTo(2L);
         assertThat(myPageInfo.getFollowerCounts()).isEqualTo(1L);

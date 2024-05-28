@@ -1,6 +1,19 @@
 package com.itcook.cooking.batch.job;
 
-import com.itcook.cooking.domain.domains.user.adaptor.UserAdaptor;
+import static com.itcook.cooking.domain.domains.user.entity.QItCookUser.itCookUser;
+
+import com.itcook.cooking.batch.expression.Expression;
+import com.itcook.cooking.batch.options.QuerydslNoOffsetNumberOptions;
+import com.itcook.cooking.batch.reader.QuerydslNoOffsetPagingItemReader;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.enums.UserBadge;
+import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
+import com.itcook.cooking.domain.domains.user.repository.dto.UserPostCount;
+import io.netty.channel.ConnectTimeoutException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -9,11 +22,11 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.PlatformTransactionManager;
 
 @Slf4j
 @Configuration
@@ -22,8 +35,15 @@ public class UserBadgeUpdateBatch {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-    private final UserAdaptor userAdaptor;
-    private static final int CHUNK_SIZE = 100;
+    private final EntityManagerFactory emf;
+    private final UserQueryRepository userQueryRepository;
+
+    private int chunkSize;
+
+    @Value("${chunkSize:100}")
+    public void setChunkSize(int chunkSize) {
+        this.chunkSize = chunkSize;
+    }
 
     @Bean
     public Job userBadgeUpdateJob() {
@@ -37,15 +57,49 @@ public class UserBadgeUpdateBatch {
             .build();
     }
 
-    // TODO retry
     @Bean
     public Step userBadgeUpdateStep() {
         return stepBuilderFactory.get("userBadgeUpdateStep")
-            .tasklet((contribution, chunkContext) -> {
-                log.info(">>>>>>>>>> start step1");
-                return RepeatStatus.FINISHED;
-            })
+            .<ItCookUser, ItCookUser>chunk(chunkSize)
+            .reader(querydslNoOffsetPagingItemReader())
+            .writer(userBadgeUpdateWriter())
+            .faultTolerant()
+            .retry(ConnectTimeoutException.class)
+            .retryLimit(2)
             .build();
+    }
+
+    @Bean
+    public QuerydslNoOffsetPagingItemReader<ItCookUser> querydslNoOffsetPagingItemReader() {
+        QuerydslNoOffsetNumberOptions<ItCookUser, Long> options = new QuerydslNoOffsetNumberOptions<>(
+            itCookUser.id, Expression.ASC);
+
+        return new QuerydslNoOffsetPagingItemReader<>(emf, chunkSize, options,
+            jpaQueryFactory -> jpaQueryFactory
+                .selectFrom(itCookUser)
+        );
+    }
+
+    @Bean
+    public ItemWriter<ItCookUser> userBadgeUpdateWriter() {
+        return new ItemWriter<ItCookUser>() {
+            @Override
+            public void write(List<? extends ItCookUser> items) throws Exception {
+                List<Long> userIds = items.stream().map(ItCookUser::getId).toList();
+                List<UserPostCount> userPostCounts = userQueryRepository.getUserPostCount(userIds);
+
+                Map<UserBadge, List<Long>> userBadgeListMap = userPostCounts.stream()
+                    .collect(
+                        Collectors.groupingBy(
+                            UserPostCount::updateUserBadge,
+                            Collectors.mapping(UserPostCount::getUserId, Collectors.toList())
+                        )
+                    );
+
+                
+                userBadgeListMap.forEach(userQueryRepository::updateBadge);
+            }
+        };
     }
 
     @Bean

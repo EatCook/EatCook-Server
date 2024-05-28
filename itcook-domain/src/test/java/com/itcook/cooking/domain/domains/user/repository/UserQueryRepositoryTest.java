@@ -10,8 +10,12 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.repository.dto.UserPostCount;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
@@ -65,48 +69,6 @@ class UserQueryRepositoryTest extends IntegrationTestSupport {
         assertThat(user3Followers).isEqualTo(1);
     }
 
-
-    @Test
-    @DisplayName("게시글수 특정 개수 이상 작성하여 유저 뱃지 업데이트")
-    void updateUserBadge() {
-        //given
-        ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
-        List<Post> list = new ArrayList<>();
-        for (int i = 1; i <= 50; i++) {
-            Post post = createPost(user.getId(), "요리" + i, "상세" + i);
-            list.add(post);
-        }
-        postRepository.saveAll(list);
-
-
-        //when
-        userQueryRepository.updateUserBadge();
-
-        em.flush();
-        em.clear();
-
-        //then
-        List<ItCookUser> users = userRepository.findAll();
-        assertThat(users.get(0).getBadge()).isEqualTo(UserBadge.GIBBAB_GOSU);
-        assertThat(users.get(1).getBadge()).isEqualTo(UserBadge.GIBBAB_NORMAL);
-    }
-
-    @Test
-    @DisplayName("업데이트 할 유저가 없지만 업데이트를 진행한다.")
-    void updateUserEmpty() {
-        //given
-        ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
-
-        //when
-        userQueryRepository.updateUserBadge();
-
-        //then
-        List<ItCookUser> users = userRepository.findAll();
-        assertThat(users.get(0).getBadge()).isEqualTo(UserBadge.GIBBAB_NORMAL);
-        assertThat(users.get(1).getBadge()).isEqualTo(UserBadge.GIBBAB_NORMAL);
-    }
 
 
     private ItCookUser createUser(String username, String nickName) {

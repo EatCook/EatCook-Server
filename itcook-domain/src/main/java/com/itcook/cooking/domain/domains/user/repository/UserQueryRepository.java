@@ -5,16 +5,17 @@ import static com.itcook.cooking.domain.domains.user.entity.QItCookUser.itCookUs
 import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
-import com.itcook.cooking.domain.domains.user.enums.UserState;
+import com.itcook.cooking.domain.domains.user.repository.dto.UserPostCount;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,25 +30,52 @@ public class UserQueryRepository {
         Long count = countQuery.fetchOne();
         return count == null ? 0 : count;
     }
+    
+    public List<UserPostCount> getUserPostCount(List<Long> userIds) {
+        return jpaQueryFactory
+            .select(
+                Projections.constructor(
+                    UserPostCount.class,
+                    itCookUser.id,
+                    post.count()
+                )
+            )
+            .from(itCookUser)
+            .leftJoin(post).on(itCookUser.id.eq(post.userId))
+            .where(itCookUser.id.in(userIds))
+            .groupBy(itCookUser.id)
+            .fetch();
+    }
 
     @Transactional
-    public void updateUserBadge() {
-        List<Long> userIds = jpaQueryFactory
-            .select(post.userId)
-            .from(post)
-            .groupBy(post.userId)
-            .having(post.count().goe(50))
-            .fetch();
-
-        if (CollectionUtils.isEmpty(userIds)) return;
-
+    public void updateBadge(UserBadge userBadge, List<Long> userIds) {
+        log.info("유저 뱃지 : {}, 유저 아이디 : {}", userBadge, userIds);
         jpaQueryFactory
             .update(itCookUser)
-            .where(itCookUser.id.in(
-                userIds
-            ))
-            .set(itCookUser.badge, UserBadge.GIBBAB_GOSU)
-            .execute();
-
+            .set(itCookUser.badge, userBadge)
+            .where(itCookUser.id.in(userIds))
+            .execute()
+            ;
     }
+
 }
+//    @Transactional
+//    public void updateUserBadge() {
+//        List<Long> userIds = jpaQueryFactory
+//            .select(post.userId)
+//            .from(post)
+//            .groupBy(post.userId)
+//            .having(post.count().goe(50))
+//            .fetch();
+//
+//        if (CollectionUtils.isEmpty(userIds)) return;
+//
+//        jpaQueryFactory
+//            .update(itCookUser)
+//            .where(itCookUser.id.in(
+//                userIds
+//            ))
+//            .set(itCookUser.badge, UserBadge.GIBBAB_SECOND)
+//            .execute();
+//
+//    }

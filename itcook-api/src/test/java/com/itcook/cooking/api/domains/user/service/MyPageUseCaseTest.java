@@ -89,7 +89,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
 
         assertThat(myPage.getUserId()).isEqualTo(user1.getId());
         assertThat(myPage.getNickName()).isEqualTo(user1.getNickName());
-        assertThat(myPage.getBadge()).isEqualTo(UserBadge.GIBBAB_NORMAL.getDescription());
+        assertThat(myPage.getBadge()).isEqualTo(UserBadge.GIBBAB_FIRST.getDescription());
         assertThat(myPage.getPosts().content()).hasSize(3)
             .extracting("recipeName", "introduction")
             .containsExactly(
