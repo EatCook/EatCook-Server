@@ -58,5 +58,7 @@ jobs:
             cd app
             sudo touch .env
             echo "${{ secrets.ENV_VARS }}" | sudo tee .env > /dev/null
+            docker rm $(docker ps -a -q --filter "status=exited")
+            docker image prune -a -f
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/itcook-batch-dev:latest
             docker run -d --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-dev:latest
