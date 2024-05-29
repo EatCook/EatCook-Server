@@ -1,10 +1,10 @@
 aws:
   ses:
-    access-key: ${SES_ACCESS_KEY:test}
-    secret-key: ${SES_SECRET_KEY:test}
+    access-key: ${SES_ACCESS_KEY}
+    secret-key: ${SES_SECRET_KEY}
   s3:
-    access-key: ${S3_ACCESS_KEY:test}
-    secret-key: ${S3_SECRET_KEY:test}
+    access-key: ${S3_ACCESS_KEY}
+    secret-key: ${S3_SECRET_KEY}
     bucket: ${S3_BUCKET:test}
 
 ---
@@ -19,8 +19,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME:test}
-    password: ${MAIL_PASSWORD:test}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
