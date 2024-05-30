@@ -6,6 +6,12 @@ aws:
     access-key: ${S3_ACCESS_KEY}
     secret-key: ${S3_SECRET_KEY}
     bucket: ${S3_BUCKET}
+app:
+  firebase:
+    config:
+      file: ${FIREBASE_CONFIG_FILE}
+    project:
+      id: ${FIREBASE_PROJECT_ID}
 
 ---
 

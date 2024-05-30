@@ -6,6 +6,8 @@ build/
 
 application-local.yml
 generated/
+*.json
+!.gitkeep
 
 ### IntelliJ IDEA ###
 .idea

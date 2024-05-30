@@ -78,9 +78,12 @@ public class ItCookUser extends BaseTimeEntity<ItCookUser> {
     @Column(name = "to_user")
     private List<Long> follow = new ArrayList<>();
 
+    private String deviceToken;
+
     @Builder
     private ItCookUser(String email, String password, String nickName, UserRole userRole,
-        String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
+        String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
+        String deviceToken
     ) {
 
         this.email = email;
@@ -90,6 +93,7 @@ public class ItCookUser extends BaseTimeEntity<ItCookUser> {
         this.profile = profile;
         this.providerType = providerType;
         this.lifeType = lifeType;
+        this.deviceToken = deviceToken;
         if (!CollectionUtils.isEmpty(follow)) this.follow.addAll(follow);
     }
 
