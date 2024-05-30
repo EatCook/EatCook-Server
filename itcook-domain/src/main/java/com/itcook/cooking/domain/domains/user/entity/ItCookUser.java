@@ -78,12 +78,13 @@ public class ItCookUser extends BaseTimeEntity<ItCookUser> {
     @Column(name = "to_user")
     private List<Long> follow = new ArrayList<>();
 
+    @Column(name = "device_token")
     private String deviceToken;
 
     @Builder
     private ItCookUser(String email, String password, String nickName, UserRole userRole,
-        String profile, ProviderType providerType, LifeType lifeType, List<Long> follow,
-        String deviceToken
+        String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
+        ,String deviceToken
     ) {
 
         this.email = email;
