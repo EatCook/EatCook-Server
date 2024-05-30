@@ -59,6 +59,20 @@ project(':itcook-api') {
     }
 }
 
+project(':itcook-batch') {
+    bootJar {
+        enabled = true
+    }
+    jar {
+        // java test fixtures 때문에
+        enabled = true
+    }
+    dependencies {
+        implementation project(':itcook-domain')
+        implementation project(':itcook-infra')
+    }
+}
+
 project(':itcook-domain') {
     bootJar {
         enabled = false

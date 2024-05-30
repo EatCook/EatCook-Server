@@ -48,7 +48,7 @@ public class ItCookUser extends BaseTimeEntity<ItCookUser> {
     private String nickName;
 
     @Enumerated(EnumType.STRING)
-    private UserBadge badge = UserBadge.GIBBAB_NORMAL;
+    private UserBadge badge = UserBadge.GIBBAB_FIRST;
 
     @Enumerated(EnumType.STRING)
     private ServiceAlertType serviceAlertType = ServiceAlertType.DISABLED;
