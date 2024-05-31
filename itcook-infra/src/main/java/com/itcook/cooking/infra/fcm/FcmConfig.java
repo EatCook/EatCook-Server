@@ -17,13 +17,11 @@ import org.springframework.core.io.ClassPathResource;
 public class FcmConfig {
 
     private final ClassPathResource firebaseResource;
-    private final String projectId;
 
     public FcmConfig(
-        @Value("${app.firebase.config.file}") String firebaseConfigPath,
-        @Value("${app.firebase.project.id}") String projectId) {
+        @Value("${app.firebase.config.file}") String firebaseConfigPath
+    ) {
         this.firebaseResource = new ClassPathResource(firebaseConfigPath);
-        this.projectId = projectId;
     }
 
     @PostConstruct

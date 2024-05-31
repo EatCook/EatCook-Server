@@ -19,6 +19,7 @@ import com.itcook.cooking.api.global.config.SecurityConfig;
 import com.itcook.cooking.api.global.config.WithItCookMockUser;
 import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtCheckFilter;
+import com.itcook.cooking.api.global.security.jwt.filter.OAuth2LoginFilter;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
@@ -38,6 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
     excludeFilters = {
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class),
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtCheckFilter.class),
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2LoginFilter.class),
     }
 )
 @ActiveProfiles("test")

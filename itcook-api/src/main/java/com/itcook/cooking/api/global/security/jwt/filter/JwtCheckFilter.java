@@ -68,7 +68,6 @@ public class JwtCheckFilter extends OncePerRequestFilter {
         }
 
         // access token 검증
-        // TODO 로그아웃 구현시 블랙리스트 추가
         //  엑세스 토큰이 블랙리스트에 있는지 검증 로직 추가 , access token 과 refresh token이 같이 보내는경우
         //  refresh token만 보낼 경우 refresh token이 탈취 당하는 경우 방지
         verifyAccessToken(accessTokenHeader,request);

@@ -9,9 +9,7 @@ aws:
 app:
   firebase:
     config:
-      file: ${FIREBASE_CONFIG_FILE}
-    project:
-      id: ${FIREBASE_PROJECT_ID}
+      file: ${FIREBASE_CONFIG_FILE:firebase/firebase-adminsdk.json}
 
 ---
 

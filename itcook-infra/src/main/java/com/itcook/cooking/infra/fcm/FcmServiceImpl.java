@@ -9,6 +9,7 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.infra.fcm.FcmService;
 import com.itcook.cooking.domain.infra.fcm.dto.FcmSend;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,9 +42,15 @@ public class FcmServiceImpl implements FcmService {
             .build();
 
         try {
-            firebaseMessaging.send(message);
-        } catch (FirebaseMessagingException e) {
+            firebaseMessaging.sendAsync(message).get();
+        } catch (InterruptedException | ExecutionException e) {
             log.error("유저 아이디 : {}, 알림 보내기 실패 : {}", itCookUser.getId() ,e.getMessage());
         }
+
+//        try {
+//            firebaseMessaging.send(message); //sendAsync 변환
+//        } catch (FirebaseMessagingException e) {
+//            log.error("유저 아이디 : {}, 알림 보내기 실패 : {}", itCookUser.getId() ,e.getMessage());
+//        }
     }
 }
