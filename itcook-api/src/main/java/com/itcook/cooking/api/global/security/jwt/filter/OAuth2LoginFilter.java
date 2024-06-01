@@ -76,6 +76,7 @@ public class OAuth2LoginFilter extends OncePerRequestFilter {
 
             makeLoginSuccessResponse(response, authenticated);
         } catch (IOException e) {
+            log.error("로그인 에러 : {}", e.getMessage());
             throw new ApiException(CommonErrorCode.SERVER_ERROR);
         }
 
