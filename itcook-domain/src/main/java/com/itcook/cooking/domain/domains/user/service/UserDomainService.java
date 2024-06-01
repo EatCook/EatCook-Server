@@ -5,9 +5,11 @@ import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.adaptor.UserAdaptor;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
+import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeJdbcRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
@@ -72,7 +74,7 @@ public class UserDomainService {
 
     @Transactional
     public ItCookUser signup(String email, String password) {
-        ItCookUser user = ItCookUser.signup(email, password, userValidator);
+        ItCookUser user = ItCookUser.signup(SignupDto.of(email,password, ProviderType.COMMON), userValidator);
         return userAdaptor.saveUser(user);
     }
 

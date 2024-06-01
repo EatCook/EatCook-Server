@@ -2,6 +2,7 @@ package com.itcook.cooking.domain.domains.user.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
@@ -99,11 +100,11 @@ public class ItCookUser extends BaseTimeEntity<ItCookUser> {
     }
 
     // 회원가입 유저 생성
-    public static ItCookUser signup(String email, String password, UserValidator userValidator) {
+    public static ItCookUser signup(SignupDto signupDto, UserValidator userValidator) {
         ItCookUser user = ItCookUser.builder()
-            .email(email)
-            .password(password)
-            .providerType(ProviderType.COMMON)
+            .email(signupDto.email())
+            .password(signupDto.password())
+            .providerType(signupDto.providerType())
             .userRole(UserRole.USER)
             .build();
         userValidator.validateSignup(user);

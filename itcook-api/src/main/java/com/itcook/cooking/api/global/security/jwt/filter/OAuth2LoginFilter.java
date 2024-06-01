@@ -15,6 +15,7 @@ import com.itcook.cooking.api.global.security.jwt.service.ProviderUserService;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import java.io.IOException;
@@ -58,7 +59,6 @@ public class OAuth2LoginFilter extends OncePerRequestFilter {
         }
         log.info("Oauth2 login attemptAuthentication 로그인 시도");
 
-
         String requestBody = null;
 
         try {
@@ -74,8 +74,8 @@ public class OAuth2LoginFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authenticated = UsernamePasswordAuthenticationToken
                 .authenticated(authenticationUser, null, oAuth2User.getAuthorities());
 
-            makeLoginSuccessResponse(response,authenticated);
-        }   catch (IOException e) {
+            makeLoginSuccessResponse(response, authenticated);
+        } catch (IOException e) {
             throw new ApiException(CommonErrorCode.SERVER_ERROR);
         }
 
@@ -84,7 +84,8 @@ public class OAuth2LoginFilter extends OncePerRequestFilter {
     private void signupOauthUser(OAuth2User oAuth2User) {
         userRepository.findByEmail(oAuth2User.getEmail())
             .orElseGet(() -> userRepository.save(
-                ItCookUser.signup(oAuth2User.getEmail(), oAuth2User.getPassword(), userValidator)
+                ItCookUser.signup(SignupDto.of(oAuth2User.getEmail(), oAuth2User.getPassword(),
+                    oAuth2User.getProviderType()), userValidator)
             ));
 
     }
@@ -99,12 +100,13 @@ public class OAuth2LoginFilter extends OncePerRequestFilter {
         List<String> authorities = principalUser.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority).toList();
 
-        TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username, authorities);
+        TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username,
+            authorities);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.addHeader(ACCESS_TOKEN_HEADER,BEARER + tokenDto.getAccessToken());
-        response.addHeader(REFRESH_TOKEN_HEADER,BEARER + tokenDto.getRefreshToken());
+        response.addHeader(ACCESS_TOKEN_HEADER, BEARER + tokenDto.getAccessToken());
+        response.addHeader(REFRESH_TOKEN_HEADER, BEARER + tokenDto.getRefreshToken());
         response.getWriter().write(body);
     }
 }
