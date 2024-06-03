@@ -1,5 +1,6 @@
 package com.itcook.cooking.domain.domains.archive.service;
 
+import com.itcook.cooking.domain.domains.archive.adaptor.ArchiveAdaptor;
 import com.itcook.cooking.domain.domains.archive.dto.ArchivePost;
 import com.itcook.cooking.domain.domains.archive.entity.Archive;
 import com.itcook.cooking.domain.domains.archive.repository.ArchiveQuerydslRepository;
@@ -17,21 +18,25 @@ import java.util.List;
 @Slf4j
 public class ArchiveDomainService {
 
+    private final ArchiveAdaptor archiveAdaptor;
     private final ArchiveRepository archiveRepository;
     private final ArchiveQuerydslRepository archiveQuerydslRepository;
 
-    public List<Archive> getFindByUserId(Long userId) {
-        return archiveRepository.findByItCookUserId(userId);
+    public void validateDuplicateArchive(Long userId, Long postId) {
+         archiveAdaptor.checkDuplicateArchive(userId, postId);
+    }
+    public Archive validateEmptyArchive(Long userId, Long postId) {
+         return archiveAdaptor.checkEmptyArchive(userId, postId);
     }
 
     @Transactional
-    public void saveArchive(Archive newArchive) {
-        archiveRepository.save(newArchive);
+    public void saveArchive(Archive archive) {
+        archiveAdaptor.saveArchive(archive);
     }
 
     @Transactional
-    public void removeArchive(Long archiveId) {
-        archiveRepository.deleteById(archiveId);
+    public void removeArchive(Archive archive) {
+        archiveAdaptor.removeArchiveEntity(archive);
     }
 
     public List<ArchivePost> getArchivesPosts(Long userId) {
