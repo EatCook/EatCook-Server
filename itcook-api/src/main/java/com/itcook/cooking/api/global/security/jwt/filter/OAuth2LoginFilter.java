@@ -21,7 +21,6 @@ import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +76,9 @@ public class OAuth2LoginFilter extends OncePerRequestFilter {
             makeLoginSuccessResponse(response, authenticated);
         } catch (IOException e) {
             log.error("로그인 에러 : {}", e.getMessage());
-            throw new ApiException(CommonErrorCode.SERVER_ERROR);
+            request.setAttribute("exception",
+                new ApiException(CommonErrorCode.BAD_REQUEST));
+            throw new ApiException(CommonErrorCode.BAD_REQUEST);
         }
 
     }
