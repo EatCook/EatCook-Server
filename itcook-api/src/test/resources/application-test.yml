@@ -18,11 +18,12 @@ spring:
           auth: true
           starttls:
             enable: true
-#  datasource:
-#    url: jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1
-  flyway:
+  datasource:
     url: jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1
-    baseline-on-migrate: true
+  flyway:
+    enabled: false
+#    url: jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1
+#    baseline-on-migrate: true
 
 jwt:
   secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}
@@ -33,10 +34,6 @@ aws:
   ses:
     access-key: ${SES_ACCESS_KEY:test}
     secret-key: ${SES_SECRET_KEY:test}
-  s3:
-    access-key: ${S3_ACCESS_KEY:test}
-    secret-key: ${S3_SECRET_KEY:test}
-    bucket: ${S3_BUCKET:test}
 
 swagger-server:
   host: ${SWAGGER_DEV_HOST:test}

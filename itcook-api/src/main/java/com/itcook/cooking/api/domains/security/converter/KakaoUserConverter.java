@@ -4,15 +4,13 @@ import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.security.ProviderUser;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
-public class CommonUserConverter implements ProviderUserConverter{
-
+public class KakaoUserConverter implements ProviderUserConverter{
 
     @Override
     public boolean isSupports(ProviderType providerType) {
-        return providerType == ProviderType.COMMON;
+        return providerType == ProviderType.KAKAO;
     }
 
     @Override

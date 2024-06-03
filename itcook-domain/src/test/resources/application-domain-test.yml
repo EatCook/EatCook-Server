@@ -16,11 +16,10 @@ spring:
           auth: true
           starttls:
             enable: true
-#  datasource:
-#    url: jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1
-  flyway:
+  datasource:
     url: jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1
-    baseline-on-migrate: true
+  flyway:
+    enabled: false
 
 
 
