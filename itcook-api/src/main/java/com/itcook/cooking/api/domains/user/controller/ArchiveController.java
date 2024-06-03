@@ -3,12 +3,12 @@ package com.itcook.cooking.api.domains.user.controller;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.user.dto.request.ArchiveRequest;
 import com.itcook.cooking.api.domains.user.service.ArchiveUseCase;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import com.itcook.cooking.api.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,18 +25,23 @@ public class ArchiveController {
     private final ArchiveUseCase archiveUseCase;
 
     @PostMapping("/add")
-    public void archiveAdd(
+    public ResponseEntity<ApiResponse> archiveAdd(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody ArchiveRequest archiveRequest
     ) {
         archiveUseCase.archiveAdd(authenticationUser.getUsername(), archiveRequest.getPostId());
+        return ResponseEntity.status(200)
+                .body(ApiResponse.OK("저장 되었습니다."));
     }
 
-    @PostMapping("/del")
-    public void archiveDel(
+    @DeleteMapping("/del")
+    public ResponseEntity<ApiResponse> archiveDel(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody ArchiveRequest archiveRequest
     ) {
         archiveUseCase.archiveDel(authenticationUser.getUsername(), archiveRequest.getPostId());
+
+        return ResponseEntity.status(200)
+                .body(ApiResponse.OK("삭제 되었습니다."));
     }
 }

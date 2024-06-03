@@ -27,4 +27,9 @@ public class PostAdaptor {
     public Page<PostWithLikedDto> findPostsWithLiked(Long userId, Pageable pageable) {
         return postQuerydslRepository.findPostsWithLiked(userId, pageable);
     }
+
+    public Post findByIdOrElseThrow(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() ->
+                 new ApiException(PostErrorCode.POST_NOT_EXIST));
+    }
 }
