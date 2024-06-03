@@ -35,16 +35,6 @@ public class LikedDomainService {
         return likedAdaptor.validateEmptyLiked(userId, postId);
     }
 
-    private void nullCheckValidation(LikedDomainDto userWithPostAndArchive) {
-        if (userWithPostAndArchive.getItCookUser() == null) {
-            throw new ApiException(UserErrorCode.USER_NOT_FOUND);
-        }
-
-        if (userWithPostAndArchive.getPost() == null) {
-            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
-        }
-    }
-
     @Transactional
     public void createLiked(Liked liked) {
         likedAdaptor.saveLiked(liked);
