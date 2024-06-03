@@ -31,8 +31,7 @@ public class LikedController {
     ) {
         likedUseCase.likedAdd(authenticationUser.getUsername(), likedRequest.getPostId());
 
-        return ResponseEntity
-                .status(200)
+        return ResponseEntity.status(200)
                 .body(ApiResponse.OK("해당 게시물의 좋아요를 저장하였습니다."));
     }
 
@@ -43,8 +42,7 @@ public class LikedController {
     ) {
         likedUseCase.likedDel(authenticationUser.getUsername(), likedRequest.getPostId());
 
-        return ResponseEntity
-                .status(200)
+        return ResponseEntity.status(200)
                 .body(ApiResponse.OK("해당 게시물의 좋아요를 삭제하였습니다."));
     }
 }

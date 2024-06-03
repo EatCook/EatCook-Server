@@ -8,20 +8,11 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public interface LikedRepository extends JpaRepository<Liked, Long> {
 
     List<Liked> findAllByPostIdIn(List<Long> postIdData);
-
-    @Query("SELECT new com.itcook.cooking.domain.domains.post.repository.dto.LikedDomainDto(" +
-            "p, u, l) " +
-            "FROM ItCookUser u " +
-            "LEFT JOIN FETCH Post p ON p.id = :postId " +
-            "LEFT JOIN FETCH Liked l ON l.postId = p.id AND l.itCookUserId = u.id " +
-            "WHERE u.id = :userId")
-    LikedDomainDto findUserWithPostAndArchiveById(
-            @Param("userId") Long userId,
-            @Param("postId") Long postId
-    );
+    Optional<Liked> findByItCookUserIdAndPostId(Long itCookUserId, Long postId);
 
 }

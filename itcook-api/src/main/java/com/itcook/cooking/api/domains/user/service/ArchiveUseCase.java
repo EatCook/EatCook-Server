@@ -27,7 +27,7 @@ public class ArchiveUseCase {
     public void archiveAdd(String email, Long postId) {
 
         ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
-        Post findByPost = postDomainService.fetchFindByPost(postId).get();
+        Post findByPost = postDomainService.fetchFindByPost(postId);
 
         List<Archive> findByArchive = archiveDomainService.getFindByUserId(findByItCookUser.getId());
 
@@ -51,7 +51,7 @@ public class ArchiveUseCase {
 
     public void archiveDel(String email, Long postId) {
         ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
-        Post findByPost = postDomainService.fetchFindByPost(postId).get();
+        Post findByPost = postDomainService.fetchFindByPost(postId);
 
         List<Archive> findByArchive = archiveDomainService.getFindByUserId(findByItCookUser.getId());
 
