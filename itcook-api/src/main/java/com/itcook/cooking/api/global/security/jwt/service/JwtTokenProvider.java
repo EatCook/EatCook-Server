@@ -138,4 +138,8 @@ public class JwtTokenProvider {
     public boolean isBlackListToken(String accessToken) {
         return redisService.getData(accessToken) != null;
     }
+
+    public boolean isEmailInRedis(String email) {
+        return redisService.getData(email) == null;
+    }
 }

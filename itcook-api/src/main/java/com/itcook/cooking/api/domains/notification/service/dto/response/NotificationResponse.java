@@ -11,6 +11,7 @@ public record NotificationResponse(
     Long notificationId,
     String title,
     String message,
+    boolean checked,
     @JsonInclude(Include.NON_NULL)
     Long postId
 ) {
@@ -25,7 +26,9 @@ public record NotificationResponse(
         return NotificationResponse.builder()
             .notificationId(notification.getId())
             .title(notification.getTitle())
+            .checked(notification.getChecked())
             .message(notification.getMessage())
+            .postId(notification.getPostId())
             .build();
     }
 

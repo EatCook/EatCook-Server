@@ -9,14 +9,11 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAI
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.security.CommonUser;
-import com.itcook.cooking.api.domains.security.ProviderUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
-import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import java.io.IOException;
 import java.util.List;
@@ -30,8 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -115,6 +110,12 @@ public class JwtCheckFilter extends OncePerRequestFilter {
                 throw new ApiException(UserErrorCode.IS_LOGOUT_TOKEN);
             }
             Claims accessTokenClaims = jwtTokenProvider.isTokenValid(accessTokenValue);
+
+            String username = accessTokenClaims.get(USERNAME_CLAIM, String.class);
+            if (jwtTokenProvider.isEmailInRedis(username)) {
+                throw new ApiException(UserErrorCode.TOKEN_NOT_EXIST);
+            }
+
             successAuthentication(accessTokenClaims);
         } catch (ApiException e) {
             request.setAttribute("exception",e);

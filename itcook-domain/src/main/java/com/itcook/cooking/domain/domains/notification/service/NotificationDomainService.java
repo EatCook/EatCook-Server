@@ -2,6 +2,7 @@ package com.itcook.cooking.domain.domains.notification.service;
 
 import com.itcook.cooking.domain.domains.notification.adapter.NotificationAdapter;
 import com.itcook.cooking.domain.domains.notification.entity.Notification;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +17,13 @@ public class NotificationDomainService {
 
     private final NotificationAdapter notificationAdapter;
 
-    public List<Notification> findNotiUnchecked(Long userId) {
-        return notificationAdapter.queryNotiByUserIdWithUnchecked(
+    public List<Notification> findAllNoti(Long userId) {
+        return notificationAdapter.queryNotiByUserId(
             userId);
     }
 
     @Transactional
-    public void updateCheck(Long notificationId) {
-        Notification notification = notificationAdapter.findById(notificationId);
-        notification.updateCheck();
+    public void updateNotisCheck(List<Long> notificationId) {
+        notificationAdapter.updateNotisChecked(notificationId);
     }
 }
