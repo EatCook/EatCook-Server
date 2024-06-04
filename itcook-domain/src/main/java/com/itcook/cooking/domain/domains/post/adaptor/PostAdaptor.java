@@ -30,6 +30,6 @@ public class PostAdaptor {
 
     public Post findByIdOrElseThrow(Long postId) {
         return postRepository.findById(postId).orElseThrow(() ->
-                 new ApiException(PostErrorCode.POST_NOT_EXIST));
+                new ApiException(PostErrorCode.POST_NOT_EXIST));
     }
 }
