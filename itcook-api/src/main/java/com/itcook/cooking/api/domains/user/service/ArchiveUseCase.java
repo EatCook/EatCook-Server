@@ -3,9 +3,9 @@ package com.itcook.cooking.api.domains.user.service;
 import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.common.errorcode.ArchiveErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.archive.entity.Archive;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.service.PostDomainService;
-import com.itcook.cooking.domain.domains.archive.entity.Archive;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.archive.service.ArchiveDomainService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
@@ -29,44 +29,22 @@ public class ArchiveUseCase {
         ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
         Post findByPost = postDomainService.fetchFindByPost(postId);
 
-        List<Archive> findByArchive = archiveDomainService.getFindByUserId(findByItCookUser.getId());
-
-
-        boolean archiveValid = false;
-        for (Archive archive : findByArchive) {
-            archiveValid = Objects.equals(archive.getPostId(), findByPost.getId());
-        }
-
-        if (archiveValid) {
-            throw new ApiException(ArchiveErrorCode.ALREADY_ADD_ARCHIVE);
-        }
+        archiveDomainService.validateDuplicateArchive(findByItCookUser.getId(), findByPost.getId());
 
         Archive newArchive = Archive.builder()
                 .itCookUserId(findByItCookUser.getId())
                 .postId(findByPost.getId())
                 .build();
         archiveDomainService.saveArchive(newArchive);
-
     }
 
     public void archiveDel(String email, Long postId) {
         ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
         Post findByPost = postDomainService.fetchFindByPost(postId);
 
-        List<Archive> findByArchive = archiveDomainService.getFindByUserId(findByItCookUser.getId());
+        Archive findArchive = archiveDomainService.validateEmptyArchive(findByItCookUser.getId(), findByPost.getId());
 
-        boolean archiveValid = false;
-        Long archiveId = null;
-        for (Archive archive : findByArchive) {
-            archiveId = archive.getId();
-            archiveValid = Objects.equals(archive.getPostId(), findByPost.getId());
-        }
-
-        if (!archiveValid) {
-            throw new ApiException(ArchiveErrorCode.NOT_SAVED_IN_ARCHIVE);
-        }
-
-        archiveDomainService.removeArchive(archiveId);
+        archiveDomainService.removeArchive(findArchive);
     }
 
 }
