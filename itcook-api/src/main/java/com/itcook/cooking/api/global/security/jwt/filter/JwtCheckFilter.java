@@ -56,7 +56,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 엑세스 유효성 체크
+        // 엑세스 토큰 규격 유효성 체크
         if (!StringUtils.hasText(accessTokenHeader) || !accessTokenHeader.startsWith(BEARER)) {
             filterChain.doFilter(request,response);
             return;
@@ -73,20 +73,16 @@ public class JwtCheckFilter extends OncePerRequestFilter {
     private void reissueTokens(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain, String refreshTokenHeader, String accessTokenHeader)
         throws IOException, ServletException {
-        String accessTokenValue;
-        String refreshTokenValue;
         try {
-            refreshTokenValue = refreshTokenHeader.replace(BEARER, "");
-            accessTokenValue = accessTokenHeader.replace(BEARER, "");
+            String refreshTokenValue = refreshTokenHeader.replace(BEARER, "");
+            String accessTokenValue = accessTokenHeader.replace(BEARER, "");
             log.info("access token 만료로 토큰 재발급");
             TokenDto tokens = jwtTokenProvider.reissue(accessTokenValue, refreshTokenValue);
 
             sendReissueResponse(response, tokens);
-            return;
         } catch (ApiException e) {
             request.setAttribute("exception",e);
             filterChain.doFilter(request, response);
-            return;
         }
     }
 
@@ -104,8 +100,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
 
     private void verifyAccessToken(String accessTokenHeader, HttpServletRequest request) {
         try {
-            String accessTokenValue;
-            accessTokenValue = accessTokenHeader.replace(BEARER, "");
+            String accessTokenValue = accessTokenHeader.replace(BEARER, "");
             if (jwtTokenProvider.isBlackListToken(accessTokenValue)) {
                 throw new ApiException(UserErrorCode.IS_LOGOUT_TOKEN);
             }

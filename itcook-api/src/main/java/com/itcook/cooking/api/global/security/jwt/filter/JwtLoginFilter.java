@@ -47,10 +47,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         HttpServletResponse response) throws AuthenticationException {
         log.info("attemptAuthentication 로그인 시도");
 
-        String requestBody = null;
-
         try {
-            requestBody = StreamUtils.copyToString(request.getInputStream(),
+            String requestBody = StreamUtils.copyToString(request.getInputStream(),
                 StandardCharsets.UTF_8);
             UserLogin userLogin = objectMapper.readValue(requestBody, UserLogin.class);
 
