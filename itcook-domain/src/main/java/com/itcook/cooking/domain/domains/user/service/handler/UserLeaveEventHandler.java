@@ -1,7 +1,7 @@
 package com.itcook.cooking.domain.domains.user.service.handler;
 
 import com.itcook.cooking.domain.infra.redis.RedisService;
-import com.itcook.cooking.domain.common.events.user.UserLeaveEvent;
+import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -20,8 +20,8 @@ public class UserLeaveEventHandler {
 
     @Async
     @TransactionalEventListener
-    public void deleteToken(UserLeaveEvent userLeaveEvent) {
-        String email = userLeaveEvent.email();
+    public void deleteToken(UserLeavedEvent userLeavedEvent) {
+        String email = userLeavedEvent.email();
         log.info("유저 탈퇴 이벤트 발생, 유저 이메일: {}", email);
         redisService.deleteData(email);
     }

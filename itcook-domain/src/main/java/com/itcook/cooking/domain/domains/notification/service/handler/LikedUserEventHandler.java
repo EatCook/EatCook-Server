@@ -1,4 +1,4 @@
-package com.itcook.cooking.api.domains.alim.handler;
+package com.itcook.cooking.domain.domains.notification.service.handler;
 
 import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
 import com.itcook.cooking.domain.domains.notification.adapter.NotificationAdapter;
@@ -25,7 +25,7 @@ public class LikedUserEventHandler {
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
-    public void handlerLikedUserEvent(UserLikedEvent userLikedEvent) {
+    public void handleLikedUserEvent(UserLikedEvent userLikedEvent) {
         log.info("{}의 좋아요 요청 알림 생성", userLikedEvent.getFromUserNickName());
         Notification likeAlarm = Notification.createLikeAlarm(
             userLikedEvent.getFromUserNickName(),

@@ -11,7 +11,7 @@ import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
-import com.itcook.cooking.domain.common.events.user.UserLeaveEvent;
+import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;
@@ -120,7 +120,7 @@ public class ItCookUser extends BaseTimeEntity<ItCookUser> {
         serviceAlertType = ServiceAlertType.DISABLED;
         eventAlertType = EventAlertType.DISABLED;
 
-        registerEvent(UserLeaveEvent.of(email));
+        registerEvent(UserLeavedEvent.of(email));
     }
 
     public List<UserCookingTheme> addSignup(

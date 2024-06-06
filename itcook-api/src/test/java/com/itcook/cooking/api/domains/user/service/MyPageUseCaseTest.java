@@ -30,7 +30,7 @@ import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
-import com.itcook.cooking.domain.common.events.user.UserLeaveEvent;
+import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -185,7 +185,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         myPageUseCase.leaveUser(user.getEmail());
 
         //then
-        long count = applicationEvents.stream(UserLeaveEvent.class).count();
+        long count = applicationEvents.stream(UserLeavedEvent.class).count();
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
 
         assertThat(count).isEqualTo(1);

@@ -3,12 +3,12 @@ package com.itcook.cooking.domain.common.events.user;
 import lombok.Builder;
 
 @Builder
-public record UserLeaveEvent(
+public record UserLeavedEvent(
     String email
 ){
 
-    public static UserLeaveEvent of(String email) {
-        return UserLeaveEvent.builder()
+    public static UserLeavedEvent of(String email) {
+        return UserLeavedEvent.builder()
             .email(email)
             .build();
     }

@@ -1,6 +1,6 @@
-package com.itcook.cooking.api.domains.alim.handler;
+package com.itcook.cooking.domain.domains.notification.service.handler;
 
-import com.itcook.cooking.domain.common.events.user.UserFollowEvent;
+import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
 import com.itcook.cooking.domain.domains.notification.adapter.NotificationAdapter;
 import com.itcook.cooking.domain.domains.notification.entity.Notification;
 import com.itcook.cooking.domain.domains.notification.entity.NotificationType;
@@ -25,11 +25,11 @@ public class FollowUserEventHandler {
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
-    public void handlerFollowUserEvent(UserFollowEvent userFollowEvent) {
-        log.info("{}의 팔로잉 요청 알림 생성", userFollowEvent.getFollowerNickName());
-        Notification alarm = Notification.createFollowAlarm(userFollowEvent.getFollowerNickName(),
+    public void handlerFollowUserEvent(UserFollowedEvent userFollowedEvent) {
+        log.info("{}의 팔로잉 요청 알림 생성", userFollowedEvent.getFollowerNickName());
+        Notification alarm = Notification.createFollowAlarm(userFollowedEvent.getFollowerNickName(),
             NotificationType.FOLLOW,
-            userFollowEvent.getFollowingId());
+            userFollowedEvent.getFollowingId());
         notificationAdapter.save(alarm);
     }
 
