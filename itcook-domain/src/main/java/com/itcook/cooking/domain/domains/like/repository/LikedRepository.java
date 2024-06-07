@@ -12,7 +12,7 @@ public interface LikedRepository extends JpaRepository<Liked, Long> {
 
     List<Liked> findAllByPostIdIn(List<Long> postIdData);
 
-    @Query("SELECT new com.itcook.cooking.domain.domains.post.repository.dto.LikedDomainDto(" +
+    @Query("SELECT new com.itcook.cooking.domain.domains.like.repository.dto.LikedDomainDto(" +
             "p, u, l) " +
             "FROM ItCookUser u " +
             "LEFT JOIN FETCH Post p ON p.id = :postId " +
