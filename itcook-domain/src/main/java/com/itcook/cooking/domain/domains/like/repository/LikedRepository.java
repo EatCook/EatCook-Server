@@ -1,13 +1,12 @@
-package com.itcook.cooking.domain.domains.post.repository;
+package com.itcook.cooking.domain.domains.like.repository;
 
-import com.itcook.cooking.domain.domains.post.entity.Liked;
-import com.itcook.cooking.domain.domains.post.repository.dto.LikedDomainDto;
+import com.itcook.cooking.domain.domains.like.entity.Liked;
+import com.itcook.cooking.domain.domains.like.repository.dto.LikedDomainDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Objects;
 
 public interface LikedRepository extends JpaRepository<Liked, Long> {
 

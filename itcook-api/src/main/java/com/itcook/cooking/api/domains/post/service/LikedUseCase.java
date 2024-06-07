@@ -4,15 +4,14 @@ import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.common.errorcode.LikedErrorCode;
 import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.post.entity.Liked;
-import com.itcook.cooking.domain.domains.post.repository.dto.LikedDomainDto;
-import com.itcook.cooking.domain.domains.post.service.LikedDomainService;
+import com.itcook.cooking.domain.domains.like.entity.Liked;
+import com.itcook.cooking.domain.domains.like.repository.dto.LikedDomainDto;
+import com.itcook.cooking.domain.domains.like.service.LikedDomainService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.transaction.annotation.Transactional;
 
 @UseCase
 @RequiredArgsConstructor

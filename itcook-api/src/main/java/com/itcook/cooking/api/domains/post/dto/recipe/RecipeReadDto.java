@@ -1,8 +1,5 @@
 package com.itcook.cooking.api.domains.post.dto.recipe;
 
-import com.itcook.cooking.domain.domains.post.entity.Liked;
-import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,20 +1,17 @@
-package com.itcook.cooking.domain.domains.post.service;
+package com.itcook.cooking.domain.domains.like.service;
 
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.post.entity.Liked;
-import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.post.repository.LikedRepository;
-import com.itcook.cooking.domain.domains.post.repository.dto.LikedDomainDto;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.like.entity.Liked;
+import com.itcook.cooking.domain.domains.like.repository.LikedRepository;
+import com.itcook.cooking.domain.domains.like.repository.dto.LikedDomainDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)

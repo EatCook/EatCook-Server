@@ -1,7 +1,6 @@
 package com.itcook.cooking.api.domains.fcm.handler;
 
 import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
-import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
 import com.itcook.cooking.domain.infra.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +17,9 @@ public class FollowUserPushAlimEventHandler {
 
     @Async
     @TransactionalEventListener
-    public void handleUserFollowEvent(UserLeavedEvent userLeavedEvent) {
+    public void handleUserFollowEvent(UserFollowedEvent userFollowedEvent) {
         log.info("팔로우 요청 FCM 알림");
+//        fcmService.sendMessageTo();
     }
 
 }
