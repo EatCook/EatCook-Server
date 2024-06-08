@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.domains.post.adaptor;
+package com.itcook.cooking.domain.domains.like.adaptor;
 
 import com.itcook.cooking.domain.common.errorcode.LikedErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;

@@ -2,7 +2,7 @@ package com.itcook.cooking.domain.domains.like.service;
 
 import com.itcook.cooking.domain.domains.like.entity.Liked;
 import com.itcook.cooking.domain.domains.like.repository.LikedRepository;
-import com.itcook.cooking.domain.domains.post.adaptor.LikedAdaptor;
+import com.itcook.cooking.domain.domains.like.adaptor.LikedAdaptor;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
