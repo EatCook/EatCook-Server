@@ -12,6 +12,7 @@ import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
     private NotificationDomainService notificationDomainService;
 
     @Test
-    @DisplayName("uncheck된 알림들을 조회한다.")
+    @DisplayName("모든 알림들을 조회한다.")
     void findUncheck() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡");
@@ -39,13 +40,13 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
         Notification notification3 = createNotificationCheck(user.getId());
 
         //when
-        List<Notification> notiUnchecked = notificationDomainService.findNotiUnchecked(
+        List<Notification> notiUnchecked = notificationDomainService.findAllNoti(
             user.getId());
 
         //then
-        assertThat(notiUnchecked).hasSize(2)
+        assertThat(notiUnchecked).hasSize(3)
             .extracting("id")
-            .containsExactly(notification2.getId(), notification1.getId());
+            .containsExactly(notification3.getId(), notification2.getId(), notification1.getId());
     }
 
     @Test
@@ -55,7 +56,7 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
         ItCookUser user = createUser("user@test.com", "잇쿡");
 
         //when
-        List<Notification> notiUnchecked = notificationDomainService.findNotiUnchecked(
+        List<Notification> notiUnchecked = notificationDomainService.findAllNoti(
             user.getId());
 
         //then
@@ -64,18 +65,40 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
 
     @Test
     @DisplayName("기존의 알림을 선택하여 , check로 업데이트 한다")
-    void updateCheck() {
+    void updateNotisCheck() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡");
-        Notification notification = createNotification(user.getId());
+        Notification notification1 = createNotification(user.getId());
+        Notification notification2 = createNotification(user.getId());
+        Notification notification3 = createNotificationCheck(user.getId());
+
+        List<Long> ids = Stream.of(notification3, notification2, notification1)
+            .map(Notification::getId).toList();
 
         //when
-        notificationDomainService.updateCheck(notification.getId());
+        notificationDomainService.updateNotisCheck(ids);
 
         //then
-        Notification findNoti = notificationRepository.findById(notification.getId()).get();
+        List<Notification> notifications = notificationRepository.findAll();
+        assertThat(notifications).hasSize(3)
+            .extracting("checked")
+            .containsExactly(true, true, true)
+            ;
+    }
 
-        assertThat(findNoti.getChecked()).isTrue();
+    @Test
+    @DisplayName("기존의 알림을 선택하여 , check로 업데이트 한다")
+    void updateEmptyList() {
+        //given
+        ItCookUser user = createUser("user@test.com", "잇쿡");
+
+
+        //when
+        notificationDomainService.updateNotisCheck(List.of());
+
+        //then
+        List<Notification> notifications = notificationRepository.findAll();
+        assertThat(notifications).isEmpty();
     }
     
     

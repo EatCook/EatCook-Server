@@ -6,19 +6,19 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class UserFollowEvent {
+public class UserFollowedEvent {
 
     private final String followerNickName;
     private final Long followingId;
 
     @Builder
-    private UserFollowEvent(String followerNickName, Long followingId) {
+    private UserFollowedEvent(String followerNickName, Long followingId) {
         this.followerNickName = followerNickName;
         this.followingId = followingId;
     }
 
-    public static UserFollowEvent of(String followerNickName, Long followingId) {
-        return UserFollowEvent.builder()
+    public static UserFollowedEvent of(String followerNickName, Long followingId) {
+        return UserFollowedEvent.builder()
             .followerNickName(followerNickName)
             .followingId(followingId)
             .build()

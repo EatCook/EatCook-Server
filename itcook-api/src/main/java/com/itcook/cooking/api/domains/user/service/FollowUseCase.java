@@ -3,7 +3,7 @@ package com.itcook.cooking.api.domains.user.service;
 import com.itcook.cooking.api.domains.user.dto.request.follow.FollowRequest;
 import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
-import com.itcook.cooking.domain.common.events.user.UserFollowEvent;
+import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
@@ -39,7 +39,7 @@ public class FollowUseCase {
 
         fromItCookUserData.updateFollow(follow);
 
-        eventPublisher.publishEvent(UserFollowEvent.of(fromItCookUserData.getNickName(),
+        eventPublisher.publishEvent(UserFollowedEvent.of(fromItCookUserData.getNickName(),
             followRequest.getToUserId()));
     }
 

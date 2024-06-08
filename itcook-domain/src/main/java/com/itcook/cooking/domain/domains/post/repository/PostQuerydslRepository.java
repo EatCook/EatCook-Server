@@ -1,10 +1,8 @@
 package com.itcook.cooking.domain.domains.post.repository;
 
-import static com.itcook.cooking.domain.domains.post.entity.QLiked.liked;
+import static com.itcook.cooking.domain.domains.like.entity.QLiked.liked;
 import static com.itcook.cooking.domain.domains.post.entity.QPost.post;
 import static com.itcook.cooking.domain.domains.user.entity.QItCookUser.itCookUser;
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
 
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;

@@ -3,7 +3,8 @@ package com.itcook.cooking.domain.domains.post.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.itcook.cooking.domain.domains.IntegrationTestSupport;
-import com.itcook.cooking.domain.domains.post.entity.Liked;
+import com.itcook.cooking.domain.domains.like.repository.LikedRepository;
+import com.itcook.cooking.domain.domains.like.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;

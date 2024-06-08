@@ -22,13 +22,13 @@ public class NotificationUseCase {
 
     public List<NotificationResponse> getNotifications(String email) {
         ItCookUser user = userDomainService.findUserByEmail(email);
-        List<Notification> uncheckedNotis = notificationDomainService.findNotiUnchecked(
+        List<Notification> uncheckedNotis = notificationDomainService.findAllNoti(
             user.getId());
 
         return NotificationResponse.of(uncheckedNotis);
     }
 
-    public void updateCheck(Long notificationId) {
-        notificationDomainService.updateCheck(notificationId);
+    public void updateNotisCheck(List<Long> notificationId) {
+        notificationDomainService.updateNotisCheck(notificationId);
     }
 }

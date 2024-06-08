@@ -37,9 +37,9 @@ class NotificationUseCaseTest extends IntegrationTestSupport {
     void getNotifications() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡1");
-        createNoti(user.getId(), 1);
-        createNoti(user.getId(), 2);
-        createNoti(user.getId(), 3);
+        Notification noti1 = createNoti(user.getId(), 1);
+        Notification noti2 = createNoti(user.getId(), 2);
+        Notification noti3 = createNoti(user.getId(), 3);
 
         //when
         List<NotificationResponse> response = notificationUseCase.getNotifications(
@@ -48,9 +48,11 @@ class NotificationUseCaseTest extends IntegrationTestSupport {
 
         //then
         assertThat(response).hasSize(3)
-            .extracting("title")
+            .extracting("notificationId","checked")
             .containsExactly(
-                "알림 제목3","알림 제목2","알림 제목1"
+                tuple(noti3.getId(), false),
+                tuple(noti2.getId(), false),
+                tuple(noti1.getId(), false)
             );
     }
     @Test

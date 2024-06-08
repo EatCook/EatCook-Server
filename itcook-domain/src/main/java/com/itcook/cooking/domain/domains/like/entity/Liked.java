@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.domains.post.entity;
+package com.itcook.cooking.domain.domains.like.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

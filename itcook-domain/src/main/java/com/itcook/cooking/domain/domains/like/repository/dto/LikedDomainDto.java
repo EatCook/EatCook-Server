@@ -1,6 +1,6 @@
-package com.itcook.cooking.domain.domains.post.repository.dto;
+package com.itcook.cooking.domain.domains.like.repository.dto;
 
-import com.itcook.cooking.domain.domains.post.entity.Liked;
+import com.itcook.cooking.domain.domains.like.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import lombok.AllArgsConstructor;

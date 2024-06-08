@@ -1,6 +1,7 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
+import com.itcook.cooking.domain.common.events.Events;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
@@ -11,7 +12,7 @@ import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
-import com.itcook.cooking.domain.common.events.user.UserLeaveEvent;
+import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;
@@ -35,7 +36,7 @@ import org.springframework.util.CollectionUtils;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "itcook_user")
-public class ItCookUser extends BaseTimeEntity<ItCookUser> {
+public class ItCookUser extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,7 +113,8 @@ public class ItCookUser extends BaseTimeEntity<ItCookUser> {
     }
 
     // 회원탈퇴
-    public void delete(String email) {
+    public void delete() {
+        String deleteEmail = email;
         userState = UserState.DELETE;
         this.email = null;
         profile = null;
@@ -120,7 +122,8 @@ public class ItCookUser extends BaseTimeEntity<ItCookUser> {
         serviceAlertType = ServiceAlertType.DISABLED;
         eventAlertType = EventAlertType.DISABLED;
 
-        registerEvent(UserLeaveEvent.of(email));
+//        registerEvent(UserLeavedEvent.of(email));
+        Events.raise(UserLeavedEvent.of(deleteEmail));
     }
 
     public List<UserCookingTheme> addSignup(
