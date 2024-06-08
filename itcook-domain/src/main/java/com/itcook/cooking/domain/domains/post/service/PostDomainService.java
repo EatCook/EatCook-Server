@@ -9,7 +9,7 @@ import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import java.util.List;
-import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -60,13 +60,8 @@ public class PostDomainService {
         return postAdaptor.findPostsWithLiked(userId, pageable);
     }
 
-    public Optional<Post> fetchFindByPost(Long postId) {
-        Optional<Post> findByIdPost = postRepository.findById(postId);
-
-        if (findByIdPost.isEmpty()) {
-            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
-        }
-        return findByIdPost;
+    public Post fetchFindByPost(Long postId) {
+        return postAdaptor.findByIdOrElseThrow(postId);
     }
 
     public Post createPost(Post post) {

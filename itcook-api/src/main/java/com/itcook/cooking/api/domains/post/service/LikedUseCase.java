@@ -1,12 +1,11 @@
 package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.api.global.annotation.UseCase;
-import com.itcook.cooking.domain.common.errorcode.LikedErrorCode;
 import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
-import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.like.entity.Liked;
-import com.itcook.cooking.domain.domains.like.repository.dto.LikedDomainDto;
 import com.itcook.cooking.domain.domains.like.service.LikedDomainService;
+import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.service.PostDomainService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
@@ -19,43 +18,36 @@ import org.springframework.context.ApplicationEventPublisher;
 public class LikedUseCase {
 
     private final UserDomainService userDomainService;
+    private final PostDomainService postDomainService;
     private final LikedDomainService likedDomainService;
     private final ApplicationEventPublisher eventPublisher;
 
 
     public void likedAdd(String email, Long reqPostId) {
         ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
+        Post findByPost = postDomainService.fetchFindByPost(reqPostId);
 
-        LikedDomainDto likedDomainDto = likedDomainService.fetchFindByLikedUserId(
-            findByItCookUser.getId(), reqPostId);
+        likedDomainService.validateDuplicateLiked(findByItCookUser.getId(), reqPostId);
 
-        if (likedDomainDto.getLiked() != null) {
-            throw new ApiException(LikedErrorCode.ALREADY_ADD_Liked);
-        }
+        Liked newLiked = Liked.builder()
+                .postId(findByPost.getId())
+                .itCookUserId(findByItCookUser.getId())
+                .build();
 
-        likedDomainService.createLiked(
-            Liked.builder()
-                .postId(likedDomainDto.getPost().getId())
-                .itCookUserId(likedDomainDto.getItCookUser().getId())
-                .build()
-        );
+        likedDomainService.createLiked(newLiked);
 
         // 게시물 작성자에게 좋아요 요청 알림
         eventPublisher.publishEvent(UserLikedEvent.of(findByItCookUser.getNickName(), reqPostId,
-            likedDomainDto.getItCookUser().getId()));
+                findByItCookUser.getId()));
     }
 
     public void likedDel(String email, Long reqPostId) {
         ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
+        Post findByPost = postDomainService.fetchFindByPost(reqPostId);
 
-        LikedDomainDto likedDomainDto = likedDomainService.fetchFindByLikedUserId(
-            findByItCookUser.getId(), reqPostId);
+        Liked findLiked = likedDomainService.validateEmptyArchive(findByItCookUser.getId(), findByPost.getId());
 
-        if (likedDomainDto.getLiked() == null) {
-            throw new ApiException(LikedErrorCode.NOT_SAVED_IN_LIKED);
-        }
-
-        likedDomainService.removeLiked(likedDomainDto.getLiked().getId());
+        likedDomainService.removeLiked(findLiked);
     }
 
 }
