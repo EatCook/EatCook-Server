@@ -155,7 +155,6 @@ public class ItCookUser extends BaseTimeEntity {
     }
 
 
-    // TODO
     public void changePassword(String newEncodedPassword, String rawCurrentPassword,
         UserValidator userValidator) {
         userValidator.validateCurrentPassword(this, rawCurrentPassword);
