@@ -35,7 +35,7 @@ public class LikedController {
                 .body(ApiResponse.OK("해당 게시물의 좋아요를 저장하였습니다."));
     }
 
-    @PostMapping("/del")
+    @DeleteMapping("/del")
     public ResponseEntity<ApiResponse> likedDel(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody LikedRequest likedRequest
