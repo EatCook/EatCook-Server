@@ -93,8 +93,8 @@ public class JwtCheckFilter extends OncePerRequestFilter {
 
         response.setStatus(200);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader(ACCESS_TOKEN_HEADER,tokens.getAccessToken());
-        response.setHeader(REFRESH_TOKEN_HEADER, tokens.getRefreshToken());
+        response.setHeader(ACCESS_TOKEN_HEADER,BEARER + tokens.getAccessToken());
+        response.setHeader(REFRESH_TOKEN_HEADER, BEARER + tokens.getRefreshToken());
         response.getWriter().write(responseBody);
     }
 
