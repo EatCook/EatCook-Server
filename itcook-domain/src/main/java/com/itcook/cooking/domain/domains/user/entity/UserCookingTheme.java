@@ -29,7 +29,7 @@ public class UserCookingTheme {
     private Long userId;
 
     @Builder
-    private UserCookingTheme(Long id, CookingType cookingType, Long userId) {
+    private UserCookingTheme(CookingType cookingType, Long userId) {
         this.cookingType = cookingType;
         this.userId = userId;
     }
