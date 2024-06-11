@@ -3,9 +3,12 @@ package com.itcook.cooking.domain.domains.post.adaptor;
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.post.repository.HomePostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
+import com.itcook.cooking.domain.domains.post.repository.dto.HomePostDto;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,10 +21,11 @@ public class PostAdaptor {
 
     private final PostRepository postRepository;
     private final PostQuerydslRepository postQuerydslRepository;
+    private final HomePostQuerydslRepository homePostQuerydslRepository;
 
     public Post queryPostByIdAndPostFlag(Long postId) {
         return postRepository.findByIdAndPostFlag(postId, PostFlag.ACTIVATE)
-            .orElseThrow(() -> new ApiException(PostErrorCode.POST_NOT_EXIST));
+                .orElseThrow(() -> new ApiException(PostErrorCode.POST_NOT_EXIST));
     }
 
     public Page<PostWithLikedDto> findPostsWithLiked(Long userId, Pageable pageable) {
@@ -32,4 +36,9 @@ public class PostAdaptor {
         return postRepository.findById(postId).orElseThrow(() ->
                 new ApiException(PostErrorCode.POST_NOT_EXIST));
     }
+
+    public Page<HomePostDto> findPostsWithLikedAndArchiveDtoByCookingTheme(CookingType cookingTheme, Long userId, Pageable pageable) {
+        return homePostQuerydslRepository.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId, pageable);
+    }
+
 }

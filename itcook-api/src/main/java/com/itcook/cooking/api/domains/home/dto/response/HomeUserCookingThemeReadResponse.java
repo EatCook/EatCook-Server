@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Schema(name = "home read response")
-public class HomeReadResponse {
+public class HomeUserCookingThemeReadResponse {
     @Schema(description = "닉네임", example = "김잇쿡")
     private String nickName;
     @Schema(description = "관심요리 수", example = "2")
@@ -23,10 +23,10 @@ public class HomeReadResponse {
     @Schema(description = "관심 요리 정보", example = "[\"한식\",\"일식\",\"야식\"]")
     private List<String> userCookingTheme;
 
-    public static HomeReadResponse of(
+    public static HomeUserCookingThemeReadResponse of(
             String nickName,
             List<UserCookingTheme> findUserCookingTheme) {
-        return HomeReadResponse.builder()
+        return HomeUserCookingThemeReadResponse.builder()
                 .nickName(nickName)
                 .size(findUserCookingTheme.size())
                 .userCookingTheme(findUserCookingTheme.stream()
