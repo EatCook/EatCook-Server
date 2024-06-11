@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.security.CommonUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
+import com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
@@ -40,8 +41,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
 
     /**
-     * access token 만료응답
-     *      -> access token, refresh token 전송
+     * access token 만료응답 -> access token, refresh token 전송
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -58,16 +58,16 @@ public class JwtCheckFilter extends OncePerRequestFilter {
 
         // 엑세스 토큰 규격 유효성 체크
         if (!StringUtils.hasText(accessTokenHeader) || !accessTokenHeader.startsWith(BEARER)) {
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
             return;
         }
 
         // access token 검증
         //  엑세스 토큰이 블랙리스트에 있는지 검증 로직 추가 , access token 과 refresh token이 같이 보내는경우
         //  refresh token만 보낼 경우 refresh token이 탈취 당하는 경우 방지
-        verifyAccessToken(accessTokenHeader,request);
+        verifyAccessToken(accessTokenHeader, request);
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 
     private void reissueTokens(HttpServletRequest request, HttpServletResponse response,
@@ -79,23 +79,12 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             log.info("access token 만료로 토큰 재발급");
             TokenDto tokens = jwtTokenProvider.reissue(accessTokenValue, refreshTokenValue);
 
-            sendReissueResponse(response, tokens);
+            SecurityHelper.sendTokensSuccessResponse(objectMapper, response, "토큰 재발급 성공.",
+                tokens.getAccessToken(), tokens.getRefreshToken());
         } catch (ApiException e) {
-            request.setAttribute("exception",e);
+            request.setAttribute("exception", e);
             filterChain.doFilter(request, response);
         }
-    }
-
-    private void sendReissueResponse(HttpServletResponse response, TokenDto tokens)
-        throws IOException {
-        ApiResponse apiResponse = ApiResponse.OK("토큰 재발급 성공.");
-        String responseBody = objectMapper.writeValueAsString(apiResponse);
-
-        response.setStatus(200);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader(ACCESS_TOKEN_HEADER,BEARER + tokens.getAccessToken());
-        response.setHeader(REFRESH_TOKEN_HEADER, BEARER + tokens.getRefreshToken());
-        response.getWriter().write(responseBody);
     }
 
     private void verifyAccessToken(String accessTokenHeader, HttpServletRequest request) {
@@ -113,7 +102,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
 
             successAuthentication(accessTokenClaims);
         } catch (ApiException e) {
-            request.setAttribute("exception",e);
+            request.setAttribute("exception", e);
         }
     }
 
