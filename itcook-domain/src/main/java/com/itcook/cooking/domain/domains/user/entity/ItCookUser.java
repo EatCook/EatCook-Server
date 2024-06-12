@@ -3,6 +3,7 @@ package com.itcook.cooking.domain.domains.user.entity;
 import com.itcook.cooking.domain.common.BaseTimeEntity;
 import com.itcook.cooking.domain.common.events.Events;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
 import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
@@ -13,6 +14,7 @@ import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
+import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;
@@ -126,14 +128,19 @@ public class ItCookUser extends BaseTimeEntity {
         Events.raise(UserLeavedEvent.of(deleteEmail));
     }
 
-    public List<UserCookingTheme> addSignup(
+    // 추가 회원가입
+    public AddSignupDomainResponse addSignup(
         String nickName, LifeType lifeType, List<CookingType> cookingTypes,
-        UserValidator userValidator
-    ) {
+        String fileExtension,
+        UserValidator userValidator,
+        UserImageRegisterService userImageRegisterService) {
+
         userValidator.validateDuplicateNickName(nickName);
         this.nickName = nickName;
         this.lifeType = lifeType;
-        return createCookingThemes(cookingTypes);
+        ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(fileExtension, this);
+
+        return AddSignupDomainResponse.of(imageUrlDto, UserCookingTheme.create(id,cookingTypes));
     }
 
     // 도메인 주도 방식의 관심요리 업데이트
@@ -142,18 +149,8 @@ public class ItCookUser extends BaseTimeEntity {
         List<CookingType> cookingTypes
     ) {
         updateLifeType(lifeType);
-        return createCookingThemes(cookingTypes);
+        return UserCookingTheme.create(id, cookingTypes);
     }
-    public List<UserCookingTheme> createCookingThemes(List<CookingType> cookingTypes) {
-        if (CollectionUtils.isEmpty(cookingTypes)) {
-            return List.of();
-        }
-        return cookingTypes.stream()
-            .map(cookingType ->
-                UserCookingTheme.createUserCookingTheme(getId(), cookingType))
-            .toList();
-    }
-
 
     public void changePassword(String newEncodedPassword, String rawCurrentPassword,
         UserValidator userValidator) {

@@ -1,6 +1,5 @@
-package com.itcook.cooking.domain.domains.user.service;
+package com.itcook.cooking.domain.domains.user.entity;
 
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.infra.s3.ImageFileExtension;
 import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;

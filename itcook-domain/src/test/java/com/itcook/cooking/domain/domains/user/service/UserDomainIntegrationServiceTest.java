@@ -22,10 +22,12 @@ import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+import com.itcook.cooking.domain.domains.user.service.dto.AddSignupDto;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -95,11 +97,14 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        ItCookUser addSignupUser = userDomainService.addSignup(user, cookingTypes);
+        AddSignupDto addSignupDto = userDomainService.addSignup(user,
+            null, cookingTypes);
 
         //then
         List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
             saveUser.getId());
+
+        ItCookUser addSignupUser = userRepository.findById(addSignupDto.userId()).get();
 
         assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
         assertThat(addSignupUser.getLifeType()).isNull();
@@ -129,7 +134,8 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        assertThatThrownBy(() -> userDomainService.addSignup(user, cookingTypes))
+        assertThatThrownBy(() -> userDomainService.addSignup(user, null,
+            cookingTypes))
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.ALREADY_EXISTS_NICKNAME.getDescription())
         ;
@@ -151,11 +157,13 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        ItCookUser addSignupUser = userDomainService.addSignup(user, cookingTypes);
+        AddSignupDto addSignupDto = userDomainService.addSignup(user,
+            null, cookingTypes);
 
         //then
         List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
             saveUser.getId());
+        ItCookUser addSignupUser = userRepository.findById(addSignupDto.userId()).get();
 
         assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
         assertThat(addSignupUser.getLifeType()).isNull();
@@ -367,7 +375,8 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //when
         //then
         assertThatThrownBy(
-            () -> userDomainService.addSignup(addSignupUser, List.of(BUNSIK, CHINESE_FOOD)))
+            () -> userDomainService.addSignup(addSignupUser, null,
+                List.of(BUNSIK, CHINESE_FOOD)))
             .isInstanceOf(ApiException.class)
             .hasMessage("이미 존재하는 닉네임입니다.")
         ;
@@ -494,8 +503,15 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
 
     public void createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
-        List<UserCookingTheme> cookingThemes = user.createCookingThemes(cookingTypes);
-        userCookingThemeRepository.saveAll(cookingThemes);
+        List<UserCookingTheme> userCookingThemes = new ArrayList<>();
+        for (CookingType cookingType : cookingTypes) {
+            UserCookingTheme userCookingTheme = UserCookingTheme.builder()
+                .userId(user.getId())
+                .cookingType(cookingType)
+                .build();
+            userCookingThemes.add(userCookingTheme);
+        }
+        userCookingThemeRepository.saveAll(userCookingThemes);
     }
 
 }

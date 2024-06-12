@@ -12,7 +12,8 @@ import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.AuthCodeRedisService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
-import com.itcook.cooking.domain.domains.user.service.UserImageRegisterService;
+import com.itcook.cooking.domain.domains.user.entity.UserImageRegisterService;
+import com.itcook.cooking.domain.domains.user.service.dto.AddSignupDto;
 import com.itcook.cooking.domain.infra.email.EmailSendEvent;
 import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
@@ -78,15 +79,15 @@ public class SignupUseCase {
 
     @Transactional
     public AddUserResponse addSignup(AddSignupServiceDto addSignupRequest) {
-        ItCookUser itCookUser = userDomainService.addSignup(addSignupRequest.toEntity(),
-            addSignupRequest.toCookingTypes());
+        AddSignupDto addSignupDto = userDomainService.addSignup(addSignupRequest.toEntity()
+            ,addSignupRequest.fileExtension()
+            ,addSignupRequest.toCookingTypes());
         // fileExension이 있을 경우 프로필 이미지 업로드
-        ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(
-            addSignupRequest.fileExtension(), itCookUser);
+
 
         return AddUserResponse.builder()
-            .presignedUrl(imageUrlDto.getUrl())
-            .userId(itCookUser.getId())
+            .presignedUrl(addSignupDto.getImageUrl())
+            .userId(addSignupDto.userId())
             .build()
             ;
     }
