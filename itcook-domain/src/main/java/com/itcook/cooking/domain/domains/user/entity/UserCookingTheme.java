@@ -1,6 +1,7 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,21 +35,21 @@ public class UserCookingTheme {
         this.userId = userId;
     }
 
-    protected static UserCookingTheme createUserCookingTheme(Long userId, CookingType cookingType)  {
+    private static UserCookingTheme create(Long userId, CookingType cookingType)  {
         return UserCookingTheme.builder()
             .userId(userId)
             .cookingType(cookingType)
             .build();
     }
 
-    public String getCookingTypeName() {
-        return cookingType.getCookingTypeName();
+    protected static List<UserCookingTheme> create(Long userId, List<CookingType> cookingTypes) {
+        return cookingTypes.stream()
+            .map(cookingType -> UserCookingTheme.create(userId, cookingType))
+            .toList();
     }
 
-    public void updateInterestCook(
-        CookingType cookingType
-    ) {
-        this.cookingType = cookingType;
+    public String getCookingTypeName() {
+        return cookingType.getCookingTypeName();
     }
 
 }

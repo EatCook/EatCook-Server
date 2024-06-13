@@ -19,10 +19,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SecurityHelper {
 
-    private final ObjectMapper objectMapper;
 
-
-    public void sendTokensSuccessResponse(HttpServletResponse response,
+    public static void sendTokensSuccessResponse(ObjectMapper objectMapper,
+        HttpServletResponse response,
         String message, String accessToken, String refreshToken)
         throws IOException {
         ApiResponse apiResponse = ApiResponse.OK(message);
@@ -30,12 +29,13 @@ public class SecurityHelper {
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.addHeader(ACCESS_TOKEN_HEADER,BEARER + accessToken);
-        response.addHeader(REFRESH_TOKEN_HEADER,BEARER + refreshToken);
+        response.addHeader(ACCESS_TOKEN_HEADER, BEARER + accessToken);
+        response.addHeader(REFRESH_TOKEN_HEADER, BEARER + refreshToken);
         response.getWriter().write(body);
     }
 
-    public void sendLoginErrorResponse(HttpServletResponse response) throws IOException {
+    public static void sendLoginErrorResponse(ObjectMapper objectMapper,
+        HttpServletResponse response) throws IOException {
         UserErrorCode errorCode = UserErrorCode.USER_NOT_FOUND;
         ErrorResponse errorResponse = ErrorResponse.ERROR(errorCode,
             "아이디 또는 비밀번호가 올바르지 않습니다.");
