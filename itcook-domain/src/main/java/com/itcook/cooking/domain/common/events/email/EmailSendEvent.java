@@ -1,5 +1,6 @@
-package com.itcook.cooking.domain.infra.email;
+package com.itcook.cooking.domain.common.events.email;
 
+import com.itcook.cooking.domain.common.events.DomainEvent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -8,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
-public class EmailSendEvent {
+public class EmailSendEvent extends DomainEvent {
 
     private String subject;
     private String body;

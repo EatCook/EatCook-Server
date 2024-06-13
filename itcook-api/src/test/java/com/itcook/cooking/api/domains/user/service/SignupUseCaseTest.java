@@ -27,7 +27,7 @@ import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-import com.itcook.cooking.domain.infra.email.EmailSendEvent;
+import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

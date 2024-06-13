@@ -124,7 +124,6 @@ public class ItCookUser extends BaseTimeEntity {
         serviceAlertType = ServiceAlertType.DISABLED;
         eventAlertType = EventAlertType.DISABLED;
 
-//        registerEvent(UserLeavedEvent.of(email));
         Events.raise(UserLeavedEvent.of(deleteEmail));
     }
 

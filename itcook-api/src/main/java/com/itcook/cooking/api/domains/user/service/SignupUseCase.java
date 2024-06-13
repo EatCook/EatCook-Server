@@ -9,13 +9,11 @@ import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.AuthCodeRedisService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
-import com.itcook.cooking.domain.domains.user.entity.UserImageRegisterService;
 import com.itcook.cooking.domain.domains.user.service.dto.AddSignupDto;
-import com.itcook.cooking.domain.infra.email.EmailSendEvent;
-import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,7 +29,6 @@ public class SignupUseCase {
     private final UserDomainService userDomainService;
     private final ApplicationEventPublisher eventPublisher;
     private final PasswordEncoder passwordEncoder;
-    private final UserImageRegisterService userImageRegisterService;
     private final AuthCodeRedisService authCodeRedisService;
 
 
@@ -60,7 +57,6 @@ public class SignupUseCase {
     }
 
     // 임시 비밀번호 메일 발송 (이벤트 발생)
-    @Transactional
     public void verifyFindUser(VerifyEmailServiceDto verifyEmailServiceDto) {
         authCodeRedisService.verifyAuthCode(verifyEmailServiceDto.email(), verifyEmailServiceDto.authCode());
         String temporaryPassword = userDomainService.issueTemporaryPassword(
@@ -82,8 +78,6 @@ public class SignupUseCase {
         AddSignupDto addSignupDto = userDomainService.addSignup(addSignupRequest.toEntity()
             ,addSignupRequest.fileExtension()
             ,addSignupRequest.toCookingTypes());
-        // fileExension이 있을 경우 프로필 이미지 업로드
-
 
         return AddUserResponse.builder()
             .presignedUrl(addSignupDto.getImageUrl())
