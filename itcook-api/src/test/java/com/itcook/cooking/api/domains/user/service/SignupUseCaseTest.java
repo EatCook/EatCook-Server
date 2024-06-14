@@ -22,6 +22,7 @@ import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
@@ -165,18 +166,13 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
             .build();
 
         //when
-        AddUserResponse response = signupUseCase.addSignup(request);
+        var response = signupUseCase.addSignup(request);
 
         //then
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
-        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
-            user.getId());
 
-        assertThat(response)
-            .extracting("userId","presignedUrl")
-            .containsExactlyInAnyOrder(user.getId(), null);
         assertThat(findUser.getLifeType()).isNull();
-        assertThat(cookingThemes).isEmpty();
+        assertThat(findUser.getUserCookingThemes()).isEmpty();
 
     }
     @Test
@@ -192,21 +188,17 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
             .build();
 
         //when
-        AddUserResponse response = signupUseCase.addSignup(request);
+        var response = signupUseCase.addSignup(request);
 
         //then
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
-        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
-            user.getId());
 
-        assertThat(response)
-            .extracting("userId","presignedUrl")
-            .containsExactlyInAnyOrder(user.getId(), null);
+        assertThat(response.presignedUrl()).isNull();
         assertThat(findUser.getLifeType()).isEqualTo(LifeType.DIET);
-        assertThat(cookingThemes).hasSize(1)
-            .extracting("userId", "cookingType")
+        assertThat(findUser.getUserCookingThemes()).hasSize(1)
+            .extracting("user", "cookingType")
             .containsExactlyInAnyOrder(
-                tuple(user.getId(), KOREAN_FOOD)
+                tuple(findUser, KOREAN_FOOD)
             )
         ;
 

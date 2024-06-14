@@ -3,7 +3,6 @@ package com.itcook.cooking.api.domains.user.service;
 import static com.itcook.cooking.domain.infra.email.EmailTemplate.PASSWORD_EMAIL;
 
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
-import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
@@ -11,9 +10,9 @@ import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.api.global.annotation.UseCase;
 import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
 import com.itcook.cooking.domain.domains.user.service.AuthCodeRedisService;
 import com.itcook.cooking.domain.domains.user.service.UserDomainService;
-import com.itcook.cooking.domain.domains.user.service.dto.AddSignupDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -74,16 +73,11 @@ public class SignupUseCase {
     }
 
     @Transactional
-    public AddUserResponse addSignup(AddSignupServiceDto addSignupRequest) {
-        AddSignupDto addSignupDto = userDomainService.addSignup(addSignupRequest.toEntity()
-            ,addSignupRequest.fileExtension()
-            ,addSignupRequest.toCookingTypes());
-
-        return AddUserResponse.builder()
-            .presignedUrl(addSignupDto.getImageUrl())
-            .userId(addSignupDto.userId())
-            .build()
-            ;
+    public AddSignupDomainResponse addSignup(AddSignupServiceDto addSignupRequest) {
+        return userDomainService.addSignup(
+            addSignupRequest.toEntity()
+            , addSignupRequest.fileExtension()
+            , addSignupRequest.toCookingTypes());
     }
 
 }

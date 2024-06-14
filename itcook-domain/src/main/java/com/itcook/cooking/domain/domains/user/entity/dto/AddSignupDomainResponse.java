@@ -1,20 +1,16 @@
 package com.itcook.cooking.domain.domains.user.entity.dto;
 
-import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
-import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
-import java.util.List;
+import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import lombok.Builder;
 
 @Builder
 public record AddSignupDomainResponse(
-    ImageUrlDto imageUrlDto,
-    List<UserCookingTheme> userCookingThemes
+    String presignedUrl
 ) {
 
-    public static AddSignupDomainResponse of(ImageUrlDto imageUrlDto, List<UserCookingTheme> userCookingThemes) {
+    public static AddSignupDomainResponse of(String presignedUrl) {
         return AddSignupDomainResponse.builder()
-            .imageUrlDto(imageUrlDto)
-            .userCookingThemes(userCookingThemes)
+            .presignedUrl(presignedUrl)
             .build()
             ;
     }

@@ -21,7 +21,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,6 @@ public class MyPageUseCase {
     private final UserDomainService userDomainService;
     private final PostDomainService postDomainService;
     private final ArchiveDomainService archiveDomainService;
-    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * 마이페이지 조회
@@ -72,7 +70,7 @@ public class MyPageUseCase {
     /**
      * 마이 프로필 설정 조회 (서비스 이용 알림, 이벤트 알림 조회)
      */
-    @Cacheable(cacheNames = "mypage", key = "'user:'+'#email'")
+    @Cacheable(cacheNames = "mypage", key = "#email")
     public MyPageSetUpResponse getMyPageSetUp(String email) {
         return userDomainService.getMyPageSetUp(email);
     }
@@ -81,7 +79,7 @@ public class MyPageUseCase {
      * 마이 프로필 설정 변경(서비스 이용 알림, 이벤트 알림)
      */
     @Transactional
-    @CacheEvict(cacheNames = "mypage", key = "'user:'+'#email'")
+    @CacheEvict(cacheNames = "mypage", key = "#email")
     public void updateMyPageSetUp(String email,
         MyPageAlertUpdate myPageAlertUpdate) {
         userDomainService.updateMyPageSetUp(email, myPageAlertUpdate.serviceAlertType(),

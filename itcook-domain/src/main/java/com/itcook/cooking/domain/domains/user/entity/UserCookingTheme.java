@@ -6,9 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,24 +30,26 @@ public class UserCookingTheme {
     @Enumerated(EnumType.STRING)
     private CookingType cookingType;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private ItCookUser user;
 
     @Builder
-    private UserCookingTheme(Long id, CookingType cookingType, Long userId) {
+    private UserCookingTheme(Long id, CookingType cookingType, ItCookUser user) {
         this.cookingType = cookingType;
-        this.userId = userId;
+        this.user = user;
     }
 
-    private static UserCookingTheme create(Long userId, CookingType cookingType)  {
+    private static UserCookingTheme create(ItCookUser user, CookingType cookingType)  {
         return UserCookingTheme.builder()
-            .userId(userId)
+            .user(user)
             .cookingType(cookingType)
             .build();
     }
 
-    protected static List<UserCookingTheme> create(Long userId, List<CookingType> cookingTypes) {
+    protected static List<UserCookingTheme> create(ItCookUser user, List<CookingType> cookingTypes) {
         return cookingTypes.stream()
-            .map(cookingType -> UserCookingTheme.create(userId, cookingType))
+            .map(cookingType -> UserCookingTheme.create(user, cookingType))
             .toList();
     }
 
@@ -52,4 +57,11 @@ public class UserCookingTheme {
         return cookingType.getCookingTypeName();
     }
 
+    protected void addUser(ItCookUser user) {
+        if (this.user != null) {
+            this.user.getUserCookingThemes().remove(this);
+        }
+        this.user = user;
+        user.getUserCookingThemes().add(this);
+    }
 }
