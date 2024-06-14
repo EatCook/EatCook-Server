@@ -3,12 +3,15 @@ package com.itcook.cooking.api.global.security.jwt.filter;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_HEADER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_HEADER;
+import static com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper.sendLoginErrorResponse;
+import static com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper.sendTokensSuccessResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.user.dto.request.UserLogin;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.api.global.dto.ErrorResponse;
+import com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
@@ -69,15 +72,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         throws IOException, ServletException {
         log.info("successfulAuthentication 로그인 성공 및 JWT 토큰 발행");
 
-        makeLoginSuccessResponse(response, authResult);
-
-    }
-
-    private void makeLoginSuccessResponse(HttpServletResponse response, Authentication authResult)
-        throws IOException {
-        ApiResponse apiResponse = ApiResponse.OK("로그인 성공");
-        String body = objectMapper.writeValueAsString(apiResponse);
-
         AuthenticationUser principalUser = (AuthenticationUser) authResult.getPrincipal();
         String username = principalUser.getUsername();
         List<String> authorities = principalUser.getAuthorities().stream()
@@ -85,11 +79,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username, authorities);
 
-        response.setStatus(HttpStatus.OK.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.addHeader(ACCESS_TOKEN_HEADER,BEARER + tokenDto.getAccessToken());
-        response.addHeader(REFRESH_TOKEN_HEADER,BEARER + tokenDto.getRefreshToken());
-        response.getWriter().write(body);
+        sendTokensSuccessResponse(objectMapper, response, "로그인 성공",
+            tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 
     @Override
@@ -98,18 +89,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         throws IOException, ServletException {
         log.info("unsuccessfulAuthentication 로그인 실패");
 
-        makeLoginFailResponse(response);
+        sendLoginErrorResponse(objectMapper, response);
     }
 
-    private void makeLoginFailResponse(HttpServletResponse response) throws IOException {
-        UserErrorCode errorCode = UserErrorCode.USER_NOT_FOUND;
-        ErrorResponse errorResponse = ErrorResponse.ERROR(errorCode,
-            "아이디 또는 비밀번호가 올바르지 않습니다.");
-
-        String body = objectMapper.writeValueAsString(errorResponse);
-
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(body);
-    }
 }

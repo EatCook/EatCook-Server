@@ -241,7 +241,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         MyPageSetUpResponse response = myPageUseCase.getMyPageSetUp(user.getEmail());
 
         //then
-        verify(cache, times(1)).get("user:#email");
+        verify(cache, times(1)).get(user.getEmail());
         assertThat(response)
             .extracting("serviceAlertType","eventAlertType")
             .containsExactly(ServiceAlertType.DISABLED, EventAlertType.DISABLED)
@@ -269,7 +269,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         //then
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
 
-        verify(cache, times(1)).evict("user:#email");
+        verify(cache, times(1)).evict(user.getEmail());
         assertThat(findUser)
             .extracting("serviceAlertType","eventAlertType")
             .containsExactly(ServiceAlertType.ACTIVATE, EventAlertType.ACTIVATE)

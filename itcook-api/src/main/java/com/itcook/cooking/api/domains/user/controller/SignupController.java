@@ -10,6 +10,8 @@ import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.SignupUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
+import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
+import com.itcook.cooking.domain.domains.user.service.dto.AddSignupDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -64,12 +66,13 @@ public class SignupController {
 
     @Operation(summary = "회원가입 추가 요청", description = "회원가입 추가 요청")
     @PostMapping("/v1/users/add-signup")
-    public ResponseEntity<ApiResponse<AddUserResponse>> addSignup(
+    public ResponseEntity<ApiResponse<AddSignupDomainResponse>> addSignup(
         @RequestBody @Valid AddSignupRequest addSignupRequest
     ) {
-        AddUserResponse addUserResponse = signupUseCase.addSignup(addSignupRequest.toServiceDto());
+        AddSignupDomainResponse addSignupDomainResponse = signupUseCase.addSignup(
+            addSignupRequest.toServiceDto());
         return ResponseEntity.status(200)
-            .body(ApiResponse.OK(addUserResponse));
+            .body(ApiResponse.OK(addSignupDomainResponse));
     }
 
     /**

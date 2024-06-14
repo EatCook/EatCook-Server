@@ -1,13 +1,17 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,29 +30,38 @@ public class UserCookingTheme {
     @Enumerated(EnumType.STRING)
     private CookingType cookingType;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private ItCookUser user;
 
     @Builder
-    private UserCookingTheme(CookingType cookingType, Long userId) {
+    private UserCookingTheme(Long id, CookingType cookingType, ItCookUser user) {
         this.cookingType = cookingType;
-        this.userId = userId;
+        this.user = user;
     }
 
-    protected static UserCookingTheme createUserCookingTheme(Long userId, CookingType cookingType)  {
+    private static UserCookingTheme create(ItCookUser user, CookingType cookingType)  {
         return UserCookingTheme.builder()
-            .userId(userId)
+            .user(user)
             .cookingType(cookingType)
             .build();
+    }
+
+    protected static List<UserCookingTheme> create(ItCookUser user, List<CookingType> cookingTypes) {
+        return cookingTypes.stream()
+            .map(cookingType -> UserCookingTheme.create(user, cookingType))
+            .toList();
     }
 
     public String getCookingTypeName() {
         return cookingType.getCookingTypeName();
     }
 
-    public void updateInterestCook(
-        CookingType cookingType
-    ) {
-        this.cookingType = cookingType;
+    protected void addUser(ItCookUser user) {
+        if (this.user != null) {
+            this.user.getUserCookingThemes().remove(this);
+        }
+        this.user = user;
+        user.getUserCookingThemes().add(this);
     }
-
 }

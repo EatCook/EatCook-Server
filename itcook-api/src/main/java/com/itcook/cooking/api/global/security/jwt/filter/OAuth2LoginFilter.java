@@ -3,6 +3,7 @@ package com.itcook.cooking.api.global.security.jwt.filter;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_HEADER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
 import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_HEADER;
+import static com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper.sendTokensSuccessResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
@@ -10,6 +11,7 @@ import com.itcook.cooking.api.domains.security.OAuth2User;
 import com.itcook.cooking.api.domains.user.dto.request.UserOAuth2Login;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
+import com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.api.global.security.jwt.service.ProviderUserService;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
@@ -94,9 +96,7 @@ public class OAuth2LoginFilter extends OncePerRequestFilter {
 
     private void makeLoginSuccessResponse(HttpServletResponse response, Authentication authResult)
         throws IOException {
-        ApiResponse apiResponse = ApiResponse.OK("로그인 성공");
-        String body = objectMapper.writeValueAsString(apiResponse);
-
+        log.info("OAuth2 Login 성공");
         AuthenticationUser principalUser = (AuthenticationUser) authResult.getPrincipal();
         String username = principalUser.getUsername();
         List<String> authorities = principalUser.getAuthorities().stream()
@@ -105,10 +105,7 @@ public class OAuth2LoginFilter extends OncePerRequestFilter {
         TokenDto tokenDto = jwtTokenProvider.generateAccessTokenAndRefreshToken(username,
             authorities);
 
-        response.setStatus(HttpStatus.OK.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.addHeader(ACCESS_TOKEN_HEADER, BEARER + tokenDto.getAccessToken());
-        response.addHeader(REFRESH_TOKEN_HEADER, BEARER + tokenDto.getRefreshToken());
-        response.getWriter().write(body);
+        sendTokensSuccessResponse(objectMapper, response, "로그인 성공.",
+            tokenDto.getAccessToken(), tokenDto.getRefreshToken());
     }
 }

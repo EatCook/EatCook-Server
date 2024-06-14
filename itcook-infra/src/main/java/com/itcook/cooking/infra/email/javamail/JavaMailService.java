@@ -1,7 +1,7 @@
 package com.itcook.cooking.infra.email.javamail;
 
 import com.itcook.cooking.domain.infra.email.AuthCodeService;
-import com.itcook.cooking.domain.infra.email.EmailSendEvent;
+import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

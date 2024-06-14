@@ -4,7 +4,8 @@ import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.adaptor.UserAdaptor;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.entity.UserImageRegisterService;
+import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
 import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
@@ -32,6 +33,7 @@ public class UserDomainService {
 
     private final UserCookingThemeRepository userCookingThemeRepository;
     private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
+    private final UserImageRegisterService userImageRegisterService;
     private final UserValidator userValidator;
     private final UserAdaptor userAdaptor;
     private final PasswordEncoder passwordEncoder;
@@ -50,7 +52,6 @@ public class UserDomainService {
 
     /**
      * 재발급
-     *
      */
     @Transactional
     public String issueTemporaryPassword(String email) {
@@ -61,7 +62,7 @@ public class UserDomainService {
     }
 
     /**
-     *  비밀번호 변경
+     * 비밀번호 변경
      */
     @Transactional
     public void changePassword(UserUpdatePassword userUpdatePassword) {
@@ -74,17 +75,18 @@ public class UserDomainService {
 
     @Transactional
     public ItCookUser signup(String email, String password) {
-        ItCookUser user = ItCookUser.signup(SignupDto.of(email,password, ProviderType.COMMON), userValidator);
+        ItCookUser user = ItCookUser.signup(SignupDto.of(email, password, ProviderType.COMMON),
+            userValidator);
         return userAdaptor.saveUser(user);
     }
 
     @Transactional
-    public ItCookUser addSignup(ItCookUser user, List<CookingType> cookingTypes) {
+    public AddSignupDomainResponse addSignup(ItCookUser user, String fileExtension,
+        List<CookingType> cookingTypes) {
         ItCookUser findUser = userAdaptor.queryUserByEmail(user.getEmail());
-        List<UserCookingTheme> userCookingThemes = findUser.addSignup(user.getNickName(),
-            user.getLifeType(), cookingTypes, userValidator);
-        userCookingThemeJdbcRepository.saveAll(userCookingThemes, findUser.getId());
-        return findUser;
+        return findUser.addSignup(user.getNickName(),
+            user.getLifeType(), cookingTypes, fileExtension, userValidator,
+            userImageRegisterService);
     }
 
     public MyPageUserDto getMyPageInfo(String email) {
@@ -103,7 +105,6 @@ public class UserDomainService {
     public void leaveUser(String email) {
         ItCookUser user = findUserByEmail(email);
         user.delete();
-//        userAdaptor.saveUser(user); // 이벤트 발생을 위한 save 호출
     }
 
 
@@ -144,11 +145,8 @@ public class UserDomainService {
         LifeType lifeType
     ) {
         ItCookUser user = userAdaptor.queryUserByEmail(email);
-        userCookingThemeRepository.deleteAllByUserId(user.getId());
-        List<UserCookingTheme> cookingThemes = user.updateInterestCook(
-            lifeType, cookingTypes);
-        userAdaptor.saveUser(user);
-        userCookingThemeJdbcRepository.saveAll(cookingThemes, user.getId());
+        userCookingThemeRepository.deleteByUser(user);
+        user.updateInterestCook(lifeType, cookingTypes);
     }
 
     /**
@@ -158,8 +156,6 @@ public class UserDomainService {
         String email
     ) {
         ItCookUser user = userAdaptor.queryUserByEmail(email);
-        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
-            user.getId());
-        return UserReadInterestCookResponse.of(user, cookingThemes);
+        return UserReadInterestCookResponse.of(user, user.getUserCookingThemes());
     }
 }

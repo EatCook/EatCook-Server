@@ -9,6 +9,7 @@ import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,15 @@ class UserReadInterestCookResponseTest {
     }
 
     public List<UserCookingTheme> createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
-        return user.createCookingThemes(cookingTypes);
+        List<UserCookingTheme> userCookingThemes = new ArrayList<>();
+        for (CookingType cookingType : cookingTypes) {
+            UserCookingTheme userCookingTheme = UserCookingTheme.builder()
+                .user(user)
+                .cookingType(cookingType)
+                .build();
+            userCookingThemes.add(userCookingTheme);
+        }
+        return userCookingThemes;
     }
 
 

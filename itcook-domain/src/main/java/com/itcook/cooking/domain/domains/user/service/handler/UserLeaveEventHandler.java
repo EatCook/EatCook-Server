@@ -23,7 +23,7 @@ public class UserLeaveEventHandler {
     public void deleteToken(UserLeavedEvent userLeavedEvent) {
         String email = userLeavedEvent.getEmail();
         log.info("유저 탈퇴 이벤트 발생, 유저 이메일: {}", email);
-        redisService.deleteData(email);
+        redisService.deleteKeysContaining(email);
     }
 
 }

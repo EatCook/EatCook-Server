@@ -1,8 +1,11 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
+import static javax.persistence.FetchType.EAGER;
+
 import com.itcook.cooking.domain.common.BaseTimeEntity;
 import com.itcook.cooking.domain.common.events.Events;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
+import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
 import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
@@ -13,18 +16,22 @@ import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
+import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -83,6 +90,9 @@ public class ItCookUser extends BaseTimeEntity {
     @Column(name = "device_token")
     private String deviceToken;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserCookingTheme> userCookingThemes = new ArrayList<>();
+
     @Builder
     private ItCookUser(String email, String password, String nickName, UserRole userRole,
         String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
@@ -122,38 +132,34 @@ public class ItCookUser extends BaseTimeEntity {
         serviceAlertType = ServiceAlertType.DISABLED;
         eventAlertType = EventAlertType.DISABLED;
 
-//        registerEvent(UserLeavedEvent.of(email));
         Events.raise(UserLeavedEvent.of(deleteEmail));
     }
 
-    public List<UserCookingTheme> addSignup(
+    // 추가 회원가입
+    public AddSignupDomainResponse addSignup(
         String nickName, LifeType lifeType, List<CookingType> cookingTypes,
-        UserValidator userValidator
+        String fileExtension,
+        UserValidator userValidator,
+        UserImageRegisterService userImageRegisterService
     ) {
+
         userValidator.validateDuplicateNickName(nickName);
         this.nickName = nickName;
         this.lifeType = lifeType;
-        return createCookingThemes(cookingTypes);
+        addUserCookingThemes(UserCookingTheme.create(this,cookingTypes));
+        ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(fileExtension, this);
+
+        return AddSignupDomainResponse.of(imageUrlDto.getUrl());
     }
 
     // 도메인 주도 방식의 관심요리 업데이트
-    public List<UserCookingTheme> updateInterestCook(
+    public void updateInterestCook(
         LifeType lifeType,
         List<CookingType> cookingTypes
     ) {
         updateLifeType(lifeType);
-        return createCookingThemes(cookingTypes);
+        addUserCookingThemes(UserCookingTheme.create(this, cookingTypes));
     }
-    public List<UserCookingTheme> createCookingThemes(List<CookingType> cookingTypes) {
-        if (CollectionUtils.isEmpty(cookingTypes)) {
-            return List.of();
-        }
-        return cookingTypes.stream()
-            .map(cookingType ->
-                UserCookingTheme.createUserCookingTheme(getId(), cookingType))
-            .toList();
-    }
-
 
     public void changePassword(String newEncodedPassword, String rawCurrentPassword,
         UserValidator userValidator) {
@@ -210,6 +216,11 @@ public class ItCookUser extends BaseTimeEntity {
         LifeType lifeType
     ) {
         this.lifeType = lifeType;
+    }
+
+    public void addUserCookingThemes(List<UserCookingTheme> userCookingThemes) {
+        this.userCookingThemes.clear();
+        this.userCookingThemes.addAll(userCookingThemes);
     }
 
 }
