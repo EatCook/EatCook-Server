@@ -11,6 +11,8 @@ public interface RedisService {
 
     void deleteData(String key);
 
+    void deleteKeysContaining(String pattern);
+
     /**
      * 로그아웃시 access token 블랙 리스트 추가 메소드
      */

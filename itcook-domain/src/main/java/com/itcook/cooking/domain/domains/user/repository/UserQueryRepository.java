@@ -59,23 +59,3 @@ public class UserQueryRepository {
     }
 
 }
-//    @Transactional
-//    public void updateUserBadge() {
-//        List<Long> userIds = jpaQueryFactory
-//            .select(post.userId)
-//            .from(post)
-//            .groupBy(post.userId)
-//            .having(post.count().goe(50))
-//            .fetch();
-//
-//        if (CollectionUtils.isEmpty(userIds)) return;
-//
-//        jpaQueryFactory
-//            .update(itCookUser)
-//            .where(itCookUser.id.in(
-//                userIds
-//            ))
-//            .set(itCookUser.badge, UserBadge.GIBBAB_SECOND)
-//            .execute();
-//
-//    }

@@ -51,7 +51,7 @@ class UserReadInterestCookResponseTest {
         List<UserCookingTheme> userCookingThemes = new ArrayList<>();
         for (CookingType cookingType : cookingTypes) {
             UserCookingTheme userCookingTheme = UserCookingTheme.builder()
-                .userId(user.getId())
+                .user(user)
                 .cookingType(cookingType)
                 .build();
             userCookingThemes.add(userCookingTheme);

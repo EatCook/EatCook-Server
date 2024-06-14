@@ -22,6 +22,11 @@ public class MockRedisService implements RedisService {
     }
 
     @Override
+    public void deleteKeysContaining(String pattern) {
+
+    }
+
+    @Override
     public void addBlackList(String accessToken, long time) {
 
     }

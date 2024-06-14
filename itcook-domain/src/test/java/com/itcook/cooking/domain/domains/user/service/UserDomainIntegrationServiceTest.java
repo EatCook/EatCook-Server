@@ -22,7 +22,6 @@ import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
 import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.repository.UserRepository;
-import com.itcook.cooking.domain.domains.user.service.dto.AddSignupDto;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
@@ -97,18 +96,15 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        AddSignupDto addSignupDto = userDomainService.addSignup(user,
+        var response = userDomainService.addSignup(user,
             null, cookingTypes);
 
         //then
-        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
-            saveUser.getId());
-
-        ItCookUser addSignupUser = userRepository.findById(addSignupDto.userId()).get();
+        ItCookUser addSignupUser = userRepository.findByEmail("user@test.com").get();
 
         assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
         assertThat(addSignupUser.getLifeType()).isNull();
-        assertThat(cookingThemes).hasSize(3)
+        assertThat(addSignupUser.getUserCookingThemes()).hasSize(3)
             .extracting("cookingType")
             .containsExactlyInAnyOrder(
                 KOREAN_FOOD,
@@ -157,17 +153,15 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        AddSignupDto addSignupDto = userDomainService.addSignup(user,
+        var addSignupDto = userDomainService.addSignup(user,
             null, cookingTypes);
 
         //then
-        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
-            saveUser.getId());
-        ItCookUser addSignupUser = userRepository.findById(addSignupDto.userId()).get();
+        ItCookUser addSignupUser = userRepository.findByEmail(saveUser.getEmail()).get();
 
         assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
         assertThat(addSignupUser.getLifeType()).isNull();
-        assertThat(cookingThemes).isEmpty();
+        assertThat(addSignupUser.getUserCookingThemes()).isEmpty();
     }
 
     @Test
@@ -197,10 +191,6 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     void updateInterestCook() {
         //given
         //캐시 모의
-//        Cache cache = mock(Cache.class);
-//        when(cacheManager.getCache("interestCook")).thenReturn(cache);
-//        doNothing().when(cache).evict(any());
-
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
         createCookingThemes(user, List.of(BUNSIK, CHINESE_FOOD));
 
@@ -216,17 +206,14 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
         //then
         ItCookUser findUser = userRepository.findById(user.getId()).get();
-        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
-            user.getId());
 
-//        verify(cache, times(1)).evict("user1@test.com");
         assertThat(findUser.getLifeType()).isEqualTo(updateInterestCook.lifeType());
-        assertThat(cookingThemes).hasSize(3)
-            .extracting("userId", "cookingType")
+        assertThat(findUser.getUserCookingThemes()).hasSize(3)
+            .extracting("user", "cookingType")
             .containsExactlyInAnyOrder(
-                tuple(user.getId(), updateInterestCook.cookingTypes().get(0)),
-                tuple(user.getId(), updateInterestCook.cookingTypes().get(1)),
-                tuple(user.getId(), updateInterestCook.cookingTypes().get(2))
+                tuple(findUser, updateInterestCook.cookingTypes().get(0)),
+                tuple(findUser, updateInterestCook.cookingTypes().get(1)),
+                tuple(findUser, updateInterestCook.cookingTypes().get(2))
             )
         ;
     }
@@ -235,12 +222,10 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("빈 요청을 받아서 받아서,유저 생활타입과, cookingthemes 업데이트를 한다")
     void updateInterestCookEmtpy() {
         //given
-//        Cache cache = mock(Cache.class);
-//        when(cacheManager.getCache("interestCook")).thenReturn(cache);
-//        doNothing().when(cache).evict(any());
-
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingThemes(user, List.of(BUNSIK, CHINESE_FOOD));
+        List<UserCookingTheme> cookingThemes = createCookingThemes(user,
+            List.of(BUNSIK, CHINESE_FOOD));
+        user.addUserCookingThemes(cookingThemes);
 
         UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
             .cookingTypes(
@@ -254,24 +239,18 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
         //then
         ItCookUser findUser = userRepository.findByEmail("user1@test.com").get();
-        List<UserCookingTheme> cookingThemes = userCookingThemeRepository.findAllByUserId(
-            user.getId());
 
-//        verify(cache, times(1)).evict("user1@test.com");
-        assertThat(findUser.getLifeType()).isNull();
-        assertThat(cookingThemes).isEmpty();
+        assertThat(findUser.getUserCookingThemes()).isEmpty();
     }
 
     @Test
     @DisplayName("관심요리 조회")
     void getInterestCook() {
         //given
-//        Cache cache = mock(Cache.class);
-//        when(cacheManager.getCache("interestCook")).thenReturn(cache);
-//        when(cache.get(any())).thenReturn(null);
-
         ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingThemes(user, List.of(BUNSIK, CHINESE_FOOD));
+        List<UserCookingTheme> cookingThemes = createCookingThemes(user,
+            List.of(BUNSIK, CHINESE_FOOD));
+        user.addUserCookingThemes(cookingThemes);
 
         //when
         UserReadInterestCookResponse response = userDomainService.getInterestCook(
@@ -502,16 +481,16 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     }
 
 
-    public void createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
+    public List<UserCookingTheme> createCookingThemes(ItCookUser user, List<CookingType> cookingTypes) {
         List<UserCookingTheme> userCookingThemes = new ArrayList<>();
         for (CookingType cookingType : cookingTypes) {
             UserCookingTheme userCookingTheme = UserCookingTheme.builder()
-                .userId(user.getId())
+                .user(user)
                 .cookingType(cookingType)
                 .build();
             userCookingThemes.add(userCookingTheme);
         }
-        userCookingThemeRepository.saveAll(userCookingThemes);
+        return userCookingThemeRepository.saveAll(userCookingThemes);
     }
 
 }
