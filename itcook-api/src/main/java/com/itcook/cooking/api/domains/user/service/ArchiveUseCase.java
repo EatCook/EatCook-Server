@@ -1,50 +1,45 @@
 package com.itcook.cooking.api.domains.user.service;
 
-import com.itcook.cooking.api.global.annotation.UseCase;
-import com.itcook.cooking.domain.common.errorcode.ArchiveErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.archive.entity.Archive;
 import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.post.service.PostDomainService;
+import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.archive.service.ArchiveDomainService;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @UseCase
 @RequiredArgsConstructor
 public class ArchiveUseCase {
 
-    private final UserDomainService userDomainService;
-    private final PostDomainService postDomainService;
-    private final ArchiveDomainService archiveDomainService;
+    private final UserService userService;
+    private final PostService postService;
+    private final ArchiveService archiveService;
 
     public void archiveAdd(String email, Long postId) {
 
-        ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
-        Post findByPost = postDomainService.fetchFindByPost(postId);
+        ItCookUser findByItCookUser = userService.findUserByEmail(email);
+        Post findByPost = postService.fetchFindByPost(postId);
 
-        archiveDomainService.validateDuplicateArchive(findByItCookUser.getId(), findByPost.getId());
+        archiveService.validateDuplicateArchive(findByItCookUser.getId(), findByPost.getId());
 
         Archive newArchive = Archive.builder()
                 .itCookUserId(findByItCookUser.getId())
                 .postId(findByPost.getId())
                 .build();
-        archiveDomainService.saveArchive(newArchive);
+        archiveService.saveArchive(newArchive);
     }
 
     public void archiveDel(String email, Long postId) {
-        ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
-        Post findByPost = postDomainService.fetchFindByPost(postId);
+        ItCookUser findByItCookUser = userService.findUserByEmail(email);
+        Post findByPost = postService.fetchFindByPost(postId);
 
-        Archive findArchive = archiveDomainService.validateEmptyArchive(findByItCookUser.getId(), findByPost.getId());
+        Archive findArchive = archiveService.validateEmptyArchive(findByItCookUser.getId(), findByPost.getId());
 
-        archiveDomainService.removeArchive(findArchive);
+        archiveService.removeArchive(findArchive);
     }
 
 }

@@ -212,6 +212,11 @@ public class ItCookUser extends BaseTimeEntity {
         return lifeType.getLifeTypeName();
     }
 
+    public List<String> getCookingTypes() {
+        return this.userCookingThemes.stream().map(UserCookingTheme::getCookingTypeName)
+            .toList();
+    }
+
     public void updateLifeType(
         LifeType lifeType
     ) {

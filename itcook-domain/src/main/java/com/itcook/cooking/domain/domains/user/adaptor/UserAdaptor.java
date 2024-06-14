@@ -47,4 +47,7 @@ public class UserAdaptor {
         return userQueryRepository.getFollowerCounts(userId);
     }
 
+    public ItCookUser queryJoinCookingThemesByEmail(String email) {
+        return userRepository.findItCookUserJoinCookingThemes(email);
+    }
 }

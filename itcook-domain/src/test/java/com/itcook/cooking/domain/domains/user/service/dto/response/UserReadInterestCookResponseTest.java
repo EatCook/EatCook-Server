@@ -27,7 +27,7 @@ class UserReadInterestCookResponseTest {
 
         //when
         UserReadInterestCookResponse response = UserReadInterestCookResponse.of(
-            user, cookingThemes);
+            user);
 
         //then
         assertEquals(response.lifeType(),"배달음식 단골고객");

@@ -1,8 +1,6 @@
 package com.itcook.cooking.api.domains.user.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -14,18 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
-import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.config.SecurityConfig;
 import com.itcook.cooking.api.global.config.WithItCookMockUser;
-import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtCheckFilter;
 import com.itcook.cooking.api.global.security.jwt.filter.OAuth2LoginFilter;
-import com.itcook.cooking.domain.domains.user.enums.UserBadge;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -56,7 +49,7 @@ class MyPageControllerTest {
     private MyPageUseCase myPageUseCase;
 
     @MockBean
-    private UserDomainService userDomainService;
+    private UserService userService;
 
     @Test
     @WithItCookMockUser

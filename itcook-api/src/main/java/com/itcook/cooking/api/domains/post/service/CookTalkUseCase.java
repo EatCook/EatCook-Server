@@ -2,13 +2,13 @@ package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.api.domains.post.dto.cooktalk.CookTalkDto;
 import com.itcook.cooking.api.domains.post.dto.response.CookTalkResponse;
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.like.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.like.service.LikedDomainService;
-import com.itcook.cooking.domain.domains.post.service.PostDomainService;
+import com.itcook.cooking.domain.domains.like.service.LikedService;
+import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,23 +25,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CookTalkUseCase {
 
-    private final PostDomainService postDomainService;
-    private final UserDomainService userDomainService;
-    private final LikedDomainService likedDomainService;
+    private final PostService postService;
+    private final UserService userService;
+    private final LikedService likedService;
     private final PostValidationUseCase postValidationUseCase;
 
     public CookTalkResponse getCookTalkFeed(String email, Pageable pageable) {
-        ItCookUser findByUserEmail = userDomainService.findUserByEmail(email);
+        ItCookUser findByUserEmail = userService.findUserByEmail(email);
 
-        Page<Object[]> findAllPostAndUserData = postDomainService.fetchFindAllByCookTalkFeedV2(findByUserEmail.getId(), pageable);
+        Page<Object[]> findAllPostAndUserData = postService.fetchFindAllByCookTalkFeedV2(findByUserEmail.getId(), pageable);
 
         return getCookTalkResponse(findAllPostAndUserData, findByUserEmail);
     }
 
     public CookTalkResponse getFollowingTalk(String email, Pageable pageable) {
-        ItCookUser findByUserEmail = userDomainService.findUserByEmail(email);
+        ItCookUser findByUserEmail = userService.findUserByEmail(email);
 
-        Page<Object[]> cookTalkFeedDtos = postDomainService.fetchFindFollowingCookTalk(findByUserEmail.getFollow(), pageable);
+        Page<Object[]> cookTalkFeedDtos = postService.fetchFindFollowingCookTalk(findByUserEmail.getFollow(), pageable);
 
         return getCookTalkResponse(cookTalkFeedDtos, findByUserEmail);
     }
@@ -79,7 +79,7 @@ public class CookTalkUseCase {
                 .collect(Collectors.toSet());
 
         // postId에 해당하는 좋아요 조회
-        Map<Long, List<Liked>> postIdToLikedMap = likedDomainService.getFindAllLiked(new ArrayList<>(postIdData))
+        Map<Long, List<Liked>> postIdToLikedMap = likedService.getFindAllLiked(new ArrayList<>(postIdData))
                 .stream()
                 .collect(Collectors.groupingBy(Liked::getPostId));
 

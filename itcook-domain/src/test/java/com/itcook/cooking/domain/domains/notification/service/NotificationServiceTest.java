@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class NotificationDomainServiceTest extends IntegrationTestSupport {
+class NotificationServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserRepository userRepository;
@@ -28,7 +28,7 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
     private NotificationRepository notificationRepository;
 
     @Autowired
-    private NotificationDomainService notificationDomainService;
+    private NotificationService notificationService;
 
     @Test
     @DisplayName("모든 알림들을 조회한다.")
@@ -40,7 +40,7 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
         Notification notification3 = createNotificationCheck(user.getId());
 
         //when
-        List<Notification> notiUnchecked = notificationDomainService.findAllNoti(
+        List<Notification> notiUnchecked = notificationService.findAllNoti(
             user.getId());
 
         //then
@@ -56,7 +56,7 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
         ItCookUser user = createUser("user@test.com", "잇쿡");
 
         //when
-        List<Notification> notiUnchecked = notificationDomainService.findAllNoti(
+        List<Notification> notiUnchecked = notificationService.findAllNoti(
             user.getId());
 
         //then
@@ -76,7 +76,7 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
             .map(Notification::getId).toList();
 
         //when
-        notificationDomainService.updateNotisCheck(ids);
+        notificationService.updateNotisCheck(ids);
 
         //then
         List<Notification> notifications = notificationRepository.findAll();
@@ -94,7 +94,7 @@ class NotificationDomainServiceTest extends IntegrationTestSupport {
 
 
         //when
-        notificationDomainService.updateNotisCheck(List.of());
+        notificationService.updateNotisCheck(List.of());
 
         //then
         List<Notification> notifications = notificationRepository.findAll();

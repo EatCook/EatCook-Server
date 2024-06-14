@@ -3,14 +3,14 @@ package com.itcook.cooking.api.domains.user.service;
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePostsResponse;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.domains.archive.dto.ArchivePost;
-import com.itcook.cooking.domain.domains.archive.service.ArchiveDomainService;
+import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
-import com.itcook.cooking.domain.domains.post.service.PostDomainService;
+import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
@@ -30,16 +30,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MyPageUseCase {
 
-    private final UserDomainService userDomainService;
-    private final PostDomainService postDomainService;
-    private final ArchiveDomainService archiveDomainService;
+    private final UserService userService;
+    private final PostService postService;
+    private final ArchiveService archiveService;
 
     /**
      * 마이페이지 조회
      */
     public MyPageResponse getMyPage(String email, Pageable pageable) {
-        MyPageUserDto myPageUserInfo = userDomainService.getMyPageInfo(email);
-        Page<PostWithLikedDto> posts = postDomainService.getPostsByUserId(
+        MyPageUserDto myPageUserInfo = userService.getMyPageInfo(email);
+        Page<PostWithLikedDto> posts = postService.getPostsByUserId(
             myPageUserInfo.getUserId(), pageable);
 
         return MyPageResponse.of(myPageUserInfo, PageResponse.of(posts));
@@ -50,7 +50,7 @@ public class MyPageUseCase {
      */
     @Transactional
     public void changePassword(MyPagePasswordServiceDto passwordServiceDto) {
-        userDomainService.changePassword(passwordServiceDto.toDomainService());
+        userService.changePassword(passwordServiceDto.toDomainService());
     }
 
     /**
@@ -58,12 +58,12 @@ public class MyPageUseCase {
      */
     @Transactional
     public void leaveUser(String email) {
-        userDomainService.leaveUser(email);
+        userService.leaveUser(email);
     }
 
     @Transactional
     public void updateProfile(MyPageUpdateProfile myPageUpdateProfile) {
-        userDomainService.updateProfile(myPageUpdateProfile.email(),
+        userService.updateProfile(myPageUpdateProfile.email(),
             myPageUpdateProfile.nickName());
     }
 
@@ -72,7 +72,7 @@ public class MyPageUseCase {
      */
     @Cacheable(cacheNames = "mypage", key = "#email")
     public MyPageSetUpResponse getMyPageSetUp(String email) {
-        return userDomainService.getMyPageSetUp(email);
+        return userService.getMyPageSetUp(email);
     }
 
     /**
@@ -82,7 +82,7 @@ public class MyPageUseCase {
     @CacheEvict(cacheNames = "mypage", key = "#email")
     public void updateMyPageSetUp(String email,
         MyPageAlertUpdate myPageAlertUpdate) {
-        userDomainService.updateMyPageSetUp(email, myPageAlertUpdate.serviceAlertType(),
+        userService.updateMyPageSetUp(email, myPageAlertUpdate.serviceAlertType(),
             myPageAlertUpdate.eventAlertType());
     }
 
@@ -93,7 +93,7 @@ public class MyPageUseCase {
     public UserReadInterestCookResponse getInterestCook(
         String email
     ) {
-        return userDomainService.getInterestCook(email);
+        return userService.getInterestCook(email);
     }
 
 
@@ -106,7 +106,7 @@ public class MyPageUseCase {
         String email,
         UserUpdateInterestCook userUpdateInterestCook
     ) {
-        userDomainService.updateInterestCook(email, userUpdateInterestCook.cookingTypes(),
+        userService.updateInterestCook(email, userUpdateInterestCook.cookingTypes(),
             userUpdateInterestCook.lifeType());
     }
 
@@ -114,8 +114,8 @@ public class MyPageUseCase {
      * 북마크 보관함 조회
      */
     public List<MyPageArchivePostsResponse> getArchivePosts(String email) {
-        ItCookUser user = userDomainService.findUserByEmail(email);
-        List<ArchivePost> archivesPosts = archiveDomainService.getArchivesPosts(user.getId());
+        ItCookUser user = userService.findUserByEmail(email);
+        List<ArchivePost> archivesPosts = archiveService.getArchivesPosts(user.getId());
         return archivesPosts.stream().map(MyPageArchivePostsResponse::of).toList();
     }
 

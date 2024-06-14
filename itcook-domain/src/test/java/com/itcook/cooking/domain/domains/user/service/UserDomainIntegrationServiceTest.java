@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
     @Autowired
-    private UserDomainService userDomainService;
+    private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
@@ -69,7 +69,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
         userRepository.saveAll(List.of(user1, user2, user3));
         //when
-        MyPageUserDto myPageInfo = userDomainService.getMyPageInfo(user1.getEmail());
+        MyPageUserDto myPageInfo = userService.getMyPageInfo(user1.getEmail());
 
         //then
         assertThat(myPageInfo.getUserId()).isEqualTo(user1.getId());
@@ -96,12 +96,16 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        var response = userDomainService.addSignup(user,
+        var response = userService.addSignup(user,
             null, cookingTypes);
 
         //then
         ItCookUser addSignupUser = userRepository.findByEmail("user@test.com").get();
+        List<UserCookingTheme> userCookingThemes = userCookingThemeRepository.findAll();
 
+        assertThat(userCookingThemes).hasSize(3)
+                .extracting("cookingType")
+                .containsExactlyInAnyOrder(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
         assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
         assertThat(addSignupUser.getLifeType()).isNull();
         assertThat(addSignupUser.getUserCookingThemes()).hasSize(3)
@@ -130,7 +134,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        assertThatThrownBy(() -> userDomainService.addSignup(user, null,
+        assertThatThrownBy(() -> userService.addSignup(user, null,
             cookingTypes))
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.ALREADY_EXISTS_NICKNAME.getDescription())
@@ -153,12 +157,14 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        var addSignupDto = userDomainService.addSignup(user,
+        userService.addSignup(user,
             null, cookingTypes);
 
         //then
         ItCookUser addSignupUser = userRepository.findByEmail(saveUser.getEmail()).get();
+        List<UserCookingTheme> userCookingThemes = userCookingThemeRepository.findAll();
 
+        assertThat(userCookingThemes).isEmpty();
         assertThat(addSignupUser.getNickName()).isEqualTo("뉴잇쿡");
         assertThat(addSignupUser.getLifeType()).isNull();
         assertThat(addSignupUser.getUserCookingThemes()).isEmpty();
@@ -171,11 +177,9 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
         ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
 
-//        doNothing().when(userLeaveEventListener).deleteToken(any(UserLeaveEvent.class));
-
         //when
-        userDomainService.leaveUser(user1.getEmail());
-        userDomainService.leaveUser(user2.getEmail());
+        userService.leaveUser(user1.getEmail());
+        userService.leaveUser(user2.getEmail());
 
         //then
         ItCookUser deleteUser = userRepository.findById(user1.getId()).get();
@@ -201,7 +205,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        userDomainService.updateInterestCook(user.getEmail(), updateInterestCook.cookingTypes(),
+        userService.updateInterestCook(user.getEmail(), updateInterestCook.cookingTypes(),
             updateInterestCook.lifeType());
 
         //then
@@ -234,7 +238,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        userDomainService.updateInterestCook(user.getEmail(), updateInterestCook.cookingTypes(),
+        userService.updateInterestCook(user.getEmail(), updateInterestCook.cookingTypes(),
             updateInterestCook.lifeType());
 
         //then
@@ -253,7 +257,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         user.addUserCookingThemes(cookingThemes);
 
         //when
-        UserReadInterestCookResponse response = userDomainService.getInterestCook(
+        UserReadInterestCookResponse response = userService.getInterestCook(
             user.getEmail());
 
         //then
@@ -268,26 +272,16 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("비어있는 관심요리 조회")
     void getInterestCookEmpty() {
         //given
-//        Cache cache = mock(Cache.class);
-//        when(cacheManager.getCache("interestCook")).thenReturn(cache);
-//        when(cache.get(any())).thenReturn(null);
-
-        ItCookUser user = ItCookUser.builder()
-            .email("user1@test.com")
-            .password("cook12345")
-            .providerType(ProviderType.COMMON)
-            .nickName("잇쿡1")
-            .userRole(UserRole.USER)
-            .build();
-        userRepository.save(user);
+        String email = "user1@test.com";
+        createUser(email, "잇쿡1",LifeType.DELIVERY_FOOD);
 
         //when
-        UserReadInterestCookResponse response = userDomainService.getInterestCook(
-            user.getEmail());
+        UserReadInterestCookResponse response = userService.getInterestCook(
+            email);
 
         //then
 //        verify(cache, times(1)).get("user1@test.com");
-        assertThat(response.lifeType()).isNull();
+        assertThat(response.lifeType()).isEqualTo(LifeType.DELIVERY_FOOD.getLifeTypeName());
         assertThat(response.cookingTypes()).isEmpty();
         ;
     }
@@ -300,7 +294,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         String password = "cook1234";
 
         //when
-        ItCookUser user = userDomainService.signup(email, password);
+        ItCookUser user = userService.signup(email, password);
 
         //then
         ItCookUser findUser = userRepository.findByEmail(email).get();
@@ -320,7 +314,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //when
 
         //then
-        assertThatThrownBy(() -> userDomainService.signup(email, password))
+        assertThatThrownBy(() -> userService.signup(email, password))
             .isInstanceOf(IllegalArgumentException.class)
         ;
     }
@@ -331,7 +325,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         createUser("user@test.com","잇쿡");
 
         //when //then
-        assertThatThrownBy(() -> userDomainService.signup("user@test.com", "cook1234"))
+        assertThatThrownBy(() -> userService.signup("user@test.com", "cook1234"))
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.ALREADY_EXISTS_USER.getDescription())
         ;
@@ -354,7 +348,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //when
         //then
         assertThatThrownBy(
-            () -> userDomainService.addSignup(addSignupUser, null,
+            () -> userService.addSignup(addSignupUser, null,
                 List.of(BUNSIK, CHINESE_FOOD)))
             .isInstanceOf(ApiException.class)
             .hasMessage("이미 존재하는 닉네임입니다.")
@@ -370,7 +364,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         String newNickName = "잇쿡2";
 
         //when
-        userDomainService.updateProfile(user.getEmail(), newNickName);
+        userService.updateProfile(user.getEmail(), newNickName);
 
         //then
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
@@ -387,7 +381,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
         //when
         //then
-        assertThatThrownBy(() -> userDomainService.updateProfile(user.getEmail(), newNickName))
+        assertThatThrownBy(() -> userService.updateProfile(user.getEmail(), newNickName))
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.ALREADY_EXISTS_NICKNAME.getDescription())
         ;
@@ -406,7 +400,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .build();
 
         //when
-        userDomainService.changePassword(updatePassword);
+        userService.changePassword(updatePassword);
 
         //then
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
@@ -430,7 +424,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //when
 
         //then
-        assertThatThrownBy(() -> userDomainService.changePassword(updatePassword))
+        assertThatThrownBy(() -> userService.changePassword(updatePassword))
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.NOT_EQUAL_PASSWORD.getDescription())
             ;
@@ -445,7 +439,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser user = createUser("user@test.com", "cook1234", "잇쿡2");
 
         //when
-        String temporaryPassword = userDomainService.issueTemporaryPassword(user.getEmail());
+        String temporaryPassword = userService.issueTemporaryPassword(user.getEmail());
 
         //then
         ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
@@ -474,6 +468,19 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .providerType(ProviderType.COMMON)
             .nickName(nickName)
             .lifeType(LifeType.DELIVERY_FOOD)
+            .userRole(UserRole.USER)
+            .build();
+
+        return userRepository.save(user);
+    }
+
+    private ItCookUser createUser(String username, String nickName, LifeType lifeType) {
+        ItCookUser user = ItCookUser.builder()
+            .email(username)
+            .password("cook12345")
+            .providerType(ProviderType.COMMON)
+            .nickName(nickName)
+            .lifeType(lifeType)
             .userRole(UserRole.USER)
             .build();
 
