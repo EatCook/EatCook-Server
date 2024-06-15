@@ -16,7 +16,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class ArchiveDomainService {
+public class ArchiveService {
 
     private final ArchiveAdaptor archiveAdaptor;
     private final ArchiveRepository archiveRepository;

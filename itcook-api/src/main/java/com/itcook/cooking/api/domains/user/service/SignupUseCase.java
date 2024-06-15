@@ -7,12 +7,12 @@ import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
 import com.itcook.cooking.domain.domains.user.service.AuthCodeRedisService;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class SignupUseCase {
 
-    private final UserDomainService userDomainService;
+    private final UserService userService;
     private final ApplicationEventPublisher eventPublisher;
     private final PasswordEncoder passwordEncoder;
     private final AuthCodeRedisService authCodeRedisService;
@@ -35,7 +35,7 @@ public class SignupUseCase {
      * 이메일 인증 코드 요청 서비스
      */
     public void sendAuthCodeSignup(SendEmailServiceDto sendEmailServiceDto) {
-        userDomainService.checkDuplicateMail(sendEmailServiceDto.email());
+        userService.checkDuplicateMail(sendEmailServiceDto.email());
         authCodeRedisService.sendAuthCode(sendEmailServiceDto.email());
     }
 
@@ -43,7 +43,7 @@ public class SignupUseCase {
      * 계정 찾기 요청 서비스
      */
     public void findUser(SendEmailServiceDto sendEmailServiceDto) {
-        userDomainService.findUserByEmail(sendEmailServiceDto.email());
+        userService.findUserByEmail(sendEmailServiceDto.email());
         authCodeRedisService.sendAuthCode(sendEmailServiceDto.email());
     }
 
@@ -58,7 +58,7 @@ public class SignupUseCase {
     // 임시 비밀번호 메일 발송 (이벤트 발생)
     public void verifyFindUser(VerifyEmailServiceDto verifyEmailServiceDto) {
         authCodeRedisService.verifyAuthCode(verifyEmailServiceDto.email(), verifyEmailServiceDto.authCode());
-        String temporaryPassword = userDomainService.issueTemporaryPassword(
+        String temporaryPassword = userService.issueTemporaryPassword(
             verifyEmailServiceDto.email());
         eventPublisher.publishEvent(
             EmailSendEvent.of(PASSWORD_EMAIL.getSub(), PASSWORD_EMAIL.formatBody(temporaryPassword),
@@ -67,14 +67,14 @@ public class SignupUseCase {
 
     @Transactional
     public UserResponse signup(SignupRequest signupRequest) {
-        ItCookUser user = userDomainService.signup(signupRequest.getEmail(),
+        ItCookUser user = userService.signup(signupRequest.getEmail(),
             passwordEncoder.encode(signupRequest.getPassword()));
         return UserResponse.of(user);
     }
 
     @Transactional
     public AddSignupDomainResponse addSignup(AddSignupServiceDto addSignupRequest) {
-        return userDomainService.addSignup(
+        return userService.addSignup(
             addSignupRequest.toEntity()
             , addSignupRequest.fileExtension()
             , addSignupRequest.toCookingTypes());

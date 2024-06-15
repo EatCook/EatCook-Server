@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class UserDomainService {
+public class UserService {
 
     private final UserCookingThemeRepository userCookingThemeRepository;
     private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
@@ -155,7 +155,7 @@ public class UserDomainService {
     public UserReadInterestCookResponse getInterestCook(
         String email
     ) {
-        ItCookUser user = userAdaptor.queryUserByEmail(email);
-        return UserReadInterestCookResponse.of(user, user.getUserCookingThemes());
+        ItCookUser user = userAdaptor.queryJoinCookingThemesByEmail(email);
+        return UserReadInterestCookResponse.of(user);
     }
 }

@@ -1,13 +1,13 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
+import com.itcook.cooking.domain.common.annotation.DomainService;
 import com.itcook.cooking.domain.infra.s3.ImageFileExtension;
 import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-@Component
+@DomainService
 @RequiredArgsConstructor
 public class UserImageRegisterService {
 

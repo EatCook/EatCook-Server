@@ -16,7 +16,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class PostCookingThemeDomainService {
+public class PostCookingThemeService {
 
     private final PostCookingThemeRepository postCookingThemeRepository;
 

@@ -1,4 +1,4 @@
-package com.itcook.cooking.api.global.annotation;
+package com.itcook.cooking.domain.common.annotation;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Service;

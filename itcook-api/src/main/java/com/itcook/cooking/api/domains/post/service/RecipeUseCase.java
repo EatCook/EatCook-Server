@@ -10,19 +10,19 @@ import com.itcook.cooking.api.domains.post.dto.request.RecipeUpdateRequest;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeCreateResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeReadResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeUpdateResponse;
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.like.entity.Liked;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
-import com.itcook.cooking.domain.domains.like.service.LikedDomainService;
-import com.itcook.cooking.domain.domains.post.service.PostCookingThemeDomainService;
-import com.itcook.cooking.domain.domains.post.service.PostDomainService;
-import com.itcook.cooking.domain.domains.post.service.RecipeProcessDomainService;
+import com.itcook.cooking.domain.domains.like.service.LikedService;
+import com.itcook.cooking.domain.domains.post.service.PostCookingThemeService;
+import com.itcook.cooking.domain.domains.post.service.PostService;
+import com.itcook.cooking.domain.domains.post.service.RecipeProcessService;
 import com.itcook.cooking.domain.domains.archive.entity.Archive;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.archive.service.ArchiveDomainService;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,12 +37,12 @@ import java.util.stream.IntStream;
 @Slf4j
 public class RecipeUseCase {
 
-    private final UserDomainService userDomainService;
-    private final PostDomainService postDomainService;
-    private final RecipeProcessDomainService recipeProcessDomainService;
-    private final PostCookingThemeDomainService postCookingThemeDomainService;
-    private final LikedDomainService likedDomainService;
-    private final ArchiveDomainService archiveDomainService;
+    private final UserService userService;
+    private final PostService postService;
+    private final RecipeProcessService recipeProcessService;
+    private final PostCookingThemeService postCookingThemeService;
+    private final LikedService likedService;
+    private final ArchiveService archiveService;
 
     private final PostValidationUseCase postValidationUseCase;
 
@@ -50,16 +50,16 @@ public class RecipeUseCase {
     @Transactional
     public RecipeCreateResponse createRecipe(RecipeCreateRequest recipeCreateRequest) {
         //유저 검증
-        ItCookUser itCookUser = userDomainService.findUserByEmail(recipeCreateRequest.getEmail());
+        ItCookUser itCookUser = userService.findUserByEmail(recipeCreateRequest.getEmail());
         //Post, RecipeProcess, PostCookingTheme 저장
         Post post = recipeCreateRequest.toPostDomain(itCookUser.getId());
-        Post savePostData = postDomainService.createPost(post);
+        Post savePostData = postService.createPost(post);
 
         List<RecipeProcess> recipeProcesses = recipeCreateRequest.toRecipeProcessDomain(savePostData);
-        List<RecipeProcess> saveRecipeProcess = recipeProcessDomainService.createRecipeProcess(recipeProcesses);
+        List<RecipeProcess> saveRecipeProcess = recipeProcessService.createRecipeProcess(recipeProcesses);
 
         List<PostCookingTheme> postCookingTheme = recipeCreateRequest.toPostCookingTheme(post);
-        postCookingThemeDomainService.createPostCookingTheme(postCookingTheme);
+        postCookingThemeService.createPostCookingTheme(postCookingTheme);
 
         RecipeImageUrlDto recipeImageUrlDto = getRecipeImageUrls(recipeCreateRequest.getMainFileExtension(), recipeCreateRequest.getRecipeProcess(), itCookUser, savePostData, saveRecipeProcess);
 
@@ -102,10 +102,10 @@ public class RecipeUseCase {
     //read
     public RecipeReadResponse getReadRecipeV1(String email, Long postId) {
         //조회 요청 한 유저 정보 조회
-        ItCookUser findByUserEmail = userDomainService.findUserByEmail(email);
+        ItCookUser findByUserEmail = userService.findUserByEmail(email);
 
         //요청한 게시글 정보
-        List<Object[]> recipeReadDomainDto = postDomainService.fetchFindByRecipe(postId);
+        List<Object[]> recipeReadDomainDto = postService.fetchFindByRecipe(postId);
 
         //Post
         Post post = (Post) recipeReadDomainDto.get(0)[0];
@@ -227,15 +227,15 @@ public class RecipeUseCase {
         }
 
         Post postUpdateData = recipeUpdateRequest.toPostDomain();
-        Post postEntityData = postDomainService.updatePost(postUpdateData, mainImageUrlDto);
+        Post postEntityData = postService.updatePost(postUpdateData, mainImageUrlDto);
 
         List<RecipeProcess> recipeProcessesData = recipeUpdateRequest.toRecipeProcessDomain(postEntityData);
 
         List<ImageUrlDto> recipeProcessImageUrlDto = updateRecipeProcessFileExtensionsValidation(recipeUpdateRequest, recipeProcessesData);
-        recipeProcessDomainService.updateRecipeProcess(recipeProcessesData, postEntityData);
+        recipeProcessService.updateRecipeProcess(recipeProcessesData, postEntityData);
 
         List<PostCookingTheme> postCookingThemeData = recipeUpdateRequest.toPostCookingThemeDomain(postEntityData);
-        postCookingThemeDomainService.updatePostCookingTheme(postCookingThemeData, postEntityData);
+        postCookingThemeService.updatePostCookingTheme(postCookingThemeData, postEntityData);
 
         String mainPresignedUrl = mainImageNullCheckValidation(mainImageUrlDto);
 
@@ -283,9 +283,9 @@ public class RecipeUseCase {
 
     @Transactional
     public void deleteRecipe(RecipeDeleteRequest recipeDeleteRequest) {
-        userDomainService.findUserByEmail(recipeDeleteRequest.getEmail());
+        userService.findUserByEmail(recipeDeleteRequest.getEmail());
 
-        postDomainService.deletePost(recipeDeleteRequest.getPostId());
+        postService.deletePost(recipeDeleteRequest.getPostId());
     }
 
 }

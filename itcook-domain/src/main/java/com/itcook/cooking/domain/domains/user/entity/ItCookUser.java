@@ -146,7 +146,7 @@ public class ItCookUser extends BaseTimeEntity {
         userValidator.validateDuplicateNickName(nickName);
         this.nickName = nickName;
         this.lifeType = lifeType;
-        addUserCookingThemes(UserCookingTheme.create(this,cookingTypes));
+        addUserCookingThemes(cookingTypes);
         ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(fileExtension, this);
 
         return AddSignupDomainResponse.of(imageUrlDto.getUrl());
@@ -158,7 +158,7 @@ public class ItCookUser extends BaseTimeEntity {
         List<CookingType> cookingTypes
     ) {
         updateLifeType(lifeType);
-        addUserCookingThemes(UserCookingTheme.create(this, cookingTypes));
+        addUserCookingThemes(cookingTypes);
     }
 
     public void changePassword(String newEncodedPassword, String rawCurrentPassword,
@@ -193,10 +193,10 @@ public class ItCookUser extends BaseTimeEntity {
     }
 
     public void updateAlertTypes
-        (
-            ServiceAlertType serviceAlertType,
-            EventAlertType eventAlertType
-        ) {
+    (
+        ServiceAlertType serviceAlertType,
+        EventAlertType eventAlertType
+    ) {
         this.serviceAlertType = serviceAlertType;
         this.eventAlertType = eventAlertType;
     }
@@ -212,13 +212,19 @@ public class ItCookUser extends BaseTimeEntity {
         return lifeType.getLifeTypeName();
     }
 
+    public List<String> getCookingTypes() {
+        return this.userCookingThemes.stream().map(UserCookingTheme::getCookingTypeName)
+            .toList();
+    }
+
     public void updateLifeType(
         LifeType lifeType
     ) {
         this.lifeType = lifeType;
     }
 
-    public void addUserCookingThemes(List<UserCookingTheme> userCookingThemes) {
+    public void addUserCookingThemes(List<CookingType> cookingTypes) {
+        List<UserCookingTheme> userCookingThemes = UserCookingTheme.create(this, cookingTypes);
         this.userCookingThemes.clear();
         this.userCookingThemes.addAll(userCookingThemes);
     }

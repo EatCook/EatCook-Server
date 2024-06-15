@@ -1,11 +1,11 @@
 package com.itcook.cooking.api.domains.notification.service;
 
 import com.itcook.cooking.api.domains.notification.service.dto.response.NotificationResponse;
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.notification.entity.Notification;
-import com.itcook.cooking.domain.domains.notification.service.NotificationDomainService;
+import com.itcook.cooking.domain.domains.notification.service.NotificationService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,18 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class NotificationUseCase {
 
-    private final UserDomainService userDomainService;
-    private final NotificationDomainService notificationDomainService;
+    private final UserService userService;
+    private final NotificationService notificationService;
 
     public List<NotificationResponse> getNotifications(String email) {
-        ItCookUser user = userDomainService.findUserByEmail(email);
-        List<Notification> uncheckedNotis = notificationDomainService.findAllNoti(
+        ItCookUser user = userService.findUserByEmail(email);
+        List<Notification> uncheckedNotis = notificationService.findAllNoti(
             user.getId());
 
         return NotificationResponse.of(uncheckedNotis);
     }
 
     public void updateNotisCheck(List<Long> notificationId) {
-        notificationDomainService.updateNotisCheck(notificationId);
+        notificationService.updateNotisCheck(notificationId);
     }
 }

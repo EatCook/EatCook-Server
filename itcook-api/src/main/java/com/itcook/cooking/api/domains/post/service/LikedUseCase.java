@@ -1,13 +1,13 @@
 package com.itcook.cooking.api.domains.post.service;
 
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
 import com.itcook.cooking.domain.domains.like.entity.Liked;
-import com.itcook.cooking.domain.domains.like.service.LikedDomainService;
+import com.itcook.cooking.domain.domains.like.service.LikedService;
 import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.post.service.PostDomainService;
+import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,24 +17,24 @@ import org.springframework.context.ApplicationEventPublisher;
 @Slf4j
 public class LikedUseCase {
 
-    private final UserDomainService userDomainService;
-    private final PostDomainService postDomainService;
-    private final LikedDomainService likedDomainService;
+    private final UserService userService;
+    private final PostService postService;
+    private final LikedService likedService;
     private final ApplicationEventPublisher eventPublisher;
 
 
     public void likedAdd(String email, Long reqPostId) {
-        ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
-        Post findByPost = postDomainService.fetchFindByPost(reqPostId);
+        ItCookUser findByItCookUser = userService.findUserByEmail(email);
+        Post findByPost = postService.fetchFindByPost(reqPostId);
 
-        likedDomainService.validateDuplicateLiked(findByItCookUser.getId(), reqPostId);
+        likedService.validateDuplicateLiked(findByItCookUser.getId(), reqPostId);
 
         Liked newLiked = Liked.builder()
                 .postId(findByPost.getId())
                 .itCookUserId(findByItCookUser.getId())
                 .build();
 
-        likedDomainService.createLiked(newLiked);
+        likedService.createLiked(newLiked);
 
         // 게시물 작성자에게 좋아요 요청 알림
         eventPublisher.publishEvent(UserLikedEvent.of(findByItCookUser.getNickName(), reqPostId,
@@ -42,12 +42,12 @@ public class LikedUseCase {
     }
 
     public void likedDel(String email, Long reqPostId) {
-        ItCookUser findByItCookUser = userDomainService.findUserByEmail(email);
-        Post findByPost = postDomainService.fetchFindByPost(reqPostId);
+        ItCookUser findByItCookUser = userService.findUserByEmail(email);
+        Post findByPost = postService.fetchFindByPost(reqPostId);
 
-        Liked findLiked = likedDomainService.validateEmptyArchive(findByItCookUser.getId(), findByPost.getId());
+        Liked findLiked = likedService.validateEmptyArchive(findByItCookUser.getId(), findByPost.getId());
 
-        likedDomainService.removeLiked(findLiked);
+        likedService.removeLiked(findLiked);
     }
 
 }

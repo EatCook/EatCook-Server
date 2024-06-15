@@ -9,7 +9,7 @@ import com.itcook.cooking.api.domains.post.dto.response.SearchResultResponse;
 import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.api.domains.post.service.dto.PostSearchServiceDto;
 import com.itcook.cooking.api.domains.search.dto.RealTimeSearchWords;
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.post.adaptor.PostAdaptor;
 import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;

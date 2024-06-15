@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class RecipeProcessDomainService {
+public class RecipeProcessService {
 
     private final RecipeProcessRepository recipeProcessRepository;
 

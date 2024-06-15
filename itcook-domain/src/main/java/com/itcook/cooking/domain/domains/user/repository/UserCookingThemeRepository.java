@@ -13,4 +13,7 @@ public interface UserCookingThemeRepository extends JpaRepository<UserCookingThe
     @Query("delete from UserCookingTheme uc where uc.user = :user")
     void deleteByUser(ItCookUser user);
 
+    @Query("select uc from UserCookingTheme uc where uc.user.id = :userId")
+    List<UserCookingTheme> findByUserId(Long userId);
+
 }
