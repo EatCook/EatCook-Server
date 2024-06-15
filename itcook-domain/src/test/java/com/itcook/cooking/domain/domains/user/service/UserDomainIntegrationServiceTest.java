@@ -58,9 +58,9 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("마이페이지를 조회시, 유저 정보는 닉네임, 뱃지, 팔로워, 팔로잉을 반환한다.")
     void getMyPageInfo() {
         //given
-        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
-        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
-        ItCookUser user3 = createUser("user3@test.com", "잇쿡3");
+        ItCookUser user1 = createUser("user1@test.com", "cook1234","잇쿡1");
+        ItCookUser user2 = createUser("user2@test.com", "cook1234","잇쿡2");
+        ItCookUser user3 = createUser("user3@test.com", "cook1234","잇쿡3");
 
         user1.addFollowing(user2.getId());
         user1.addFollowing(user3.getId());
@@ -85,11 +85,10 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("추가 회원가입 요청 성공")
     void addSignup() {
         //given
-        ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
+        ItCookUser saveUser = createUser("user@test.com", "cook12345","잇쿡1");
         List<CookingType> cookingTypes = List.of(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
         ItCookUser user = ItCookUser.builder()
             .email(saveUser.getEmail())
-            .password("cook12345")
             .providerType(ProviderType.COMMON)
             .nickName("뉴잇쿡")
             .userRole(UserRole.USER)
@@ -122,12 +121,11 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("추가 회원가입 요청 성공")
     void addSignupDuplicateNick() {
         //given
-        ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
-        createUser("user2@test.com", "잇쿡2");
+        ItCookUser saveUser = createUser("user@test.com", "cook12345","잇쿡1");
+        createUser("user2@test.com", "cook12345","잇쿡2");
         List<CookingType> cookingTypes = List.of(KOREAN_FOOD, SIDE_DISH, WESTERN_FOOD);
         ItCookUser user = ItCookUser.builder()
             .email(saveUser.getEmail())
-            .password("cook12345")
             .providerType(ProviderType.COMMON)
             .nickName("잇쿡2")
             .userRole(UserRole.USER)
@@ -146,11 +144,10 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("넘어가기한 LifeType과 CookingTypes을 받은 ,추가 회원가입 요청 성공")
     void addSignupEmpty() {
         //given
-        ItCookUser saveUser = createUser("user@test.com", "잇쿡1");
+        ItCookUser saveUser = createUser("user@test.com", "cook12345","잇쿡1");
         List<CookingType> cookingTypes = List.of();
         ItCookUser user = ItCookUser.builder()
             .email(saveUser.getEmail())
-            .password("cook12345")
             .providerType(ProviderType.COMMON)
             .nickName("뉴잇쿡")
             .userRole(UserRole.USER)
@@ -174,8 +171,8 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("유저 회원 탈퇴")
     void leaveUser() {
         //given
-        ItCookUser user1 = createUser("user1@test.com", "잇쿡1");
-        ItCookUser user2 = createUser("user2@test.com", "잇쿡2");
+        ItCookUser user1 = createUser("user1@test.com", "cook12345","잇쿡1");
+        ItCookUser user2 = createUser("user2@test.com", "cook12345","잇쿡2");
 
         //when
         userService.leaveUser(user1.getEmail());
@@ -195,8 +192,8 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     void updateInterestCook() {
         //given
         //캐시 모의
-        ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        createCookingThemes(user, List.of(BUNSIK, CHINESE_FOOD));
+        ItCookUser user = createUser("user1@test.com", "잇쿡1",List.of(BUNSIK, CHINESE_FOOD));
+//        createCookingThemes(user, List.of(BUNSIK, CHINESE_FOOD));
 
         UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
             .lifeType(LifeType.CONVENIENCE_STORE)
@@ -226,10 +223,8 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("빈 요청을 받아서 받아서,유저 생활타입과, cookingthemes 업데이트를 한다")
     void updateInterestCookEmtpy() {
         //given
-        ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        List<UserCookingTheme> cookingThemes = createCookingThemes(user,
-            List.of(BUNSIK, CHINESE_FOOD));
-        user.addUserCookingThemes(cookingThemes);
+        ItCookUser user = createUser("user1@test.com", "잇쿡1",List.of(BUNSIK, CHINESE_FOOD));
+//        user.addUserCookingThemes(List.of(BUNSIK, CHINESE_FOOD));
 
         UserUpdateInterestCook updateInterestCook = UserUpdateInterestCook.builder()
             .cookingTypes(
@@ -251,10 +246,8 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("관심요리 조회")
     void getInterestCook() {
         //given
-        ItCookUser user = createUser("user1@test.com", "잇쿡1");
-        List<UserCookingTheme> cookingThemes = createCookingThemes(user,
-            List.of(BUNSIK, CHINESE_FOOD));
-        user.addUserCookingThemes(cookingThemes);
+        ItCookUser user = createUser("user1@test.com", "잇쿡1",List.of(BUNSIK, CHINESE_FOOD));
+//        user.addUserCookingThemes(List.of(BUNSIK, CHINESE_FOOD));
 
         //when
         UserReadInterestCookResponse response = userService.getInterestCook(
@@ -273,7 +266,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     void getInterestCookEmpty() {
         //given
         String email = "user1@test.com";
-        createUser(email, "잇쿡1",LifeType.DELIVERY_FOOD);
+        createUser(email, "잇쿡1",List.of());
 
         //when
         UserReadInterestCookResponse response = userService.getInterestCook(
@@ -322,7 +315,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("중복 이메일로 회원가입 시도시 예외가 발생한다.")
     void signupDuplicateEmail() {
         //given
-        createUser("user@test.com","잇쿡");
+        createUser("user@test.com","cook12345","잇쿡");
 
         //when //then
         assertThatThrownBy(() -> userService.signup("user@test.com", "cook1234"))
@@ -335,7 +328,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("추가 회원가입 로직시, 닉네임이 중복되어 예외가 발생한다")
     void addSignupDuplicateNickName() {
         //given
-        createUser("user@test.com", "잇쿡1");
+        createUser("user@test.com", "cook12345","잇쿡1");
         ItCookUser addSignupUser = ItCookUser.builder()
             .email("user@test.com")
             .password("cook12345")
@@ -360,7 +353,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("프로필(닉네임) 업데이트 시도한다")
     void updateProfile() {
         //given
-        ItCookUser user = createUser("user@test.com", "잇쿡");
+        ItCookUser user = createUser("user@test.com", "cook12345","잇쿡");
         String newNickName = "잇쿡2";
 
         //when
@@ -376,7 +369,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     @DisplayName("프로필(닉네임) 업데이트 시도시 중복닉으로 예외 발생")
     void updateProfileDuplicateNickName() {
         //given
-        ItCookUser user = createUser("user@test.com", "잇쿡2");
+        ItCookUser user = createUser("user@test.com", "cook12345","잇쿡2");
         String newNickName = "잇쿡2";
 
         //when
@@ -461,7 +454,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         return userRepository.save(user);
     }
 
-    private ItCookUser createUser(String username, String nickName) {
+    private ItCookUser createUser(String username, String nickName, List<CookingType> cookingTypes) {
         ItCookUser user = ItCookUser.builder()
             .email(username)
             .password("cook12345")
@@ -470,11 +463,13 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .lifeType(LifeType.DELIVERY_FOOD)
             .userRole(UserRole.USER)
             .build();
+        user.addUserCookingThemes(cookingTypes);
 
         return userRepository.save(user);
     }
 
-    private ItCookUser createUser(String username, String nickName, LifeType lifeType) {
+    private ItCookUser createUser(String username, String nickName, LifeType lifeType,
+        List<CookingType> cookingTypes) {
         ItCookUser user = ItCookUser.builder()
             .email(username)
             .password("cook12345")
@@ -483,6 +478,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .lifeType(lifeType)
             .userRole(UserRole.USER)
             .build();
+        user.addUserCookingThemes(cookingTypes);
 
         return userRepository.save(user);
     }

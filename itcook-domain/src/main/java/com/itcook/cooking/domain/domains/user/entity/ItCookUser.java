@@ -146,7 +146,7 @@ public class ItCookUser extends BaseTimeEntity {
         userValidator.validateDuplicateNickName(nickName);
         this.nickName = nickName;
         this.lifeType = lifeType;
-        addUserCookingThemes(UserCookingTheme.create(this,cookingTypes));
+        addUserCookingThemes(cookingTypes);
         ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(fileExtension, this);
 
         return AddSignupDomainResponse.of(imageUrlDto.getUrl());
@@ -158,7 +158,7 @@ public class ItCookUser extends BaseTimeEntity {
         List<CookingType> cookingTypes
     ) {
         updateLifeType(lifeType);
-        addUserCookingThemes(UserCookingTheme.create(this, cookingTypes));
+        addUserCookingThemes(cookingTypes);
     }
 
     public void changePassword(String newEncodedPassword, String rawCurrentPassword,
@@ -223,7 +223,8 @@ public class ItCookUser extends BaseTimeEntity {
         this.lifeType = lifeType;
     }
 
-    public void addUserCookingThemes(List<UserCookingTheme> userCookingThemes) {
+    public void addUserCookingThemes(List<CookingType> cookingTypes) {
+        List<UserCookingTheme> userCookingThemes = UserCookingTheme.create(this, cookingTypes);
         this.userCookingThemes.clear();
         this.userCookingThemes.addAll(userCookingThemes);
     }
