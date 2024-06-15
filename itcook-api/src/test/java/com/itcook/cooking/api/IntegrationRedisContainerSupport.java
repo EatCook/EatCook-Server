@@ -2,7 +2,6 @@ package com.itcook.cooking.api;
 
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
 import com.itcook.cooking.domain.infra.email.AuthCodeService;
-import com.itcook.cooking.infra.email.javamail.JavaMailConfig;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -16,8 +15,8 @@ public abstract class IntegrationRedisContainerSupport {
     @MockBean
     protected AuthCodeService javaMailService;
 
-    @MockBean
-    protected JavaMailConfig javaMailConfig;
+//    @MockBean
+//    protected JavaMailConfig javaMailConfig;
 
 
 }

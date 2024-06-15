@@ -4,9 +4,17 @@ import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.itcook.cooking.api.global.mock.MockRedisService;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
@@ -14,19 +22,22 @@ import com.itcook.cooking.domain.common.errorcode.ErrorCode;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.infra.redis.RedisService;
-import com.itcook.cooking.infra.redis.RedisServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 class JwtTokenProviderTest {
+
     private JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService = mock(RedisServiceImpl.class);
+    private RedisService redisService;
+
     @BeforeEach
     void init() {
         String key = "testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey";
         Long accessExp = 3L;
         Long refreshExp = 5L;
+        redisService = mock(MockRedisService.class);
         jwtTokenProvider = new JwtTokenProvider(key,accessExp,refreshExp,redisService);
     }
 
@@ -76,6 +87,7 @@ class JwtTokenProviderTest {
             .generateAccessTokenAndRefreshToken(username, of("ROLE_USER"));
 
         //then
+        verify(redisService, times(1)).setDataWithExpire(anyString(), any(), anyLong());
         assertNotNull(tokenDto.getAccessToken());
         assertNotNull(tokenDto.getRefreshToken());
     }
@@ -87,8 +99,8 @@ class JwtTokenProviderTest {
         String username = "hangs0908@test.com";
         TokenDto tokenDto = jwtTokenProvider
             .generateAccessTokenAndRefreshToken(username, of("ROLE_USER"));
-
         when(redisService.getData(username)).thenReturn(tokenDto.getRefreshToken());
+
 
         //when
         TokenDto reissueTokens = jwtTokenProvider.reissue(tokenDto.getAccessToken(),
