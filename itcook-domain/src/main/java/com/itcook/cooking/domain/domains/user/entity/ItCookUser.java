@@ -193,10 +193,10 @@ public class ItCookUser extends BaseTimeEntity {
     }
 
     public void updateAlertTypes
-        (
-            ServiceAlertType serviceAlertType,
-            EventAlertType eventAlertType
-        ) {
+    (
+        ServiceAlertType serviceAlertType,
+        EventAlertType eventAlertType
+    ) {
         this.serviceAlertType = serviceAlertType;
         this.eventAlertType = eventAlertType;
     }
