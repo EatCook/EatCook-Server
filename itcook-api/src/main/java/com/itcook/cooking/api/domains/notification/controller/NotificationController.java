@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.notification.controller;
 
 import com.itcook.cooking.api.domains.notification.controller.dto.UnCheckedNotisRequest;
+import com.itcook.cooking.api.domains.notification.service.NotificationQueryUseCase;
 import com.itcook.cooking.api.domains.notification.service.NotificationUseCase;
 import com.itcook.cooking.api.domains.notification.service.dto.response.NotificationResponse;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
@@ -27,13 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationController {
 
     private final NotificationUseCase notificationUseCase;
+    private final NotificationQueryUseCase notificationQueryUseCase;
 
     @Operation(summary = "알림 조회 요청", description = "토큰을 통해서 해당 유저의 알림 목록(check, uncheck)을 조회한다.")
     @GetMapping("/v1/notifications")
     public ResponseEntity<ApiResponse<List<NotificationResponse>>> notification(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        List<NotificationResponse> response = notificationUseCase.getNotifications(
+        List<NotificationResponse> response = notificationQueryUseCase.getNotifications(
             authenticationUser.getUsername());
         return ResponseEntity.ok(ApiResponse.OK(response));
     }

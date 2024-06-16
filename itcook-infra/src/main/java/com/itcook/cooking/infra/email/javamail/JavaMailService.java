@@ -26,7 +26,7 @@ public class JavaMailService implements AuthCodeService {
     @Async
     @TransactionalEventListener
     public void sentAuthCode(EmailSendEvent emailSendEvent) {
-        log.info("메일 전송 시도 ");
+        log.info("메일 전송 시도 : {}", emailSendEvent);
         try {
 
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();

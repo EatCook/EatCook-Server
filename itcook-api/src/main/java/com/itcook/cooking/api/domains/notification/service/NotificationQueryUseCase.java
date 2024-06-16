@@ -14,12 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @UseCase
 @RequiredArgsConstructor
-public class NotificationUseCase {
+@Transactional(readOnly = true)
+public class NotificationQueryUseCase {
 
     private final UserService userService;
     private final NotificationService notificationService;
 
-    public void updateNotisCheck(List<Long> notificationId) {
-        notificationService.updateNotisCheck(notificationId);
+    public List<NotificationResponse> getNotifications(String email) {
+        ItCookUser user = userService.findUserByEmail(email);
+        List<Notification> uncheckedNotis = notificationService.findAllNoti(
+            user.getId());
+
+        return NotificationResponse.of(uncheckedNotis);
     }
 }

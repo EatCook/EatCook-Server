@@ -57,7 +57,8 @@ public class UserService {
     public String issueTemporaryPassword(String email) {
         ItCookUser user = userAdaptor.queryUserByEmail(email);
         String temporaryPassword = RandomCodeUtils.generateTemporaryPassword();
-        user.changePassword(passwordEncoder.encode(temporaryPassword));
+        log.info("임시 비밀번호 : {}", temporaryPassword);
+        user.issueTemporaryPassword(passwordEncoder.encode(temporaryPassword), temporaryPassword, email);
         return temporaryPassword;
     }
 

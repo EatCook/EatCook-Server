@@ -4,7 +4,6 @@ import com.itcook.cooking.api.domains.search.handler.SearchWordsEventHandler;
 import com.itcook.cooking.domain.infra.fcm.FcmService;
 import com.itcook.cooking.domain.infra.redis.RedisService;
 import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;
-import com.itcook.cooking.infra.fcm.FcmConfig;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,8 +29,8 @@ public abstract class IntegrationTestSupport {
     @MockBean
     protected S3PresignedUrlService s3PresignedUrlService;
 
-    @MockBean
-    protected FcmConfig fcmConfig;
+//    @MockBean
+//    protected FcmConfig fcmConfig;
 
     @MockBean
     protected FcmService fcmService;

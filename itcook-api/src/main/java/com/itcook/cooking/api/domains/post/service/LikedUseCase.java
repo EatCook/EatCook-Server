@@ -11,6 +11,7 @@ import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 @UseCase
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class LikedUseCase {
     private final LikedService likedService;
     private final ApplicationEventPublisher eventPublisher;
 
-
+    @Transactional
     public void likedAdd(String email, Long reqPostId) {
         ItCookUser findByItCookUser = userService.findUserByEmail(email);
         Post findByPost = postService.fetchFindByPost(reqPostId);
