@@ -5,6 +5,7 @@ import com.itcook.cooking.api.domains.user.dto.request.MyPageAlertUpdateRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
 import com.itcook.cooking.api.domains.user.dto.request.UserUpdateInterestCookRequest;
+import com.itcook.cooking.api.domains.user.service.MyPageQueryUseCase;
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePostsResponse;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MyPageController {
 
     private final MyPageUseCase myPageUseCase;
+    private final MyPageQueryUseCase myPageQueryUseCase;
 
     @Operation(summary = "마이페이지 조회 요청", description = "PageNum과 PageSize를 받아서 마이페이지 조회 요청")
     @GetMapping("/v1/mypage")
@@ -46,7 +48,7 @@ public class MyPageController {
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
         @ParameterObject @PageableDefault Pageable pageable
     ) {
-        MyPageResponse response = myPageUseCase.getMyPage(authenticationUser.getUsername(),
+        MyPageResponse response = myPageQueryUseCase.getMyPage(authenticationUser.getUsername(),
             pageable);
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(response))
@@ -93,7 +95,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<MyPageSetUpResponse>> getMyPageSetting(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        MyPageSetUpResponse myPageSetUpResponse = myPageUseCase.getMyPageSetUp(
+        MyPageSetUpResponse myPageSetUpResponse = myPageQueryUseCase.getMyPageSetUp(
             authenticationUser.getUsername());
 
         return ResponseEntity.ok(ApiResponse.OK(myPageSetUpResponse));
@@ -116,7 +118,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<UserReadInterestCookResponse>> getInterestCook(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        UserReadInterestCookResponse response = myPageUseCase.getInterestCook(
+        UserReadInterestCookResponse response = myPageQueryUseCase.getInterestCook(
             authenticationUser.getUsername());
         return ResponseEntity.ok(ApiResponse.OK(response));
     }
@@ -136,7 +138,7 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<List<MyPageArchivePostsResponse>>> getArchivePosts(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        List<MyPageArchivePostsResponse> response = myPageUseCase.getArchivePosts(
+        List<MyPageArchivePostsResponse> response = myPageQueryUseCase.getArchivePosts(
             authenticationUser.getUsername());
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(response))

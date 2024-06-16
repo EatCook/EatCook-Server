@@ -13,12 +13,11 @@ public record UserReadInterestCookResponse(
 ) {
 
     public static UserReadInterestCookResponse of(
-        ItCookUser user, List<UserCookingTheme> cookingThemes
+        ItCookUser user
     ) {
         return UserReadInterestCookResponse.builder()
             .lifeType(user.getLifeTypeName())
-            .cookingTypes(cookingThemes.stream().map(UserCookingTheme::getCookingTypeName)
-                .collect(Collectors.toList()))
+            .cookingTypes(user.getCookingTypes())
             .build()
             ;
     }

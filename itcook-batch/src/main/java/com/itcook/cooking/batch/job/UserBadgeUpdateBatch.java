@@ -9,7 +9,7 @@ import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.enums.UserBadge;
 import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.repository.dto.UserPostCount;
-import io.netty.channel.ConnectTimeoutException;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,7 +64,7 @@ public class UserBadgeUpdateBatch {
             .reader(querydslNoOffsetPagingItemReader())
             .writer(userBadgeUpdateWriter())
             .faultTolerant()
-            .retry(ConnectTimeoutException.class)
+            .retry(ConnectException.class)
             .retryLimit(2)
             .build();
     }

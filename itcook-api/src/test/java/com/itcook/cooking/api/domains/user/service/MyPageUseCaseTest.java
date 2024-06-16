@@ -53,6 +53,9 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
     private MyPageUseCase myPageUseCase;
 
     @Autowired
+    private MyPageQueryUseCase myPageQueryUseCase;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -82,7 +85,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         createPost(user1.getId(), "책제목3", "소개글3");
 
         //when
-        var myPage = myPageUseCase.getMyPage(email,
+        var myPage = myPageQueryUseCase.getMyPage(email,
             PageRequest.of(0, 10));
 
         //then
@@ -238,7 +241,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         when(cache.get(any())).thenReturn(null);
 
         //when
-        MyPageSetUpResponse response = myPageUseCase.getMyPageSetUp(user.getEmail());
+        MyPageSetUpResponse response = myPageQueryUseCase.getMyPageSetUp(user.getEmail());
 
         //then
         verify(cache, times(1)).get(user.getEmail());
@@ -292,7 +295,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         createArchive(post3.getId(), user1.getId());
 
         //when
-        List<MyPageArchivePostsResponse> response = myPageUseCase.getArchivePosts(
+        List<MyPageArchivePostsResponse> response = myPageQueryUseCase.getArchivePosts(
             user1.getEmail());
 
         //then

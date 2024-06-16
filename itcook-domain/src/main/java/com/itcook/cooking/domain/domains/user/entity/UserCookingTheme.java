@@ -53,7 +53,7 @@ public class UserCookingTheme {
             .toList();
     }
 
-    public String getCookingTypeName() {
+    protected String getCookingTypeName() {
         return cookingType.getCookingTypeName();
     }
 

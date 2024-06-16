@@ -1,12 +1,12 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.api.domains.user.dto.request.follow.FollowRequest;
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.service.UserDomainService;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -20,13 +20,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FollowUseCase {
 
-    private final UserDomainService userDomainService;
+    private final UserService userService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void toUserFollowAdd(String fromUserEmail, FollowRequest followRequest) {
-        ItCookUser fromItCookUserData = userDomainService.findUserByEmail(fromUserEmail);
-        ItCookUser toItCookUserData = userDomainService.fetchFindByUserId(followRequest.getToUserId());
+        ItCookUser fromItCookUserData = userService.findUserByEmail(fromUserEmail);
+        ItCookUser toItCookUserData = userService.fetchFindByUserId(followRequest.getToUserId());
 
         List<Long> follow = fromItCookUserData.getFollow();
         boolean contains = follow.contains(followRequest.getToUserId());
@@ -45,8 +45,8 @@ public class FollowUseCase {
 
     @Transactional
     public void toUserFollowDelete(String fromUserEmail, FollowRequest followRequest) {
-        ItCookUser fromItCookUserData = userDomainService.findUserByEmail(fromUserEmail);
-        ItCookUser toItCookUserData = userDomainService.fetchFindByUserId(followRequest.getToUserId());
+        ItCookUser fromItCookUserData = userService.findUserByEmail(fromUserEmail);
+        ItCookUser toItCookUserData = userService.fetchFindByUserId(followRequest.getToUserId());
 
         List<Long> follow = fromItCookUserData.getFollow();
         boolean contains = follow.contains(followRequest.getToUserId());

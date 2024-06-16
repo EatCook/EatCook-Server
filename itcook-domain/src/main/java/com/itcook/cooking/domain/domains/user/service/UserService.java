@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class UserDomainService {
+public class UserService {
 
     private final UserCookingThemeRepository userCookingThemeRepository;
     private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
@@ -57,7 +57,8 @@ public class UserDomainService {
     public String issueTemporaryPassword(String email) {
         ItCookUser user = userAdaptor.queryUserByEmail(email);
         String temporaryPassword = RandomCodeUtils.generateTemporaryPassword();
-        user.changePassword(passwordEncoder.encode(temporaryPassword));
+        log.info("임시 비밀번호 : {}", temporaryPassword);
+        user.issueTemporaryPassword(passwordEncoder.encode(temporaryPassword), temporaryPassword, email);
         return temporaryPassword;
     }
 
@@ -155,7 +156,7 @@ public class UserDomainService {
     public UserReadInterestCookResponse getInterestCook(
         String email
     ) {
-        ItCookUser user = userAdaptor.queryUserByEmail(email);
-        return UserReadInterestCookResponse.of(user, user.getUserCookingThemes());
+        ItCookUser user = userAdaptor.queryJoinCookingThemesByEmail(email);
+        return UserReadInterestCookResponse.of(user);
     }
 }

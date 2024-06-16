@@ -23,7 +23,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class PostDomainService {
+public class PostService {
 
     private final PostRepository postRepository;
     private final PostAdaptor postAdaptor;

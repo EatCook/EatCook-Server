@@ -8,6 +8,9 @@ import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyFindUserRequest;
 import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
+import com.itcook.cooking.api.domains.user.service.FindUserCase;
+import com.itcook.cooking.api.domains.user.service.FindUserQueryUseCase;
+import com.itcook.cooking.api.domains.user.service.SignupQueryUseCase;
 import com.itcook.cooking.api.domains.user.service.SignupUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
@@ -33,13 +36,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class SignupController {
 
     private final SignupUseCase signupUseCase;
+    private final SignupQueryUseCase signupQueryUseCase;
+    private final FindUserCase findUserCase;
+    private final FindUserQueryUseCase findUserQueryUseCase;
 
     @Operation(summary = "이메일 인증 요청", description = "가입할 이메일 인증 요청")
     @PostMapping("/v1/emails/request")
     public ResponseEntity<ApiResponse> sendEmailAuthRequest(
         @RequestBody @Valid SendEmailAuthRequest sendEmailAuthRequest
     ) {
-        signupUseCase.sendAuthCodeSignup(sendEmailAuthRequest.toServiceDto());
+        signupQueryUseCase.sendAuthCodeSignup(sendEmailAuthRequest.toServiceDto());
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("이메일 인증 요청 성공."));
     }
@@ -83,7 +89,7 @@ public class SignupController {
     public ResponseEntity<ApiResponse> findUser(
         @RequestBody @Valid FindUserRequest findUserRequest
     ) {
-        signupUseCase.findUser(findUserRequest.toServiceDto());
+        findUserQueryUseCase.findUser(findUserRequest.toServiceDto());
         return ResponseEntity.ok(ApiResponse.OK("계정 찾기 인증 요청 성공"));
     }
 
@@ -95,7 +101,7 @@ public class SignupController {
     public ResponseEntity<ApiResponse> verifyFindUser(
         @RequestBody @Valid VerifyFindUserRequest verifyFindUserRequest
     ) {
-        signupUseCase.verifyFindUser(
+        findUserCase.verifyFindUser(
             verifyFindUserRequest.toServiceDto());
         return ResponseEntity.ok(ApiResponse.OK("메일로 임시 비밀번호 발급되었습니다."));
     }

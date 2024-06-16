@@ -1,9 +1,10 @@
 package com.itcook.cooking.domain.domains.user.entity;
 
-import static javax.persistence.FetchType.EAGER;
+import static com.itcook.cooking.domain.infra.email.EmailTemplate.PASSWORD_EMAIL;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
 import com.itcook.cooking.domain.common.events.Events;
+import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
 import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
@@ -26,7 +27,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -96,7 +96,7 @@ public class ItCookUser extends BaseTimeEntity {
     @Builder
     private ItCookUser(String email, String password, String nickName, UserRole userRole,
         String profile, ProviderType providerType, LifeType lifeType, List<Long> follow
-        ,String deviceToken
+        , String deviceToken
     ) {
 
         this.email = email;
@@ -107,7 +107,9 @@ public class ItCookUser extends BaseTimeEntity {
         this.providerType = providerType;
         this.lifeType = lifeType;
         this.deviceToken = deviceToken;
-        if (!CollectionUtils.isEmpty(follow)) this.follow.addAll(follow);
+        if (!CollectionUtils.isEmpty(follow)) {
+            this.follow.addAll(follow);
+        }
     }
 
     // 회원가입 유저 생성
@@ -146,7 +148,7 @@ public class ItCookUser extends BaseTimeEntity {
         userValidator.validateDuplicateNickName(nickName);
         this.nickName = nickName;
         this.lifeType = lifeType;
-        addUserCookingThemes(UserCookingTheme.create(this,cookingTypes));
+        addUserCookingThemes(cookingTypes);
         ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(fileExtension, this);
 
         return AddSignupDomainResponse.of(imageUrlDto.getUrl());
@@ -158,7 +160,7 @@ public class ItCookUser extends BaseTimeEntity {
         List<CookingType> cookingTypes
     ) {
         updateLifeType(lifeType);
-        addUserCookingThemes(UserCookingTheme.create(this, cookingTypes));
+        addUserCookingThemes(cookingTypes);
     }
 
     public void changePassword(String newEncodedPassword, String rawCurrentPassword,
@@ -167,8 +169,15 @@ public class ItCookUser extends BaseTimeEntity {
         password = newEncodedPassword;
     }
 
-    public void changePassword(String newEncodedPassword) {
-        password = newEncodedPassword;
+    public void issueTemporaryPassword(String newEncodedTemporaryPassword,
+        String temporaryPassword,
+        String toEmail
+    ) {
+
+        password = newEncodedTemporaryPassword;
+        Events.raise(
+            EmailSendEvent.of(PASSWORD_EMAIL.getSub(), PASSWORD_EMAIL.formatBody(temporaryPassword),
+                toEmail));
     }
 
     public void addFollowing(Long userId) {
@@ -212,13 +221,19 @@ public class ItCookUser extends BaseTimeEntity {
         return lifeType.getLifeTypeName();
     }
 
+    public List<String> getCookingTypes() {
+        return this.userCookingThemes.stream().map(UserCookingTheme::getCookingTypeName)
+            .toList();
+    }
+
     public void updateLifeType(
         LifeType lifeType
     ) {
         this.lifeType = lifeType;
     }
 
-    public void addUserCookingThemes(List<UserCookingTheme> userCookingThemes) {
+    public void addUserCookingThemes(List<CookingType> cookingTypes) {
+        List<UserCookingTheme> userCookingThemes = UserCookingTheme.create(this, cookingTypes);
         this.userCookingThemes.clear();
         this.userCookingThemes.addAll(userCookingThemes);
     }

@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessDto;
-import com.itcook.cooking.api.global.annotation.UseCase;
+import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.archive.entity.Archive;
 import com.itcook.cooking.domain.domains.like.entity.Liked;
 import com.itcook.cooking.domain.infra.s3.ImageFileExtension;
