@@ -27,6 +27,9 @@ class NotificationUseCaseTest extends IntegrationTestSupport {
     private NotificationUseCase notificationUseCase;
 
     @Autowired
+    private NotificationQueryUseCase notificationQueryUseCase;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -42,7 +45,7 @@ class NotificationUseCaseTest extends IntegrationTestSupport {
         Notification noti3 = createNoti(user.getId(), 3);
 
         //when
-        List<NotificationResponse> response = notificationUseCase.getNotifications(
+        List<NotificationResponse> response = notificationQueryUseCase.getNotifications(
             user.getEmail());
 
 
@@ -62,7 +65,7 @@ class NotificationUseCaseTest extends IntegrationTestSupport {
         ItCookUser user = createUser("user@test.com", "잇쿡1");
 
         //when
-        List<NotificationResponse> response = notificationUseCase.getNotifications(
+        List<NotificationResponse> response = notificationQueryUseCase.getNotifications(
             user.getEmail());
 
         //then

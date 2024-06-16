@@ -69,7 +69,7 @@ project(':itcook-batch') {
     }
     dependencies {
         implementation project(':itcook-domain')
-        implementation project(':itcook-infra')
+        runtimeOnly project(':itcook-infra')
     }
 }
 

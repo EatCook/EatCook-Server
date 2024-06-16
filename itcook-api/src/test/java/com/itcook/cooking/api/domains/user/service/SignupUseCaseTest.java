@@ -46,6 +46,15 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
     private SignupUseCase signupUseCase;
 
     @Autowired
+    private SignupQueryUseCase signupQueryUseCase;
+
+    @Autowired
+    private FindUserCase findUserCase;
+
+    @Autowired
+    private FindUserQueryUseCase findUserQueryUseCase;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -110,7 +119,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
 
         //when
         //then
-        assertThatThrownBy(() -> signupUseCase.sendAuthCodeSignup(serviceDto))
+        assertThatThrownBy(() -> signupQueryUseCase.sendAuthCodeSignup(serviceDto))
             .isInstanceOf(ApiException.class)
             .hasMessage("이미 가입한 유저입니다.")
             ;
@@ -238,7 +247,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
             .build();
 
         //when
-        signupUseCase.findUser(serviceDto);
+        findUserQueryUseCase.findUser(serviceDto);
 
         //then
         // 이벤트 발생 횟수 검증
@@ -260,7 +269,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         //when
 
         //then
-        assertThatThrownBy(() -> signupUseCase.findUser(serviceDto))
+        assertThatThrownBy(() -> findUserQueryUseCase.findUser(serviceDto))
             .isInstanceOf(ApiException.class)
             .hasMessage("유저를 찾을 수 없습니다.")
             ;
@@ -281,7 +290,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         given(redisService.getData(anyString())).willReturn("123456");
 
         //when
-        signupUseCase.verifyFindUser(serviceDto);
+        findUserCase.verifyFindUser(serviceDto);
 
         //then
         ItCookUser itCookUser = userRepository.findByEmail(user.getEmail()).get();
@@ -307,7 +316,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         //when
 
         //then
-        assertThatThrownBy(() -> signupUseCase.verifyFindUser(serviceDto))
+        assertThatThrownBy(() -> findUserCase.verifyFindUser(serviceDto))
             .isInstanceOf(ApiException.class)
             .hasMessage("인증 코드가 일치하지 않습니다.")
         ;
@@ -330,7 +339,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         //when
 
         //then
-        assertThatThrownBy(() -> signupUseCase.verifyFindUser(serviceDto))
+        assertThatThrownBy(() -> findUserCase.verifyFindUser(serviceDto))
             .isInstanceOf(ApiException.class)
             .hasMessage("인증 요청을 먼저 해주세요.")
         ;

@@ -10,12 +10,14 @@ import com.itcook.cooking.domain.infra.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**
  * 회원 가입 도메인 서비스
  */
-@Component
+@Service
 @RequiredArgsConstructor
 public class AuthCodeRedisService {
 

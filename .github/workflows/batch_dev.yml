@@ -1,8 +1,8 @@
 name: eatcook batch cron
 
-on:
-  schedule:
-    - cron: '0 12 * * *'
+#on:
+#  schedule:
+#    - cron: '0 12 * * *'
 
 env:
   ACTIVE_PROFILE: "dev"
