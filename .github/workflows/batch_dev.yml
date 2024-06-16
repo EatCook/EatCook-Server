@@ -1,8 +1,6 @@
 name: eatcook batch cron
 
 on:
-  push:
-    branches: ["dev"]
   schedule:
     - cron: '0 12 * * *'
 

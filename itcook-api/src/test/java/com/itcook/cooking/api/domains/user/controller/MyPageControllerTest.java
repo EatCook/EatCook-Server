@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
+import com.itcook.cooking.api.domains.user.service.MyPageQueryUseCase;
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
 import com.itcook.cooking.api.global.config.SecurityConfig;
 import com.itcook.cooking.api.global.config.WithItCookMockUser;
@@ -47,6 +48,9 @@ class MyPageControllerTest {
 
     @MockBean
     private MyPageUseCase myPageUseCase;
+
+    @MockBean
+    private MyPageQueryUseCase myPageQueryUseCase;
 
     @MockBean
     private UserService userService;
