@@ -1,7 +1,9 @@
 package com.itcook.cooking.api.global.config;
 
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -16,8 +18,9 @@ public class CorsConfig {
 
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedOrigin("*");// TODO 프론트 포트 추가 및 credential 설정하기 추
-//TODO        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(List.of(HttpHeaders.AUTHORIZATION,"Authorization-refresh"));
+        corsConfiguration.setAllowedOrigins(List.of("localhost:8080"));// TODO 프론트 포트 추가 및 credential 설정하기 추
+        corsConfiguration.setAllowCredentials(true);
 
         source.registerCorsConfiguration("/**",corsConfiguration);
         return source;
