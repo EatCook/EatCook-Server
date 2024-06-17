@@ -40,7 +40,7 @@ public class HomeUserCookingThemeReadResponse {
     private static Map<String, String> getUserCookingTheme(ItCookUser itCookUser) {
         return itCookUser.getUserCookingThemes().stream()
                 .collect(Collectors.toMap(
-                        UserCookingTheme::getCookingTypeName,
+                        theme -> theme.getCookingType().getCookingTypeName(),
                         theme -> theme.getCookingType().toString()
                 ));
     }
