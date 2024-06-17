@@ -8,8 +8,10 @@ import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.HomePostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
-import com.itcook.cooking.domain.domains.post.repository.dto.HomePostDto;
+import com.itcook.cooking.domain.domains.post.repository.dto.HomeInterestDto;
+import com.itcook.cooking.domain.domains.post.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +39,12 @@ public class PostAdaptor {
                 new ApiException(PostErrorCode.POST_NOT_EXIST));
     }
 
-    public Page<HomePostDto> findPostsWithLikedAndArchiveDtoByCookingTheme(CookingType cookingTheme, Long userId, Pageable pageable) {
+    public Page<HomeInterestDto> findPostsWithLikedAndArchiveDtoByCookingTheme(CookingType cookingTheme, Long userId, Pageable pageable) {
         return homePostQuerydslRepository.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId, pageable);
+    }
+
+    public Page<HomeSpecialDto> findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(LifeType lifeType, Long userId, Pageable pageable) {
+        return homePostQuerydslRepository.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType, userId, pageable);
     }
 
 }

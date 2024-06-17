@@ -7,8 +7,10 @@ import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
-import com.itcook.cooking.domain.domains.post.repository.dto.HomePostDto;
+import com.itcook.cooking.domain.domains.post.repository.dto.HomeInterestDto;
+import com.itcook.cooking.domain.domains.post.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,8 +88,12 @@ public class PostService {
         postEntity.deletePost();
     }
 
-    public Page<HomePostDto> fetchFindPostsWithLikedAndArchiveDtoByCookingTheme(CookingType cookingTheme, Long userId, Pageable pageable) {
+    public Page<HomeInterestDto> fetchFindPostsWithLikedAndArchiveDtoByCookingTheme(CookingType cookingTheme, Long userId, Pageable pageable) {
         return postAdaptor.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId, pageable);
+    }
+
+    public Page<HomeSpecialDto> fetchFindPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(LifeType lifeType, Long userId, Pageable pageable) {
+        return postAdaptor.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType, userId, pageable);
     }
 
 //    public List<Post> searchByRecipeNameOrIngredients(
