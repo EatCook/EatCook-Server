@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class HomePostDto {
+public class HomeInterestDto {
     private Long postId;
     private String postImagePath;
     private String recipeName;
@@ -16,7 +16,7 @@ public class HomePostDto {
     private Boolean likedCheck;
     private Boolean archiveCheck;
 
-    public HomePostDto(
+    public HomeInterestDto(
             Long postId, String postImagePath, String recipeName,
             Integer recipeTime, String profile, String nickName,
             Long likedCounts) {

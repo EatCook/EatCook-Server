@@ -1,11 +1,12 @@
 package com.itcook.cooking.api.domains.home.dto.response;
 
-import com.itcook.cooking.domain.domains.post.repository.dto.HomePostDto;
+import com.itcook.cooking.domain.domains.post.repository.dto.HomeInterestDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -19,17 +20,16 @@ public class HomePagingInterestReadResponse {
     private boolean nextPageValid;
     private Long totalElements;
     private Integer totalPages;
-    private List<HomePostDto> homePostDtoList;
+    private List<HomeInterestDto> homeInterestDtoList;
 
     public static HomePagingInterestReadResponse of(
-            List<HomePostDto> homePostDtoList,
-            boolean nextPage, Long totalElements, int totalPages) {
+            Page<HomeInterestDto> homeInterestDtoPage
+    ) {
         return HomePagingInterestReadResponse.builder()
-                .homePostDtoList(homePostDtoList)
-                .nextPageValid(nextPage)
-                .totalElements(totalElements)
-                .totalPages(totalPages)
+                .nextPageValid(homeInterestDtoPage.hasNext())
+                .totalElements(homeInterestDtoPage.getTotalElements())
+                .totalPages(homeInterestDtoPage.getTotalPages())
+                .homeInterestDtoList(homeInterestDtoPage.getContent())
                 .build();
     }
-
 }
