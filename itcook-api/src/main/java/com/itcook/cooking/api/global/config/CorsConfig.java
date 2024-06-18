@@ -19,7 +19,7 @@ public class CorsConfig {
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setExposedHeaders(List.of(HttpHeaders.AUTHORIZATION,"Authorization-refresh"));
-        corsConfiguration.setAllowedOrigins(List.of("localhost:8080"));// TODO 프론트 포트 추가 및 credential 설정하기 추
+        corsConfiguration.setAllowedOrigins(List.of("localhost:8080"));
         corsConfiguration.setAllowCredentials(true);
 
         source.registerCorsConfiguration("/**",corsConfiguration);
