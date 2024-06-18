@@ -37,6 +37,7 @@ public class Post extends BaseTimeEntity {
     @Column(name = "ingredient_name")
     private List<String> foodIngredients; //재료
 
+    @Enumerated(EnumType.STRING)
     @ElementCollection
     @CollectionTable(name = "post_life_type", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "life_type")
