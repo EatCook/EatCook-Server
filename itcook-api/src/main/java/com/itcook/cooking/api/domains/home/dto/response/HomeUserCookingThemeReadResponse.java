@@ -19,19 +19,15 @@ import java.util.stream.Collectors;
 public class HomeUserCookingThemeReadResponse {
     @Schema(description = "닉네임", example = "김잇쿡")
     private String nickName;
-    @Schema(description = "관심요리 수", example = "2")
-    private int size;
-
-    @Schema(description = "관심 요리 정보", example = "{\"디저트\":\"DESERT\"}")
+    @Schema(description = "관심 요리 정보", example = "{\"DESERT\":\"디저트\"}")
     private Map<String, String> userCookingTheme;
 
-    @Schema(description = "생활 유형 정보", example = "{\"다이어트만 n번째\":\"DIET\"}")
+    @Schema(description = "생활 유형 정보", example = "{\"DIET\":\"다이어트만 n번째\"}")
     private Map<String, String> lifeType;
 
     public static HomeUserCookingThemeReadResponse of(ItCookUser itCookUser) {
         return HomeUserCookingThemeReadResponse.builder()
                 .nickName(itCookUser.getNickName())
-                .size(itCookUser.getUserCookingThemes().size())
                 .userCookingTheme(getUserCookingTheme(itCookUser))
                 .lifeType(getLifeType(itCookUser))
                 .build();
@@ -40,14 +36,14 @@ public class HomeUserCookingThemeReadResponse {
     private static Map<String, String> getUserCookingTheme(ItCookUser itCookUser) {
         return itCookUser.getUserCookingThemes().stream()
                 .collect(Collectors.toMap(
-                        theme -> theme.getCookingType().getCookingTypeName(),
-                        theme -> theme.getCookingType().toString()
+                        theme -> theme.getCookingType().toString(),
+                        theme -> theme.getCookingType().getCookingTypeName()
                 ));
     }
 
     private static Map<String, String> getLifeType(ItCookUser itCookUser) {
         if (itCookUser.getLifeType() != null) {
-            return Map.of(itCookUser.getLifeTypeName(), String.valueOf(itCookUser.getLifeType()));
+            return Map.of(String.valueOf(itCookUser.getLifeType()), itCookUser.getLifeTypeName());
         } else {
             return Map.of();
         }
