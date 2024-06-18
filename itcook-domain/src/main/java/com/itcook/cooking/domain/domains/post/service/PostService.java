@@ -4,18 +4,22 @@ import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.adaptor.PostAdaptor;
 import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.post.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
+import com.itcook.cooking.domain.domains.post.repository.dto.HomeInterestDto;
+import com.itcook.cooking.domain.domains.post.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,23 +31,11 @@ public class PostService {
     private final PostAdaptor postAdaptor;
 
     public Page<Object[]> fetchFindAllByCookTalkFeedV2(Long userId, Pageable pageable) {
-        Page<Object[]> findPostAllData = postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
-
-//        if (!findPostAllData.hasContent()) {
-//            throw new ApiException(PostErrorCode.POST_200_NOT_EXIST);
-//        }
-
-        return findPostAllData;
+        return postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
     }
 
     public Page<Object[]> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
-        Page<Object[]> findFollowingCookTalkData = postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
-
-//        if (!findFollowingCookTalkData.hasContent()) {
-//            throw new ApiException(PostErrorCode.POST_200_NOT_EXIST);
-//        }
-
-        return findFollowingCookTalkData;
+        return postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
     }
 
     public List<Object[]> fetchFindByRecipe(Long postId) {
@@ -94,6 +86,14 @@ public class PostService {
         }
 
         postEntity.deletePost();
+    }
+
+    public Page<HomeInterestDto> fetchFindPostsWithLikedAndArchiveDtoByCookingTheme(CookingType cookingTheme, Long userId, Pageable pageable) {
+        return postAdaptor.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId, pageable);
+    }
+
+    public Page<HomeSpecialDto> fetchFindPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(LifeType lifeType, Long userId, Pageable pageable) {
+        return postAdaptor.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType, userId, pageable);
     }
 
 //    public List<Post> searchByRecipeNameOrIngredients(
