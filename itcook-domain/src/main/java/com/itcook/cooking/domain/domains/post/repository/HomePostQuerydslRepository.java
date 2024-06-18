@@ -57,8 +57,8 @@ public class HomePostQuerydslRepository {
                         postCookingTheme.cookingType.eq(cookingTheme),
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 )
-                .groupBy(post.id, itCookUser.profile, itCookUser.nickName)
-                .orderBy(post.createdAt.desc())
+                .groupBy(post.id)
+                .orderBy(post.lastModifiedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -104,7 +104,7 @@ public class HomePostQuerydslRepository {
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 )
                 .groupBy(post.id, itCookUser.profile, itCookUser.nickName)
-                .orderBy(post.createdAt.desc(), liked.postId.count().desc())
+                .orderBy(post.lastModifiedAt.desc(), liked.postId.count().desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
