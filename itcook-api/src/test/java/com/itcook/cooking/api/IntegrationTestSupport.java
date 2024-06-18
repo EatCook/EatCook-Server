@@ -11,13 +11,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
-@ContextConfiguration
+//@ContextConfiguration
 @TestPropertySource(properties = {
     "aws.s3.access-key=test",
     "aws.s3.secret-key=test",
     "aws.s3.bucket=test",
-})
-@ActiveProfiles("test")
+}, locations = "classpath:application.yml")
+//@ActiveProfiles("test")
 public abstract class IntegrationTestSupport {
 
     @MockBean
