@@ -46,7 +46,7 @@ public class HomeController {
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @RequestParam(value = "pageNum", defaultValue = "0") int pageNum
     ) {
-        Pageable pageable = PageRequest.of(pageNum - 1, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+        Pageable pageable = PageRequest.of(pageNum, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
         HomePagingInterestReadResponse getPostByCookingTheme =
                 homeUseCase.getPostByCookingTheme(cookingTheme, authenticationUser.getUsername(), pageable);
         return ResponseEntity.status(200)
@@ -58,9 +58,9 @@ public class HomeController {
     public ResponseEntity<ApiResponse<HomePagingSpacialReadResponse>> getPostByLifeType(
             @PathVariable String lifeType,
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum
+            @RequestParam(value = "pageNum", defaultValue = "0") int pageNum
     ) {
-        Pageable pageable = PageRequest.of(pageNum - 1, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
+        Pageable pageable = PageRequest.of(pageNum, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
 
         HomePagingSpacialReadResponse getPostByLifeType =
                 homeUseCase.getLifeTypeByPost(lifeType, authenticationUser.getUsername(), pageable);
