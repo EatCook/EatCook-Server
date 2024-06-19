@@ -55,7 +55,7 @@ public class HomeUseCase {
     public HomePagingSpacialReadResponse getLifeTypeByPost(String lifeType, String username, Pageable pageable) {
         ItCookUser findItCookUserData = userService.findUserByEmail(username);
 
-        LifeType findLifeType = LifeType.getLifeTypeByName(lifeType);
+        LifeType findLifeType = LifeType.getByName(lifeType);
         if (findLifeType == null) {
             log.error("잘못된 생활 유형 요청 Request lifeType : {} ", lifeType);
             throw new ApiException(LifeTypeErrorCode.LIFETYPE_NOT_FOUND);
