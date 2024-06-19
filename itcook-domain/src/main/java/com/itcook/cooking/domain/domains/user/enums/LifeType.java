@@ -22,13 +22,4 @@ public enum LifeType {
         }
         return null;
     }
-
-    public static LifeType getLifeTypeByName(String lifeTypeName) {
-        for (LifeType lifeType : LifeType.values()) {
-            if (lifeType.name().equalsIgnoreCase(lifeTypeName)) {
-                return lifeType;
-            }
-        }
-        return null;
-    }
 }
