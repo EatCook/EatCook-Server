@@ -32,7 +32,7 @@ swagger-server:
 jwt:
   secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}
   access-exp: ${JWT_ACCESS_EXP:1800}
-  refresh-exp: ${JWT_ACCESS_EXP:3600}
+  refresh-exp: ${JWT_REFRESH_EXP:3600}
 server:
   servlet:
     encoding:

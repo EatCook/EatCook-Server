@@ -28,7 +28,7 @@ spring:
 jwt:
   secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}
   access-exp: ${JWT_ACCESS_EXP:3}
-  refresh-exp: ${JWT_ACCESS_EXP:5}
+  refresh-exp: ${JWT_REFRESH_EXP:5}
 
 aws:
   ses:
