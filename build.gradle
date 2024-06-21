@@ -10,6 +10,7 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java-test-fixtures'
+    apply plugin: 'jacoco'
 
     group = 'com.itcook'
     version = '0.0.1-SNAPSHOT'
@@ -27,6 +28,43 @@ subprojects {
         }
     }
 
+    jacoco {
+        toolVersion = '0.8.8'
+    }
+
+    jacocoTestReport {
+        dependsOn test
+        reports {
+            html.required = true // html 설정
+            csv.required = true // csv 설정
+            xml.required = true
+            //xml 의 위치 조정
+            xml.destination file("${buildDir}/reports/jacoco.xml")
+        }
+        def Qdomains = []
+        for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
+            Qdomains.add(qPattern + '*')
+        }
+        afterEvaluate {
+            classDirectories.setFrom(
+                    files(classDirectories.files.collect {
+                        fileTree(dir: it, excludes: [
+                                // 측정 안하고 싶은 패턴
+                                "**/*Application*",
+                                "**/*Config*",
+                                "**/*Dto*",
+                                "**/dto/**",
+                                "**/*Request*",
+                                "**/*Response*",
+                                "**/*Interceptor*",
+                                "**/*Exception*"
+                                // Querydsl 관련 제거
+                        ] + Qdomains)
+                    })
+            )
+        }
+    }
+
     dependencies {
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
@@ -40,6 +78,7 @@ subprojects {
 
     tasks.named('test',Test) {
         useJUnitPlatform()
+        finalizedBy jacocoTestReport
     }
 }
 
