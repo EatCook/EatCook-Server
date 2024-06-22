@@ -1,13 +1,11 @@
 package com.itcook.cooking.api;
 
 import com.itcook.cooking.api.domains.search.handler.SearchWordsEventHandler;
-import com.itcook.cooking.domain.infra.fcm.FcmService;
-import com.itcook.cooking.domain.infra.redis.RedisService;
-import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;
+import com.itcook.cooking.domain.domains.infra.fcm.FcmService;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.s3.S3PresignedUrlService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest

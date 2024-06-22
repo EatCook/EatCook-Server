@@ -3,9 +3,9 @@ package com.itcook.cooking.domain.domains.config;
 import com.itcook.cooking.domain.domains.mock.MockEmailService;
 import com.itcook.cooking.domain.domains.mock.MockRedisService;
 import com.itcook.cooking.domain.domains.mock.MockS3Service;
-import com.itcook.cooking.domain.infra.email.AuthCodeService;
-import com.itcook.cooking.domain.infra.redis.RedisService;
-import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;
+import com.itcook.cooking.domain.domains.infra.email.AuthCodeService;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.s3.S3PresignedUrlService;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 

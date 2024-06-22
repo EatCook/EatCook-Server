@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.infra.s3;
+package com.itcook.cooking.domain.domains.infra.s3;
 
 public interface S3PresignedUrlService {
 

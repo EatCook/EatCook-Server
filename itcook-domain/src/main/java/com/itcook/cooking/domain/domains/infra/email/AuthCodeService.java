@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.infra.email;
+package com.itcook.cooking.domain.domains.infra.email;
 
 import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 

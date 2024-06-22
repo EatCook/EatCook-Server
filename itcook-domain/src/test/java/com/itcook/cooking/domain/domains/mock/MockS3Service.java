@@ -1,7 +1,7 @@
 package com.itcook.cooking.domain.domains.mock;
 
-import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
-import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;
+import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.domains.infra.s3.S3PresignedUrlService;
 
 public class MockS3Service implements S3PresignedUrlService {
 

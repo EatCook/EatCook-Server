@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.infra.fcm.dto;
+package com.itcook.cooking.domain.domains.infra.fcm.dto;
 
 import lombok.Builder;
 

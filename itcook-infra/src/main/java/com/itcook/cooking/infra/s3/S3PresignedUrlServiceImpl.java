@@ -6,8 +6,8 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 
-import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
-import com.itcook.cooking.domain.infra.s3.S3PresignedUrlService;
+import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.domains.infra.s3.S3PresignedUrlService;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;

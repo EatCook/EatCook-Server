@@ -7,7 +7,7 @@ import com.itcook.cooking.domain.domains.post.entity.Post;
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
-import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;

@@ -14,7 +14,7 @@ import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.enums.UserState;
-import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
 import java.util.List;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;

@@ -5,7 +5,7 @@ import static org.mockito.BDDMockito.given;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.post.dto.response.SearchRankResponse;
-import com.itcook.cooking.domain.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

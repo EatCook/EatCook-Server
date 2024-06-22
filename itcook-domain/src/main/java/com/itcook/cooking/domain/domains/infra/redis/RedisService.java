@@ -1,6 +1,6 @@
-package com.itcook.cooking.domain.infra.redis;
+package com.itcook.cooking.domain.domains.infra.redis;
 
-import com.itcook.cooking.domain.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
 import java.util.List;
 
 public interface RedisService {

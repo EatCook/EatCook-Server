@@ -1,12 +1,11 @@
 package com.itcook.cooking.infra.redis;
 
 import com.amazonaws.util.CollectionUtils;
-import com.itcook.cooking.domain.infra.redis.RedisService;
-import com.itcook.cooking.domain.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;

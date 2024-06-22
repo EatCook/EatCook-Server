@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.search.handler;
 
 import com.itcook.cooking.api.domains.search.dto.RealTimeSearchWords;
-import com.itcook.cooking.domain.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.fcm.handler;
 
 import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
-import com.itcook.cooking.domain.infra.fcm.FcmService;
+import com.itcook.cooking.domain.domains.infra.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

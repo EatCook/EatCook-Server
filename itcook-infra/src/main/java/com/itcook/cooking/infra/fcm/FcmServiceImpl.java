@@ -1,13 +1,12 @@
 package com.itcook.cooking.infra.fcm;
 
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.itcook.cooking.domain.domains.user.adaptor.UserAdaptor;
 import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.infra.fcm.FcmService;
-import com.itcook.cooking.domain.infra.fcm.dto.FcmSend;
+import com.itcook.cooking.domain.domains.infra.fcm.FcmService;
+import com.itcook.cooking.domain.domains.infra.fcm.dto.FcmSend;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
