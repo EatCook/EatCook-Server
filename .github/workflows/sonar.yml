@@ -18,6 +18,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Create Json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: ${{ secrets.FIREBASE_ADMIN_SDK_FILE }}
+          json: ${{ secrets.FIREBASE_ADMIN_SDK }}
+          dir: ${{ secrets.FIREBASE_ADMIN_SDK_DIR }}
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
