@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,17 +38,24 @@ public class Post extends BaseTimeEntity {
     private List<String> foodIngredients; //재료
 
     @Enumerated(EnumType.STRING)
+    @ElementCollection
+    @CollectionTable(name = "post_life_type", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "life_type")
+    private List<LifeType> lifeTypes; //거주 형태
+
+    @Enumerated(EnumType.STRING)
     private PostFlag postFlag;
 
     @Builder
     private Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImagePath,
-                Long userId, List<String> foodIngredients, PostFlag postFlag) {
+                 Long userId, List<String> foodIngredients, List<LifeType> lifeTypes, PostFlag postFlag) {
         this.id = id;
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
         this.introduction = introduction;
         this.userId = userId;
         this.foodIngredients = foodIngredients;
+        this.lifeTypes = lifeTypes;
         this.postImagePath = postImagePath;
         this.postFlag = postFlag;
     }
