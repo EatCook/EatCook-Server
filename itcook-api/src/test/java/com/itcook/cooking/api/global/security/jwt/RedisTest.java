@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.itcook.cooking.api.IntegrationRedisContainerSupport;
-import com.itcook.cooking.domain.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
-import com.itcook.cooking.domain.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

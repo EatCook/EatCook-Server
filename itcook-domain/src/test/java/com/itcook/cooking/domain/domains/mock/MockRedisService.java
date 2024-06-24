@@ -1,7 +1,7 @@
 package com.itcook.cooking.domain.domains.mock;
 
-import com.itcook.cooking.domain.infra.redis.RedisService;
-import com.itcook.cooking.domain.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
 import java.util.List;
 
 public class MockRedisService implements RedisService {

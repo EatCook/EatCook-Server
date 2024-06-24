@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.infra.redis.dto;
+package com.itcook.cooking.domain.domains.infra.redis.dto;
 
 import lombok.Builder;
 

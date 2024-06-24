@@ -13,7 +13,7 @@ import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

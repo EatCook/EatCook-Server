@@ -1,6 +1,6 @@
 package com.itcook.cooking.infra.email.javamail;
 
-import com.itcook.cooking.domain.infra.email.AuthCodeService;
+import com.itcook.cooking.domain.domains.infra.email.AuthCodeService;
 import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

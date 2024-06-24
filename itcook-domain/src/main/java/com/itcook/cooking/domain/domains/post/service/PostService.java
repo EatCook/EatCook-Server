@@ -10,8 +10,9 @@ import com.itcook.cooking.domain.domains.post.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
+import java.util.List;
 import com.itcook.cooking.domain.domains.user.enums.LifeType;
-import com.itcook.cooking.domain.infra.s3.ImageUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

@@ -1,17 +1,15 @@
 package com.itcook.cooking.domain.domains.user.service;
 
-import static com.itcook.cooking.domain.infra.email.EmailTemplate.AUTH_EMAIL;
+import static com.itcook.cooking.domain.domains.infra.email.EmailTemplate.AUTH_EMAIL;
 
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
 import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
-import com.itcook.cooking.domain.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**

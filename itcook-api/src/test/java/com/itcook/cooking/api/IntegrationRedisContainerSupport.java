@@ -1,7 +1,7 @@
 package com.itcook.cooking.api;
 
 import com.itcook.cooking.api.global.security.jwt.config.RedisTestContainers;
-import com.itcook.cooking.domain.infra.email.AuthCodeService;
+import com.itcook.cooking.domain.domains.infra.email.AuthCodeService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;

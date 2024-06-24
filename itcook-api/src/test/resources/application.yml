@@ -1,7 +1,7 @@
 spring:
-  config:
-    activate:
-      on-profile: test
+#  config:
+#    activate:
+#      on-profile: test
   jpa:
     show-sql: true
     properties:
@@ -24,6 +24,10 @@ spring:
     enabled: false
 #    url: jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1
 #    baseline-on-migrate: true
+app:
+  firebase:
+    config:
+      file: ${FIREBASE_CONFIG_FILE:firebase/firebase-adminsdk.json}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}

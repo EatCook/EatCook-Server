@@ -1,6 +1,6 @@
 package com.itcook.cooking.domain.domains.user.service.handler;
 
-import com.itcook.cooking.domain.infra.redis.RedisService;
+import com.itcook.cooking.domain.domains.infra.redis.RedisService;
 import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
