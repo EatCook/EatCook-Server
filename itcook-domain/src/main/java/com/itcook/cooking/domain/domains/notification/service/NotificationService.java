@@ -1,7 +1,7 @@
 package com.itcook.cooking.domain.domains.notification.service;
 
-import com.itcook.cooking.domain.domains.notification.adapter.NotificationAdapter;
-import com.itcook.cooking.domain.domains.notification.entity.Notification;
+import com.itcook.cooking.domain.domains.notification.domain.adapter.NotificationAdapter;
+import com.itcook.cooking.domain.domains.notification.domain.entity.Notification;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,11 +1,11 @@
 package com.itcook.cooking.api.domains.post.dto.request;
 
 import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessDto;
-import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
-import com.itcook.cooking.domain.domains.post.entity.RecipeProcess;
-import com.itcook.cooking.domain.domains.post.enums.CookingType;
-import com.itcook.cooking.domain.domains.post.enums.PostFlag;
+import com.itcook.cooking.domain.domains.post.domain.entity.Post;
+import com.itcook.cooking.domain.domains.post.domain.entity.PostCookingTheme;
+import com.itcook.cooking.domain.domains.post.domain.entity.RecipeProcess;
+import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
+import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

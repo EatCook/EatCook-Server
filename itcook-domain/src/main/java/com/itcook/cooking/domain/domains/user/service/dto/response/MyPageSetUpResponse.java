@@ -1,8 +1,8 @@
 package com.itcook.cooking.domain.domains.user.service.dto.response;
 
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
-import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.enums.EventAlertType;
+import com.itcook.cooking.domain.domains.user.domain.enums.ServiceAlertType;
 import lombok.Builder;
 
 @Builder

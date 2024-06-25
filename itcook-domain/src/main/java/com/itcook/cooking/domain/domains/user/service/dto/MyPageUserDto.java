@@ -1,7 +1,7 @@
 package com.itcook.cooking.domain.domains.user.service.dto;
 
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

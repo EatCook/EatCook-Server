@@ -1,9 +1,9 @@
 package com.itcook.cooking.domain.domains.archive.service;
 
-import com.itcook.cooking.domain.domains.archive.adaptor.ArchiveAdaptor;
-import com.itcook.cooking.domain.domains.archive.dto.ArchivePost;
-import com.itcook.cooking.domain.domains.archive.entity.Archive;
-import com.itcook.cooking.domain.domains.archive.repository.ArchiveQuerydslRepository;
+import com.itcook.cooking.domain.domains.archive.domain.adaptor.ArchiveAdaptor;
+import com.itcook.cooking.domain.domains.archive.domain.dto.ArchivePost;
+import com.itcook.cooking.domain.domains.archive.domain.entity.Archive;
+import com.itcook.cooking.domain.domains.archive.domain.repository.ArchiveQuerydslRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

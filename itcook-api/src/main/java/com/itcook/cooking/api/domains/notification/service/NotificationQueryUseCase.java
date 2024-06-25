@@ -2,9 +2,9 @@ package com.itcook.cooking.api.domains.notification.service;
 
 import com.itcook.cooking.api.domains.notification.service.dto.response.NotificationResponse;
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.notification.entity.Notification;
+import com.itcook.cooking.domain.domains.notification.domain.entity.Notification;
 import com.itcook.cooking.domain.domains.notification.service.NotificationService;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

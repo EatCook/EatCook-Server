@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.security;
 
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
-import com.itcook.cooking.domain.domains.user.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.user.dto.request;
 
-import com.itcook.cooking.domain.domains.user.enums.EventAlertType;
-import com.itcook.cooking.domain.domains.user.enums.ServiceAlertType;
+import com.itcook.cooking.domain.domains.user.domain.enums.EventAlertType;
+import com.itcook.cooking.domain.domains.user.domain.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotNull;

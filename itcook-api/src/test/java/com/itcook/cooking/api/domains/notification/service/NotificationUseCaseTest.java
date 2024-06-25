@@ -2,19 +2,17 @@ package com.itcook.cooking.api.domains.notification.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.notification.service.dto.response.NotificationResponse;
-import com.itcook.cooking.domain.domains.notification.entity.Notification;
-import com.itcook.cooking.domain.domains.notification.entity.NotificationType;
-import com.itcook.cooking.domain.domains.notification.repository.NotificationRepository;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
-import com.itcook.cooking.domain.domains.user.enums.UserRole;
-import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+import com.itcook.cooking.domain.domains.notification.domain.entity.Notification;
+import com.itcook.cooking.domain.domains.notification.domain.entity.NotificationType;
+import com.itcook.cooking.domain.domains.notification.domain.repository.NotificationRepository;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

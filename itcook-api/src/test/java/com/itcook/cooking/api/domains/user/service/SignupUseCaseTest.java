@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.user.service;
 
-import static com.itcook.cooking.domain.domains.post.enums.CookingType.KOREAN_FOOD;
+import static com.itcook.cooking.domain.domains.post.domain.enums.CookingType.KOREAN_FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -13,21 +13,18 @@ import static org.mockito.Mockito.verify;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
-import com.itcook.cooking.api.domains.user.dto.response.AddUserResponse;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
-import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
-import com.itcook.cooking.domain.domains.user.enums.LifeType;
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
-import com.itcook.cooking.domain.domains.user.enums.UserRole;
-import com.itcook.cooking.domain.domains.user.repository.UserCookingThemeRepository;
-import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
+import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
+import com.itcook.cooking.domain.domains.user.domain.repository.UserCookingThemeRepository;
+import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
 import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

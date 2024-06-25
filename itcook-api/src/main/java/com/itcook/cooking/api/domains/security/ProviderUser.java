@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.security;
 
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;

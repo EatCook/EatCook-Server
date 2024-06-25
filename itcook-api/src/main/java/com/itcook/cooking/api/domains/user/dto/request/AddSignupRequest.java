@@ -1,16 +1,10 @@
 package com.itcook.cooking.api.domains.user.dto.request;
 
 import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
-import com.itcook.cooking.domain.domains.post.enums.CookingType;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.enums.LifeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import java.util.List;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;

@@ -2,7 +2,7 @@ package com.itcook.cooking.api.domains.notification.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.itcook.cooking.domain.domains.notification.entity.Notification;
+import com.itcook.cooking.domain.domains.notification.domain.entity.Notification;
 import java.util.List;
 import lombok.Builder;
 

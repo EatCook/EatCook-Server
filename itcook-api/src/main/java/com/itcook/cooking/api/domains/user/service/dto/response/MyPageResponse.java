@@ -1,8 +1,8 @@
 package com.itcook.cooking.api.domains.user.service.dto.response;
 
 import com.itcook.cooking.api.global.dto.PageResponse;
-import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import lombok.Builder;
 import lombok.Data;

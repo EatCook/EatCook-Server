@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.home.dto.response;
 
-import com.itcook.cooking.domain.domains.post.repository.dto.HomeInterestDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

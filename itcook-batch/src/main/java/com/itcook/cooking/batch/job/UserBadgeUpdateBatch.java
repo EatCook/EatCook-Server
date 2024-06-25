@@ -1,14 +1,15 @@
 package com.itcook.cooking.batch.job;
 
-import static com.itcook.cooking.domain.domains.user.entity.QItCookUser.itCookUser;
+
+import static com.itcook.cooking.domain.domains.user.domain.entity.QItCookUser.itCookUser;
 
 import com.itcook.cooking.batch.expression.Expression;
 import com.itcook.cooking.batch.options.QuerydslNoOffsetNumberOptions;
 import com.itcook.cooking.batch.reader.QuerydslNoOffsetPagingItemReader;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.enums.UserBadge;
-import com.itcook.cooking.domain.domains.user.repository.UserQueryRepository;
-import com.itcook.cooking.domain.domains.user.repository.dto.UserPostCount;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserBadge;
+import com.itcook.cooking.domain.domains.user.domain.repository.UserQueryRepository;
+import com.itcook.cooking.domain.domains.user.domain.repository.dto.UserPostCount;
 import java.net.ConnectException;
 import java.util.List;
 import java.util.Map;
