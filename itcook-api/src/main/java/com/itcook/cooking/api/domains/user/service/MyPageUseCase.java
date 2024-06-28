@@ -1,28 +1,15 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
-import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePostsResponse;
-import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
-import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.archive.dto.ArchivePost;
 import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
-import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.domains.post.service.PostService;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
-import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
-import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 @UseCase
 @RequiredArgsConstructor

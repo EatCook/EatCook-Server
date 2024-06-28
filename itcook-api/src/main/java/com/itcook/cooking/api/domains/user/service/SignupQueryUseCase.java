@@ -1,18 +1,11 @@
 package com.itcook.cooking.api.domains.user.service;
 
-import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
-import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
-import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.SendEmailServiceDto;
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.entity.dto.AddSignupDomainResponse;
 import com.itcook.cooking.domain.domains.user.service.AuthCodeRedisService;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j

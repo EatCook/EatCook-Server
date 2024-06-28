@@ -2,9 +2,8 @@ package com.itcook.cooking.api.domains.security.converter;
 
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.security.ProviderUser;
-import com.itcook.cooking.domain.domains.user.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class CommonUserConverter implements ProviderUserConverter{

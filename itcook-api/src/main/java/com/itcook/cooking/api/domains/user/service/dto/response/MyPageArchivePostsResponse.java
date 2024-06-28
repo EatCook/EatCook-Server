@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.user.service.dto.response;
 
-import com.itcook.cooking.domain.domains.archive.dto.ArchivePost;
+import com.itcook.cooking.domain.domains.archive.domain.dto.ArchivePost;
 import lombok.Builder;
 
 @Builder

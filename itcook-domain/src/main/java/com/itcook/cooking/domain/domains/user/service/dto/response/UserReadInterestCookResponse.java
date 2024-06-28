@@ -1,9 +1,7 @@
 package com.itcook.cooking.domain.domains.user.service.dto.response;
 
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.entity.UserCookingTheme;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Builder;
 
 @Builder

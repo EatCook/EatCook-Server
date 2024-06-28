@@ -4,9 +4,9 @@ import static com.itcook.cooking.domain.common.errorcode.UserErrorCode.USER_NOT_
 
 import com.itcook.cooking.api.domains.security.CommonUser;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.enums.UserState;
-import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserState;
+import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,9 +1,9 @@
 package com.itcook.cooking.domain.domains.notification.service.handler;
 
 import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
-import com.itcook.cooking.domain.domains.notification.adapter.NotificationAdapter;
-import com.itcook.cooking.domain.domains.notification.entity.Notification;
-import com.itcook.cooking.domain.domains.notification.entity.NotificationType;
+import com.itcook.cooking.domain.domains.notification.domain.adapter.NotificationAdapter;
+import com.itcook.cooking.domain.domains.notification.domain.entity.Notification;
+import com.itcook.cooking.domain.domains.notification.domain.entity.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

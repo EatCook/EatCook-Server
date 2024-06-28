@@ -1,25 +1,20 @@
 package com.itcook.cooking.api.global.security.jwt.filter;
 
-import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_HEADER;
-import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
-import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_HEADER;
 import static com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper.sendTokensSuccessResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.security.OAuth2User;
 import com.itcook.cooking.api.domains.user.dto.request.UserOAuth2Login;
-import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
-import com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.api.global.security.jwt.service.ProviderUserService;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.entity.dto.SignupDto;
-import com.itcook.cooking.domain.domains.user.entity.validator.UserValidator;
-import com.itcook.cooking.domain.domains.user.repository.UserRepository;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.entity.dto.SignupDto;
+import com.itcook.cooking.domain.domains.user.domain.entity.validator.UserValidator;
+import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -29,8 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

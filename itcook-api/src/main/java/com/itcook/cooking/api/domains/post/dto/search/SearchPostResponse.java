@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.search;
 
-import com.itcook.cooking.domain.domains.post.repository.dto.SearchPostDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.SearchPostDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;

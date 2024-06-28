@@ -4,11 +4,11 @@ import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePos
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.archive.dto.ArchivePost;
+import com.itcook.cooking.domain.domains.archive.domain.dto.ArchivePost;
 import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
-import com.itcook.cooking.domain.domains.post.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
 import com.itcook.cooking.domain.domains.post.service.PostService;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;

@@ -2,9 +2,9 @@ package com.itcook.cooking.domain.domains.post.service;
 
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.post.entity.PostCookingTheme;
-import com.itcook.cooking.domain.domains.post.repository.PostCookingThemeRepository;
+import com.itcook.cooking.domain.domains.post.domain.entity.Post;
+import com.itcook.cooking.domain.domains.post.domain.entity.PostCookingTheme;
+import com.itcook.cooking.domain.domains.post.domain.repository.PostCookingThemeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

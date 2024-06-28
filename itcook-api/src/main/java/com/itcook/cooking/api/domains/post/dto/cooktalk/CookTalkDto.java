@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.post.dto.cooktalk;
 
-import com.itcook.cooking.domain.domains.post.entity.Post;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.post.domain.entity.Post;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

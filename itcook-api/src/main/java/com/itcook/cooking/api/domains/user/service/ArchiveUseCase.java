@@ -1,10 +1,10 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.archive.entity.Archive;
-import com.itcook.cooking.domain.domains.post.entity.Post;
+import com.itcook.cooking.domain.domains.archive.domain.entity.Archive;
+import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.service.PostService;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;

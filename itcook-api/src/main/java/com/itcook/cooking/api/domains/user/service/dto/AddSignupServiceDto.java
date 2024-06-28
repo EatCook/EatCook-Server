@@ -1,8 +1,8 @@
 package com.itcook.cooking.api.domains.user.service.dto;
 
-import com.itcook.cooking.domain.domains.post.enums.CookingType;
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.enums.LifeType;
+import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import java.util.List;
 import lombok.Builder;
 
