@@ -54,9 +54,9 @@ subprojects {
     jacocoTestReport {
         dependsOn test
         reports {
-            html.required = true // html 설정
-            csv.required = true // csv 설정
-            xml.required = true
+            html.required.set(true) // html 설정
+            csv.required.set(true) // csv 설정
+            xml.required.set(true)
             //xml 의 위치 조정
             xml.destination file("${buildDir}/reports/jacoco.xml")
         }
@@ -84,15 +84,13 @@ subprojects {
         }
     }
 
-    subprojects {
-        apply plugin: 'org.sonarqube'
+    apply plugin: 'org.sonarqube'
 
-        sonarqube {
-            properties {
-                // 각 프로젝트마다 적용해야하는부분.
-                property 'sonar.java.binaries', "${buildDir}/classes"
-                property 'sonar.coverage.jacoco.xmlReportPaths', "${buildDir}/reports/jacoco.xml"
-            }
+    sonarqube {
+        properties {
+            // 각 프로젝트마다 적용해야하는부분.
+            property 'sonar.java.binaries', "${buildDir}/classes"
+            property 'sonar.coverage.jacoco.xmlReportPaths', "${buildDir}/reports/jacoco.xml"
         }
     }
 
