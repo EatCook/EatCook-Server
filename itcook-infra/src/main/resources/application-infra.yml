@@ -1,3 +1,6 @@
+oauth:
+  apple:
+
 aws:
   ses:
     access-key: ${SES_ACCESS_KEY}

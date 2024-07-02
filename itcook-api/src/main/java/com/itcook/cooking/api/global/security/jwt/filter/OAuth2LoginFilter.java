@@ -5,7 +5,7 @@ import static com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper.s
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.security.OAuth2User;
-import com.itcook.cooking.api.domains.user.dto.request.UserOAuth2Login;
+import com.itcook.cooking.api.domains.user.service.dto.UserOAuth2Login;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.api.global.security.jwt.service.ProviderUserService;

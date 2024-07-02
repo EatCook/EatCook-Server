@@ -1,4 +1,4 @@
-package com.itcook.cooking.api.domains.user.dto.request;
+package com.itcook.cooking.api.domains.user.service.dto;
 
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import lombok.Builder;
@@ -6,7 +6,8 @@ import lombok.Builder;
 @Builder
 public record UserOAuth2Login(
     String email,
-    ProviderType providerType
+    ProviderType providerType,
+    String token
 ) {
 
 }

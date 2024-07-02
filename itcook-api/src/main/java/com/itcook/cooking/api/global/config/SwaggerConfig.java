@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         tags = {
                 @Tag(name = "01. User", description = "유저 도메인과 관련된 APIs"),
+                @Tag(name = "01-1. Social Login", description = "소셜 로그인과 관련된 APIs"),
                 @Tag(name = "02. CookTalk", description = "쿡톡 도메인과 관련된 APIs"),
                 @Tag(name = "03. Recipe", description = "레시피 도메인과 관련된 APIs"),
                 @Tag(name = "04. Search", description = "검색과 관련된 APIs"),

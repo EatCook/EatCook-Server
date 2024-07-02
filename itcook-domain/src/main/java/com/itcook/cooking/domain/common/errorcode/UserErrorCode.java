@@ -3,7 +3,6 @@ package com.itcook.cooking.domain.common.errorcode;
 import static com.itcook.cooking.domain.common.constant.StatusCode.BAD_REQUEST;
 import static com.itcook.cooking.domain.common.constant.StatusCode.UNAUTHORIZED;
 
-import com.itcook.cooking.domain.common.constant.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -23,6 +22,8 @@ public enum UserErrorCode implements ErrorCode{
     ALREADY_EXISTS_NICKNAME(BAD_REQUEST.code, "U-010", "이미 존재하는 닉네임입니다."),
     NOT_EQUAL_PASSWORD(BAD_REQUEST.code, "U-011", "현재 비밀번호와 일치하지 않습니다."),
     ALREADY_FOLLOW_USER(BAD_REQUEST.code, "U-012", "이미 팔로우한 유저입니다."),
+    NOT_EQUAL_PROVIDER_TYPE(BAD_REQUEST.code, "U-013", "일치하는 Provider Type이 존재하지 않습니다."),
+
     ;
 
     private final Integer httpStatusCode;
