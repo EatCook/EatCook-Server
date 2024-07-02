@@ -11,10 +11,10 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @ConstructorBinding
 public class AppleProperties {
 
-    private String grantType;
-    private String clientId;
-    private String keyId;
-    private String teamId;
-    private String audience;
-    private String privateKey;
+    private final String grantType;
+    private final String clientId;
+    private final String keyId;
+    private final String teamId;
+    private final String audience;
+    private final String privateKey;
 }

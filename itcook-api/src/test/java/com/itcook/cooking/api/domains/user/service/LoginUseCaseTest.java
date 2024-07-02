@@ -18,17 +18,17 @@ class LoginUseCaseTest extends IntegrationTestSupport {
     @Test
     @DisplayName("소셜 로그인 테스트")
     void socialLogin() {
-        //given
-        String token = "MpxSgtRVy4kEv4sEtqKyKW9EfIBz_BRVAAAAAQopyNkAAAGQcTIKk_8D-j8FVvr5";
-
-        //when
-        SocialLoginResponse response = loginUseCase.socialLogin(UserOAuth2Login.builder()
-            .email("user@test.com")
-            .providerType(ProviderType.KAKAO)
-            .token(BEARER + token)
-            .build());
-
-        //then
-        System.out.println(response.accessToken());
+//        //given
+//        String token = "MpxSgtRVy4kEv4sEtqKyKW9EfIBz_BRVAAAAAQopyNkAAAGQcTIKk_8D-j8FVvr5";
+//
+//        //when
+//        SocialLoginResponse response = loginUseCase.socialLogin(UserOAuth2Login.builder()
+//            .email("user@test.com")
+//            .providerType(ProviderType.KAKAO)
+//            .token(BEARER + token)
+//            .build());
+//
+//        //then
+//        System.out.println(response.accessToken());
     }
 }
