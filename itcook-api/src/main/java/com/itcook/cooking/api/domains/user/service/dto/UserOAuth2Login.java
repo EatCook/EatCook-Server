@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record UserOAuth2Login(
-    String email,
+//    String email,
     ProviderType providerType,
     String token
 ) {
