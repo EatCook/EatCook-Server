@@ -29,19 +29,14 @@ public class AppleLoginService implements SocialLoginService {
 
     @Override
     public UserInfo attemptLogin(String token) {
-        try {
-            String idToken = appleApiClient.getIdToken(
-                appleProperties.getClientId(),
-                appleJwtUtils.generateClientSecret(),
-                appleProperties.getGrantType(),
-                token // authorization code
-            ).getIdToken();
+        String idToken = appleApiClient.getIdToken(
+            appleProperties.getClientId(),
+            appleJwtUtils.generateClientSecret(),
+            appleProperties.getGrantType(),
+            token // authorization code
+        ).getIdToken();
 
-            return appleJwtUtils.decodePayload(idToken,
-                AppleIdTokenPayload.class).of();
-        } catch (FeignException e) {
-            log.error("애플 로그인 에러 : {}", e.getMessage());
-            throw new ApiException(UserErrorCode.TOKEN_NOT_VALID);
-        }
+        return appleJwtUtils.decodePayload(idToken,
+            AppleIdTokenPayload.class).of();
     }
 }

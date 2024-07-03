@@ -39,7 +39,7 @@ public class AppleJwtUtils {
         try {
             return objectMapper.readValue(payload, targetClass);
         } catch (Exception e) {
-            log.error("애플 디코딩 에러 : {}", e.getMessage());
+            log.error("애플 디코딩 에러 : ", e);
             throw new ApiException(CommonErrorCode.SERVER_ERROR, "애플 id 토큰 디코딩 에러");
         }
     }

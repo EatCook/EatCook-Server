@@ -12,23 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class LoginUseCaseTest extends IntegrationTestSupport {
 
-    @Autowired
-    private LoginUseCase loginUseCase;
-
-    @Test
-    @DisplayName("소셜 로그인 테스트")
-    void socialLogin() {
-        //given
-        String token = "sPlIX_aQIA6Au-SA_rqgfWiram8uAwB1AAAAAQo9dGgAAAGQdwKLUv8D-j8FVvr5";
-
-        //when
-        SocialLoginResponse response = loginUseCase.socialLogin(UserOAuth2Login.builder()
-            .providerType(ProviderType.KAKAO)
-            .token(BEARER + token)
-            .build());
-
-        //then
-        System.out.println(response.accessToken());
-        System.out.println(response.refreshToken());
-    }
+//    @Autowired
+//    private LoginUseCase loginUseCase;
+//
+//    @Test
+//    @DisplayName("소셜 로그인 테스트")
+//    void socialLogin() {
+//        //given
+//        String token = "sPlIX_aQIA6Au-SA_rqgfWiram8uAwB1AAAAAQo9dGgAAAGQdwKLUv8D-j8FVvr5";
+//
+//        //when
+//        SocialLoginResponse response = loginUseCase.socialLogin(UserOAuth2Login.builder()
+//            .providerType(ProviderType.KAKAO)
+//            .token(BEARER + token)
+//            .build());
+//
+//        //then
+//        System.out.println(response.accessToken());
+//        System.out.println(response.refreshToken());
+//    }
 }

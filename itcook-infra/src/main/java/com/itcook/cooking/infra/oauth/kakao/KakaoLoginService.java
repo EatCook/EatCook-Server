@@ -26,14 +26,10 @@ public class KakaoLoginService implements SocialLoginService {
 
     @Override
     public UserInfo attemptLogin(String token) {
-        try{
-            kakaoApiClient.getTokenInfo(token);
-            KakaoUserInfo kakaoUserInfo = kakaoApiClient.getUserInfo(token);
-            return kakaoUserInfo.of();
-        } catch (FeignException e) {
-            log.error("카카오 로그인 에러 : {}", e.getMessage());
-            throw new ApiException(UserErrorCode.TOKEN_NOT_VALID);
-        }
+        kakaoApiClient.getTokenInfo(token);
+        KakaoUserInfo kakaoUserInfo = kakaoApiClient.getUserInfo(token);
+        return kakaoUserInfo.of();
+
     }
 
 }

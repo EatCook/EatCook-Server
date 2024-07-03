@@ -1,11 +1,12 @@
 package com.itcook.cooking.infra.feign.client;
 
 import com.itcook.cooking.infra.feign.dto.AppleSocialTokenInfoResponse;
+import com.itcook.cooking.infra.oauth.apple.AppleFeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "appleApi", url = "https://appleid.apple.com")
+@FeignClient(name = "appleApi", url = "https://appleid.apple.com", configuration = AppleFeignConfiguration.class)
 public interface AppleApiClient {
 
     @PostMapping("/auth/token")
