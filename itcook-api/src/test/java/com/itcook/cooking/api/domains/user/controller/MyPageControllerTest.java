@@ -1,8 +1,6 @@
 package com.itcook.cooking.api.domains.user.controller;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -16,7 +14,6 @@ import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
 import com.itcook.cooking.api.global.config.SecurityConfig;
 import com.itcook.cooking.api.global.config.WithItCookMockUser;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtCheckFilter;
-import com.itcook.cooking.api.global.security.jwt.filter.OAuth2LoginFilter;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
     excludeFilters = {
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class),
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtCheckFilter.class),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2LoginFilter.class),
+//        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2LoginFilter.class),
     }
 )
 @ActiveProfiles("test")
