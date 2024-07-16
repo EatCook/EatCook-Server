@@ -3,7 +3,7 @@ package com.itcook.cooking.domain.common.utils;
 import java.security.SecureRandom;
 import java.util.Random;
 
-public class RandomCodeUtils {
+public abstract class RandomCodeUtils {
 
     private static final int PASSWORD_LENGTH = 10;
 
