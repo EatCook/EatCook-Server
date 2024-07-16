@@ -25,7 +25,7 @@ public class AuthController {
 
     @Operation(summary = "소셜 로그인 요청", description = "카카오일 경우 access token or 애플 경우 인가 코드(authorization code)를 token값에 보내주시면 됩니다")
     @PostMapping("/oauth2/login")
-    public ResponseEntity socialLogin(
+    public ResponseEntity<ApiResponse> socialLogin(
         @RequestBody SocialLoginRequest socialLoginRequest
     ) {
         SocialLoginResponse response = loginUseCase.socialLogin(socialLoginRequest.of());

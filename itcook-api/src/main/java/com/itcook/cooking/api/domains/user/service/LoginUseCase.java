@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.user.service;
 
-import com.itcook.cooking.api.domains.user.service.dto.UserOAuth2Login;
+import com.itcook.cooking.domain.domains.infra.oauth.dto.UserOAuth2Login;
 import com.itcook.cooking.api.domains.user.service.dto.response.SocialLoginResponse;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.domain.common.annotation.UseCase;
@@ -29,8 +29,7 @@ public class LoginUseCase {
 
     @Transactional
     public SocialLoginResponse socialLogin(UserOAuth2Login userOAuth2Login) {
-        UserInfo userInfo = socialLoginFactory.socialLogin(userOAuth2Login.providerType(),
-            userOAuth2Login.token());
+        UserInfo userInfo = socialLoginFactory.socialLogin(userOAuth2Login);
 
         signup(userOAuth2Login, userInfo);
 

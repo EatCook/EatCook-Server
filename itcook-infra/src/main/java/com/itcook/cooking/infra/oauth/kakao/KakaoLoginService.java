@@ -3,6 +3,7 @@ package com.itcook.cooking.infra.oauth.kakao;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.infra.oauth.SocialLoginService;
+import com.itcook.cooking.domain.domains.infra.oauth.dto.InfoForLogin;
 import com.itcook.cooking.domain.domains.infra.oauth.dto.UserInfo;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.infra.feign.client.KakaoApiClient;
@@ -25,9 +26,9 @@ public class KakaoLoginService implements SocialLoginService {
     }
 
     @Override
-    public UserInfo attemptLogin(String token) {
-        kakaoApiClient.getTokenInfo(token);
-        KakaoUserInfo kakaoUserInfo = kakaoApiClient.getUserInfo(token);
+    public UserInfo attemptLogin(InfoForLogin info) {
+        kakaoApiClient.getTokenInfo(info.token());
+        KakaoUserInfo kakaoUserInfo = kakaoApiClient.getUserInfo(info.token());
         return kakaoUserInfo.of();
 
     }

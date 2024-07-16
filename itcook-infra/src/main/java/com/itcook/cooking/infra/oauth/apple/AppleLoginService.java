@@ -3,6 +3,7 @@ package com.itcook.cooking.infra.oauth.apple;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.infra.oauth.SocialLoginService;
+import com.itcook.cooking.domain.domains.infra.oauth.dto.InfoForLogin;
 import com.itcook.cooking.domain.domains.infra.oauth.dto.UserInfo;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.infra.feign.client.AppleApiClient;
@@ -27,16 +28,27 @@ public class AppleLoginService implements SocialLoginService {
         return providerType == ProviderType.APPLE;
     }
 
-    @Override
-    public UserInfo attemptLogin(String token) {
-        String idToken = appleApiClient.getIdToken(
-            appleProperties.getClientId(),
-            appleJwtUtils.generateClientSecret(),
-            appleProperties.getGrantType(),
-            token // authorization code
-        ).getIdToken();
+    /**
+     String idToken = appleApiClient.getIdToken(
+     appleProperties.getClientId(),
+     appleJwtUtils.generateClientSecret(),
+     appleProperties.getGrantType(),
+     token // authorization code
+     ).getIdToken();
 
-        return appleJwtUtils.decodePayload(idToken,
-            AppleIdTokenPayload.class).of();
+     return appleJwtUtils.decodePayload(idToken,
+     AppleIdTokenPayload.class).of();
+     *
+     */
+    @Override
+    public UserInfo attemptLogin(InfoForLogin info) {
+        String email = info.email();
+        String nickName = email.split("@")[0];
+        return UserInfo.builder()
+            .email(email)
+            .nickName(nickName)
+            .build();
     }
+
+
 }
