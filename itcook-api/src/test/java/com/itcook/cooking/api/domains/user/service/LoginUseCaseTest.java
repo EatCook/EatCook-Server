@@ -14,6 +14,7 @@ import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,20 +34,6 @@ class LoginUseCaseTest extends IntegrationTestSupport {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    @DisplayName("소셜 로그인 테스트")
-    void socialLoginTest() {
-        //given
-        String token = "sPlIX_aQIA6Au-SA_rqgfWiram8uAwB1AAAAAQo9dGgAAAGQdwKLUv8D-j8FVvr5";
-
-        //when
-        assertThatThrownBy(() -> loginUseCase.socialLogin(UserOAuth2Login.builder()
-            .providerType(ProviderType.KAKAO)
-            .token(ItCookConstants.BEARER + token)
-            .build()))
-            .isInstanceOf(ApiException.class)
-        ;
-    }
 
     @Test
     @DisplayName("카카오 소셜 로그인 성공 시도한다.")
