@@ -118,6 +118,7 @@ public class ItCookUser extends BaseTimeEntity {
             .email(signupDto.email())
             .password(signupDto.password())
             .providerType(signupDto.providerType())
+            .nickName(signupDto.nickName())
             .userRole(UserRole.USER)
             .build();
         userValidator.validateSignup(user);

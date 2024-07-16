@@ -8,7 +8,6 @@ import com.itcook.cooking.api.global.security.jwt.filter.JwtCheckFilter;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtLoginFilter;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtLogoutHandler;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtLogoutSuccessHandler;
-import com.itcook.cooking.api.global.security.jwt.filter.OAuth2LoginFilter;
 import com.itcook.cooking.api.global.security.jwt.service.ItCookUserDetailsService;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,6 @@ public class SecurityConfig {
     private final JwtLogoutHandler jwtLogoutHandler;
     private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
     private final PasswordEncoder passwordEncoder;
-    private final OAuth2LoginFilter oAuth2LoginFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -56,7 +54,7 @@ public class SecurityConfig {
             .antMatchers("/api/v1/users/find/**").permitAll()
             .anyRequest().hasRole("USER");
 
-        http.addFilterBefore(oAuth2LoginFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(oAuth2LoginFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class);
 
