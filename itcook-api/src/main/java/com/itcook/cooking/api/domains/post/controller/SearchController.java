@@ -29,7 +29,8 @@ public class SearchController {
 
     private final SearchUseCase searchUseCase;
 
-    @Operation(summary = "검색 요청", description = "검색 요청 설명")
+    @Operation(summary = "검색 요청"
+        , description = "검색 요청 설명. 처음 요청시에는 재료명(ingredients)으로 검색어를 보내고, 검색창에 진입했을시, 레시피명 태그에서는 레시피명(recipeNames)으로 요청을 보내주세요")
     @PostMapping("/v1/posts/search")
     public ResponseEntity<ApiResponse<List<SearchPostResponse>>> search(
         @RequestBody @Valid PostSearchRequest postSearchRequest
