@@ -2,6 +2,7 @@ package com.itcook.cooking.domain.domains.mock;
 
 import com.itcook.cooking.domain.domains.infra.redis.RedisService;
 import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.dto.WordsRanking;
 import java.util.List;
 
 public class MockRedisService implements RedisService {
@@ -37,7 +38,7 @@ public class MockRedisService implements RedisService {
     }
 
     @Override
-    public List<RankingWords> getRankingWords() {
+    public WordsRanking getRankingWords() {
         return null;
     }
 

@@ -1,8 +1,10 @@
 package com.itcook.cooking.infra.redis;
 
 import com.itcook.cooking.domain.domains.infra.redis.RedisService;
-import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.dto.WordsRanking;
 import com.itcook.cooking.infra.redis.dto.RankingChange;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -51,11 +53,12 @@ public class RedisServiceImpl implements RedisService {
         redisTemplate.opsForZSet().incrementScore(key, value, score);
     }
 
-    public List<RankingWords> getRankingWords() {
+    public WordsRanking getRankingWords() {
         List<RankingChange> rankingChanges = searchRankingService.getRankingChanges();
-        return rankingChanges.stream().map(RankingChange::toRankingWords)
-            .toList();
-
+        LocalDateTime lastUpdateTime = searchRankingService.getLastUpdateTime();
+        return WordsRanking.of(lastUpdateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:00")),
+            rankingChanges.stream().map(RankingChange::toRankingWords)
+                .toList());
     }
 
     @Override

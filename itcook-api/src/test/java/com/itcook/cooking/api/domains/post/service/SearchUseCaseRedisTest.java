@@ -34,7 +34,7 @@ public class SearchUseCaseRedisTest extends IntegrationRedisContainerSupport {
         var response = searchUseCase.getRankingWords();
 
         //then
-        assertThat(response).isEmpty();
+        assertThat(response.getRankings()).isEmpty();
     }
 
     @Test
@@ -49,9 +49,10 @@ public class SearchUseCaseRedisTest extends IntegrationRedisContainerSupport {
         var response = searchUseCase.getRankingWords();
 
         //then
-        assertThat(response).hasSize(2)
-            .extracting(SearchRankResponse::getSearchWord, SearchRankResponse::getSearchCount,
-                SearchRankResponse::getRank, SearchRankResponse::getRankChange)
+        System.out.println(response.getLastUpdateTime());
+        assertThat(response.getRankings()).hasSize(2)
+            .extracting(SearchRankResponse.Ranking::getSearchWord, SearchRankResponse.Ranking::getSearchCount,
+                SearchRankResponse.Ranking::getRank, SearchRankResponse.Ranking::getRankChange)
             .containsExactly(
                 tuple("김치찌개", 2L, 1L, 0),
                 tuple("된장", 1L, 2L, 0)
@@ -75,9 +76,9 @@ public class SearchUseCaseRedisTest extends IntegrationRedisContainerSupport {
         var response = searchUseCase.getRankingWords();
 
         //then
-        assertThat(response).hasSize(3)
-            .extracting(SearchRankResponse::getSearchWord, SearchRankResponse::getSearchCount,
-                SearchRankResponse::getRank, SearchRankResponse::getRankChange)
+        assertThat(response.getRankings()).hasSize(3)
+            .extracting(SearchRankResponse.Ranking::getSearchWord, SearchRankResponse.Ranking::getSearchCount,
+                SearchRankResponse.Ranking::getRank, SearchRankResponse.Ranking::getRankChange)
             .containsExactly(
                 tuple("된장", 3L, 1L, 1),
                 tuple("김치찌개", 2L, 2L, -1),

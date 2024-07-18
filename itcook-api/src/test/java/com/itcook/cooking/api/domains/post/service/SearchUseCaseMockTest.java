@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import com.itcook.cooking.api.IntegrationTestSupport;
 import com.itcook.cooking.api.domains.post.dto.response.SearchRankResponse;
 import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.dto.WordsRanking;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,15 @@ public class SearchUseCaseMockTest extends IntegrationTestSupport {
     void getRankingWordsEmpty() {
         //given
         given(redisService.getRankingWords())
-            .willReturn(List.of());
+            .willReturn(WordsRanking.builder()
+                .rankingWords(List.of())
+                .build());
 
         //when
-        List<SearchRankResponse> rankingWords = searchUseCase.getRankingWords();
+        SearchRankResponse rankingWords = searchUseCase.getRankingWords();
 
         //then
-        assertThat(rankingWords).isEmpty();
+        assertThat(rankingWords.getRankings()).isEmpty();
     }
 
     @Test
@@ -38,19 +41,21 @@ public class SearchUseCaseMockTest extends IntegrationTestSupport {
         RankingWords rankingWords2 = rankingWords("된장찌개", 2L);
 
         given(redisService.getRankingWords())
-            .willReturn(List.of(rankingWords1, rankingWords2));
+            .willReturn(WordsRanking.builder()
+                .rankingWords(List.of(rankingWords1, rankingWords2))
+                .build());
 
         //when
-        List<SearchRankResponse> rankingWords = searchUseCase.getRankingWords();
+        SearchRankResponse rankingWords = searchUseCase.getRankingWords();
 
         //then
-        assertThat(rankingWords).hasSize(2);
+        assertThat(rankingWords.getRankings()).hasSize(2);
     }
 
     private RankingWords rankingWords(String searchWords, Long count) {
         return RankingWords.builder()
             .word(searchWords)
-            .score(count)
+            .searchCount(count)
             .build();
     }
 }

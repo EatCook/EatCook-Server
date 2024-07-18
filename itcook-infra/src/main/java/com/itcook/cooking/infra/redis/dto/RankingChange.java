@@ -23,7 +23,7 @@ public record RankingChange(
     public RankingWords toRankingWords() {
         return RankingWords.builder()
             .word(word)
-            .score(score)
+            .searchCount(score)
             .rank(rank)
             .rankChange(rankChange)
             .build()

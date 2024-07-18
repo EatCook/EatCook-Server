@@ -2,6 +2,7 @@ package com.itcook.cooking.infra.redis;
 
 import com.itcook.cooking.infra.redis.dto.RankingChange;
 import com.itcook.cooking.infra.redis.dto.RankingWords;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class SearchRankingService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private List<RankingChange> cachedRankingChanges;
+    private LocalDateTime lastUpdateTime;
 
     public List<RankingWords> getRankingWords(String key) {
         Set<TypedTuple<Object>> searchWords = redisTemplate.opsForZSet()
@@ -43,7 +45,7 @@ public class SearchRankingService {
 //
 //        redisTemplate.delete("previousSearchWords");
 //        currentRankingWords.forEach(word ->
-//            redisTemplate.opsForZSet().add("previousSearchWords", word.word(), word.score()));
+//            redisTemplate.opsForZSet().add("previousSearchWords", word.word(), word.searchCount()));
 //
 //        return calculateRankingChanges(previousRankingWords, currentRankingWords);
         if (cachedRankingChanges == null) {
@@ -67,7 +69,7 @@ public class SearchRankingService {
     }
 
 //    @Scheduled(cron = "0 0 * * * *")
-    @Scheduled(fixedRate = 30000) // 1시간마다 실행 (3600000 밀리초 = 1시간)
+    @Scheduled(fixedRate = 30000) // 30초
     public void updateRankingChanges() {
         List<RankingWords> previousRankingWords = getRankingWords("previousSearchWords");
         List<RankingWords> currentRankingWords = getRankingWords("searchWords");
@@ -77,7 +79,12 @@ public class SearchRankingService {
             redisTemplate.opsForZSet().add("previousSearchWords", word.word(), word.score()));
 
         cachedRankingChanges = calculateRankingChanges(previousRankingWords, currentRankingWords);
-        log.info("검색어 랭킹 업데이트");
+        lastUpdateTime = LocalDateTime.now();
+        log.info("검색어 랭킹 업데이트 {}", lastUpdateTime);
+    }
+
+    public LocalDateTime getLastUpdateTime() {
+        return lastUpdateTime;
     }
 }
 

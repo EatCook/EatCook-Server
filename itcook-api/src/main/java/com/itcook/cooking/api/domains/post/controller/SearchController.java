@@ -44,8 +44,8 @@ public class SearchController {
     @Operation(summary = "검색어 랭킹", description = "검색어 랭킹. rank는 현재 등수, rankChange는 2, -1과 같은 변화한"
         + " 등수값을 의미합니다. 등수가 변화하지 않았거나 새로 들어온 검색어는 default로 0을 가진다.")
     @GetMapping("/v1/posts/search/ranking")
-    public ResponseEntity<ApiResponse<List<SearchRankResponse>>> getRankingWords() {
-        List<SearchRankResponse> rankingWords = searchUseCase.getRankingWords();
+    public ResponseEntity<ApiResponse<SearchRankResponse>> getRankingWords() {
+        SearchRankResponse rankingWords = searchUseCase.getRankingWords();
         return ResponseEntity.ok(ApiResponse.OK(rankingWords));
     }
 }
