@@ -1,21 +1,23 @@
 package com.itcook.cooking.infra.redis;
 
-import com.amazonaws.util.CollectionUtils;
 import com.itcook.cooking.domain.domains.infra.redis.RedisService;
 import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
+import com.itcook.cooking.infra.redis.dto.RankingChange;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RedisServiceImpl implements RedisService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final SearchRankingService searchRankingService;
 
 
     public void setDataWithExpire(String key, Object value, Long expireSeconds) {
@@ -50,16 +52,16 @@ public class RedisServiceImpl implements RedisService {
     }
 
     public List<RankingWords> getRankingWords() {
-        Set<TypedTuple<Object>> searchWords = redisTemplate.opsForZSet()
-            .reverseRangeWithScores("searchWords", 0, 9);
-
-        if (CollectionUtils.isNullOrEmpty(searchWords)) {
-            return List.of();
-        }
-
-        return searchWords.stream().map(word -> RankingWords.of(String.valueOf(word.getValue()),
-                Double.valueOf(word.getScore()).longValue()))
+        List<RankingChange> rankingChanges = searchRankingService.getRankingChanges();
+        return rankingChanges.stream().map(RankingChange::toRankingWords)
             .toList();
+
     }
+
+    @Override
+    public void updateRankingChanges() {
+        searchRankingService.updateRankingChanges();
+    }
+
 
 }

@@ -40,4 +40,9 @@ public class MockRedisService implements RedisService {
     public List<RankingWords> getRankingWords() {
         return null;
     }
+
+    @Override
+    public void updateRankingChanges() {
+
+    }
 }

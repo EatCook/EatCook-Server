@@ -4,16 +4,10 @@ import lombok.Builder;
 
 @Builder
 public record RankingWords(
-    String searchWord,
-    Long searchCount
+    String word,
+    long score,
+    long rank,
+    int rankChange
 ) {
-
-    public static RankingWords of(String searchWord, Long searchCount) {
-        return RankingWords.builder()
-            .searchWord(searchWord)
-            .searchCount(searchCount)
-            .build()
-            ;
-    }
 
 }

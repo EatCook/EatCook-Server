@@ -49,8 +49,8 @@ public class SearchUseCaseMockTest extends IntegrationTestSupport {
 
     private RankingWords rankingWords(String searchWords, Long count) {
         return RankingWords.builder()
-            .searchWord(searchWords)
-            .searchCount(count)
+            .word(searchWords)
+            .score(count)
             .build();
     }
 }

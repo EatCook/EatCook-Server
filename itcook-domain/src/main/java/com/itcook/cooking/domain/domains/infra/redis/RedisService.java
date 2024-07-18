@@ -21,4 +21,7 @@ public interface RedisService {
     void incrementScore(String key, String value, long score);
 
     List<RankingWords> getRankingWords();
+
+    void updateRankingChanges();
+
 }
