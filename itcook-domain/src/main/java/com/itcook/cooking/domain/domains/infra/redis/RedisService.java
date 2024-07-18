@@ -1,6 +1,7 @@
 package com.itcook.cooking.domain.domains.infra.redis;
 
 import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
+import com.itcook.cooking.domain.domains.infra.redis.dto.WordsRanking;
 import java.util.List;
 
 public interface RedisService {
@@ -20,5 +21,8 @@ public interface RedisService {
 
     void incrementScore(String key, String value, long score);
 
-    List<RankingWords> getRankingWords();
+    WordsRanking getRankingWords();
+
+    void updateRankingChanges();
+
 }

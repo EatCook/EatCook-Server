@@ -29,7 +29,8 @@ public class SearchController {
 
     private final SearchUseCase searchUseCase;
 
-    @Operation(summary = "검색 요청", description = "검색 요청 설명")
+    @Operation(summary = "검색 요청", description = "검색 요청. 첫 검색바에서 요청시에는 ingredients값으로 보내야합니다. "
+        + "검색 뷰 리스트에서 레시피 태그를 누를때 recipeNames으로 값을 보내야합니다")
     @PostMapping("/v1/posts/search")
     public ResponseEntity<ApiResponse<List<SearchPostResponse>>> search(
         @RequestBody @Valid PostSearchRequest postSearchRequest
@@ -40,10 +41,11 @@ public class SearchController {
         return ResponseEntity.ok(ApiResponse.OK(response));
     }
 
-    @Operation(summary = "검색어 랭킹", description = "검색어 랭킹 설명")
+    @Operation(summary = "검색어 랭킹", description = "검색어 랭킹. rank는 현재 등수, rankChange는 2, -1과 같은 변화한"
+        + " 등수값을 의미합니다. 등수가 변화하지 않았거나 새로 들어온 검색어는 default로 0을 가진다.")
     @GetMapping("/v1/posts/search/ranking")
-    public ResponseEntity<ApiResponse<List<SearchRankResponse>>> getRankingWords() {
-        List<SearchRankResponse> rankingWords = searchUseCase.getRankingWords();
+    public ResponseEntity<ApiResponse<SearchRankResponse>> getRankingWords() {
+        SearchRankResponse rankingWords = searchUseCase.getRankingWords();
         return ResponseEntity.ok(ApiResponse.OK(rankingWords));
     }
 }
