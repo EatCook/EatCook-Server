@@ -10,10 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-//@ActiveProfiles("test")
-//@Import(RedisTestContainers.class)
-//@SpringBootTest
-@Disabled
+//@Disabled
 public class RedisTest extends IntegrationRedisContainerSupport {
 
     @Autowired

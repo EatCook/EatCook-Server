@@ -40,6 +40,8 @@ jobs:
           json: ${{ secrets.FIREBASE_ADMIN_SDK }}
           dir: ${{ secrets.FIREBASE_ADMIN_SDK_DIR }}
 
+      - name: Start Containers
+        run: docker-compose -f docker-compose-dev.yml up -d
 
       - name: Gradle Clean & Build
         run: ./gradlew :itcook-api:build

@@ -10,6 +10,7 @@ import com.itcook.cooking.api.domains.post.dto.search.SearchPostResponse;
 import com.itcook.cooking.api.domains.post.service.dto.PostSearchServiceDto;
 import com.itcook.cooking.api.domains.search.dto.RealTimeSearchWords;
 import com.itcook.cooking.domain.common.annotation.UseCase;
+import com.itcook.cooking.domain.domains.infra.redis.dto.WordsRanking;
 import com.itcook.cooking.domain.domains.post.domain.adaptor.PostAdaptor;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostQuerydslRepository;
@@ -94,9 +95,9 @@ public class SearchUseCase {
     /**
      * 검색어 랭킹을 가져온다.
      */
-    public List<SearchRankResponse> getRankingWords() {
-        List<RankingWords> rankingWords = redisService.getRankingWords();
-        return rankingWords.stream().map(SearchRankResponse::of).toList();
+    public SearchRankResponse getRankingWords() {
+        WordsRanking rankingWords = redisService.getRankingWords();
+        return SearchRankResponse.from(rankingWords);
     }
 
 
