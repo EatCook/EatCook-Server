@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.user.controller;
 
 import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
+import com.itcook.cooking.api.domains.user.dto.request.CheckNickNameRequest;
 import com.itcook.cooking.api.domains.user.dto.request.FindUserRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
@@ -77,6 +78,15 @@ public class SignupController {
             addSignupRequest.toServiceDto());
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(addSignupDomainResponse));
+    }
+
+    @Operation(summary = "추가 회원가입시 중복된 닉네임 체크", description = "닉네임 중복체크시 nickName 보내주세요")
+    @PostMapping("/v1/users/add-signup/check-nick")
+    public ResponseEntity<ApiResponse> checkDuplicateNickName(
+        @RequestBody @Valid CheckNickNameRequest checkNickNameRequest
+    ) {
+        signupUseCase.checkNickName(checkNickNameRequest.toServiceDto());
+        return ResponseEntity.ok(ApiResponse.OK("닉네임 체크 완료."));
     }
 
     /**

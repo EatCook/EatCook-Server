@@ -3,6 +3,7 @@ package com.itcook.cooking.api.domains.user.service;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
+import com.itcook.cooking.api.domains.user.service.dto.CheckNickNameServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
@@ -44,4 +45,7 @@ public class SignupUseCase {
             , addSignupRequest.toCookingTypes());
     }
 
+    public void checkNickName(CheckNickNameServiceDto checkNickNameServiceDto) {
+        userService.checkDuplicateNickName(checkNickNameServiceDto.toEntity());
+    }
 }

@@ -2,10 +2,6 @@ package com.itcook.cooking.infra.redis;
 
 import com.itcook.cooking.domain.domains.infra.redis.RedisService;
 import com.itcook.cooking.domain.domains.infra.redis.dto.WordsRanking;
-import com.itcook.cooking.infra.redis.dto.RankingChange;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +16,7 @@ public class RedisServiceImpl implements RedisService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final SearchRankingService searchRankingService;
-
+    private final SearchRankingV2Service searchRankingV2Service;
 
     public void setDataWithExpire(String key, Object value, Long expireSeconds) {
         redisTemplate.opsForValue().set(key, value, expireSeconds, TimeUnit.SECONDS);
@@ -54,16 +50,14 @@ public class RedisServiceImpl implements RedisService {
     }
 
     public WordsRanking getRankingWords() {
-        List<RankingChange> rankingChanges = searchRankingService.getRankingChanges();
-        LocalDateTime lastUpdateTime = searchRankingService.getLastUpdateTime();
-        return WordsRanking.of(lastUpdateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:00")),
-            rankingChanges.stream().map(RankingChange::toRankingWords)
-                .toList());
+//        List<RankingChange> rankingChanges = searchRankingService.getRankingChanges();
+//        LocalDateTime lastUpdateTime = searchRankingService.getLastUpdateTime();
+        return searchRankingV2Service.getTopSearchWords();
     }
 
     @Override
     public void updateRankingChanges() {
-        searchRankingService.updateRankingChanges();
+        searchRankingV2Service.updateRanking();
     }
 
 
