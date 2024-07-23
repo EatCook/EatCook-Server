@@ -16,7 +16,7 @@ public enum CookingType {
     LATE_NIGHT_SNACK("야식"),
     DESERT("디저트"),
     BUNSIK("분식"),
-    ASIAN_FOOD("아시안"),
+    ASIAN_FOOD("아시아"),
     ;
 
 
