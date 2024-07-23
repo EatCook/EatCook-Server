@@ -159,4 +159,8 @@ public class UserService {
         ItCookUser user = userAdaptor.queryJoinCookingThemesByEmail(email);
         return UserReadInterestCookResponse.of(user);
     }
+
+    public void checkDuplicateNickName(ItCookUser user) {
+        user.checkNickName(userValidator);
+    }
 }

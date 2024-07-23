@@ -69,7 +69,7 @@ public class SearchRankingService {
     }
 
 //    @Scheduled(cron = "0 0 * * * *")
-    @Scheduled(fixedRate = 30000) // 30초
+//    @Scheduled(fixedRate = 30000) // 30초
     public void updateRankingChanges() {
         List<RankingWords> previousRankingWords = getRankingWords("previousSearchWords");
         List<RankingWords> currentRankingWords = getRankingWords("searchWords");
