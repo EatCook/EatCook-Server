@@ -75,38 +75,6 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
     private CacheManager cacheManager;
 
     @Test
-    @Disabled
-    @DisplayName("마이 페이지를 조회한다.")
-    void getMyPage()  {
-        //given
-        String email = "user1@test.com";
-
-        ItCookUser user1 = createUser(email, "잇쿡1");
-        createPost(user1.getId(), "책제목1", "소개글1");
-        createPost(user1.getId(), "책제목2", "소개글2");
-        createPost(user1.getId(), "책제목3", "소개글3");
-
-        //when
-        var myPage = myPageQueryUseCase.getMyPage(email,
-            PageRequest.of(0, 10));
-
-        //then
-
-        assertThat(myPage.getUserId()).isEqualTo(user1.getId());
-        assertThat(myPage.getNickName()).isEqualTo(user1.getNickName());
-        assertThat(myPage.getBadge()).isEqualTo(UserBadge.GIBBAB_FIRST.getDescription());
-        assertThat(myPage.getPosts().content()).hasSize(3)
-            .extracting("recipeName", "introduction")
-            .containsExactly(
-                tuple("책제목3", "소개글3"),
-                tuple("책제목2", "소개글2"),
-                tuple("책제목1", "소개글1")
-            )
-        ;
-
-    }
-
-    @Test
     @DisplayName("마이 페이지 나의 정보 조회한다.")
     void getMyPageUserInfo() {
         //given
@@ -118,6 +86,7 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
 
         //then
         assertThat(response.getUserId()).isEqualTo(user.getId());
+        assertThat(response.getEmail()).isEqualTo(user.getEmail());
         assertThat(response.getNickName()).isEqualTo(user.getNickName());
         assertThat(response.getBadge()).isEqualTo(user.getBadgeName());
     }
