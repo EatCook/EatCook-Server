@@ -248,4 +248,7 @@ public class ItCookUser extends BaseTimeEntity {
         this.userCookingThemes.addAll(userCookingThemes);
     }
 
+    public void checkNickName(UserValidator userValidator) {
+        userValidator.validateDuplicateNickName(nickName);
+    }
 }

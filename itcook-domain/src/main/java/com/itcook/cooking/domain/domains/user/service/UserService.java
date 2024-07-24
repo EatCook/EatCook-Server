@@ -166,4 +166,8 @@ public class UserService {
         user = userAdaptor.queryUserByEmail(user.getEmail());
         return user.changeProfileImage(fileExtension, userImageRegisterService);
     }
+
+    public void checkDuplicateNickName(ItCookUser user) {
+        user.checkNickName(userValidator);
+    }
 }

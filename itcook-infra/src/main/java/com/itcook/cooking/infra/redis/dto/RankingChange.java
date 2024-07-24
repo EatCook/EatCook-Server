@@ -2,14 +2,16 @@ package com.itcook.cooking.infra.redis.dto;
 
 import com.itcook.cooking.domain.domains.infra.redis.dto.RankingWords;
 import lombok.Builder;
+import lombok.Data;
 
+@Data
 @Builder
-public record RankingChange(
-    String word,
-    long score,
-    int rank,
-    int rankChange
-) {
+public class RankingChange {
+
+    private String word;
+    private long score;
+    private int rank;
+    private int rankChange;
 
     public static RankingChange of(String word, long score,int rank, int rankChange) {
         return RankingChange.builder()
@@ -29,4 +31,6 @@ public record RankingChange(
             .build()
             ;
     }
+
+
 }
