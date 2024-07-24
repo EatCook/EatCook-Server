@@ -441,6 +441,26 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             .isTrue();
     }
 
+    @Test
+    @DisplayName("계정 찾기 후 새비밀번호로 변경합니다.")
+    void findUserNewPassword() {
+        //given
+        ItCookUser user = createUser("user@test.com", "cook1234", "잇쿡2");
+        ItCookUser entity = ItCookUser.builder()
+            .email("user@test.com")
+            .password("cook12345")
+            .build();
+
+        //when
+        userService.changePassword(entity);
+
+        //then
+        ItCookUser findUser = userRepository.findByEmail(user.getEmail()).get();
+        assertThat(passwordEncoder.matches("cook12345", findUser.getPassword()))
+            .isTrue();
+
+    }
+
     private ItCookUser createUser(String username, String password, String nickName) {
         ItCookUser user = ItCookUser.builder()
             .email(username)

@@ -2,6 +2,7 @@ package com.itcook.cooking.api.domains.user.controller;
 
 import com.itcook.cooking.api.domains.user.dto.request.AddSignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.CheckNickNameRequest;
+import com.itcook.cooking.api.domains.user.dto.request.FindUserNewPasswordRequest;
 import com.itcook.cooking.api.domains.user.dto.request.FindUserRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SendEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
@@ -15,7 +16,6 @@ import com.itcook.cooking.api.domains.user.service.SignupUseCase;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.AddSignupDomainResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@SecurityRequirement(name = "access-token")
 @RequestMapping("/api")
 @Slf4j
 @Tag(name = "01. User")
@@ -104,14 +103,23 @@ public class SignupController {
     /**
      * 계정 찾기 인증 코드 검증 (메일로 임시 비밀번호 발급)
      */
-    @Operation(summary = "계정 찾기 인증코드 검증", description = "계정 찾기 인증 코드 검증 (메일로 임시 비밀번호 발급)")
+    @Operation(summary = "계정 찾기 인증코드 검증", description = "계정 찾기 인증 코드 검증를 검증합니다.")
     @PostMapping("/v1/users/find/verify")
     public ResponseEntity<ApiResponse> verifyFindUser(
         @RequestBody @Valid VerifyFindUserRequest verifyFindUserRequest
     ) {
         findUserCase.verifyFindUser(
             verifyFindUserRequest.toServiceDto());
-        return ResponseEntity.ok(ApiResponse.OK("메일로 임시 비밀번호 발급되었습니다."));
+        return ResponseEntity.ok(ApiResponse.OK("계정 찾기 인증코드 검증 성공."));
+    }
+
+    @Operation(summary = "계정 찾기 비밀번호 재설정", description = "계정 찾기 인증 코드 검증 후 새비밀번호로 재설정합니다.")
+    @PostMapping("/v1/users/find/new-password")
+    public ResponseEntity<ApiResponse> newPassword(
+        @RequestBody @Valid FindUserNewPasswordRequest request
+    ) {
+        findUserCase.findUserChangeNewPassword(request.toServiceDto());
+        return ResponseEntity.ok(ApiResponse.OK("비밀번호 변경 성공."));
     }
 
 
