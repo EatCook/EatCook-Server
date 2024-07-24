@@ -172,6 +172,10 @@ public class ItCookUser extends BaseTimeEntity {
         password = newEncodedPassword;
     }
 
+    public void changePassword(String newEncodedPassword) {
+        password = newEncodedPassword;
+    }
+
     public void issueTemporaryPassword(String newEncodedTemporaryPassword,
         String temporaryPassword,
         String toEmail

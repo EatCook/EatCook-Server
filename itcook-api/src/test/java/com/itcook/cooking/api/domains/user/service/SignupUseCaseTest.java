@@ -273,7 +273,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("authCode를 검증하여, 유저의 임시 비밀번호를 생성한다.")
+    @DisplayName("계정 정보 찾기 인증 코드 검증시에, 인증 코드 검증에 성공한다.")
     void verifyFindUser() {
         //given
         ItCookUser user = createUser("user@test.com", "잇쿡1");
@@ -290,11 +290,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         findUserCase.verifyFindUser(serviceDto);
 
         //then
-        ItCookUser itCookUser = userRepository.findByEmail(user.getEmail()).get();
 
-        assertThat(itCookUser.getPassword()).isNotEqualTo(existingPassword);
-//        assertThat(passwordEncoder.matches(response.password(), itCookUser.getPassword())).isTrue()
-        ;
     }
 
     @Test

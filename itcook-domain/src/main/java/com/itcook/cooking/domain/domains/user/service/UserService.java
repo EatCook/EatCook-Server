@@ -76,6 +76,13 @@ public class UserService {
     }
 
     @Transactional
+    public void changePassword(ItCookUser user) {
+        ItCookUser findUser
+            = userAdaptor.queryUserByEmail(user.getEmail());
+        findUser.changePassword(passwordEncoder.encode(user.getPassword()));
+    }
+
+    @Transactional
     public ItCookUser signup(String email, String password) {
         ItCookUser user = ItCookUser.signup(SignupDto.of(email, password, ProviderType.COMMON),
             userValidator);
