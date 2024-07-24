@@ -7,7 +7,7 @@ import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.HomePostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostRepository;
@@ -30,7 +30,7 @@ public class PostAdaptor {
                 .orElseThrow(() -> new ApiException(PostErrorCode.POST_NOT_EXIST));
     }
 
-    public Page<PostWithLikedDto> findPostsWithLiked(Long userId, Pageable pageable) {
+    public Page<MyRecipeResponse> findPostsWithLiked(Long userId, Pageable pageable) {
         return postQuerydslRepository.findPostsWithLiked(userId, pageable);
     }
 

@@ -21,8 +21,8 @@ public class UserImageRegisterService {
                 fileExtension);
             imageUrlDto = s3PresignedUrlService.forUser(itCookUser.getId(),
                 imageFileExtension.getUploadExtension());
-            itCookUser.updateProfile(imageUrlDto.getKey());
         }
+//        itCookUser.updateProfile(imageUrlDto.getKey());
         return imageUrlDto;
     }
 }

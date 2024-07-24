@@ -3,6 +3,7 @@ package com.itcook.cooking.api.domains.user.controller;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageAlertUpdateRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageChangePasswordRequest;
+import com.itcook.cooking.api.domains.user.dto.request.MyPageProfileChangeRequest;
 import com.itcook.cooking.api.domains.user.dto.request.MyPageUpdateProfileRequest;
 import com.itcook.cooking.api.domains.user.dto.request.UserUpdateInterestCookRequest;
 import com.itcook.cooking.api.domains.user.service.MyPageQueryUseCase;
@@ -10,6 +11,10 @@ import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePostsResponse;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
+import com.itcook.cooking.api.global.dto.PageResponse;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
+import com.itcook.cooking.domain.domains.user.domain.entity.dto.MyPageProfileImageResponse;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +32,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,14 +48,26 @@ public class MyPageController {
     private final MyPageUseCase myPageUseCase;
     private final MyPageQueryUseCase myPageQueryUseCase;
 
-    @Operation(summary = "마이페이지 조회 요청", description = "PageNum과 PageSize를 받아서 마이페이지 조회 요청")
-    @GetMapping("/v1/mypage")
-    public ResponseEntity<ApiResponse<MyPageResponse>> getMyPage(
+    @Operation(summary = "마이페이지 유저 정보 조회", description = "엑세스 토큰의 값을 이용해서 해당 유저의 정보를 조회한다")
+    @GetMapping("/v1/mypage/user-info")
+    public ResponseEntity<ApiResponse<MyPageUserInfoResponse>> getMyPageUserInfo(
+        @AuthenticationPrincipal AuthenticationUser authenticationUser
+    ) {
+        MyPageUserInfoResponse response = myPageQueryUseCase.getMyPageUserInfo(
+            authenticationUser.getUsername());
+        return ResponseEntity.status(200)
+            .body(ApiResponse.OK(response))
+            ;
+    }
+
+    @Operation(summary = "마이페이지의 마이레시피 조회", description = "페이징 처리로 내가 쓴 게시글들 조회")
+    @GetMapping("/v1/mypage/mypage/my-recipe")
+    public ResponseEntity<ApiResponse<PageResponse<MyRecipeResponse>>> getMyPageMyRecipe(
         @AuthenticationPrincipal AuthenticationUser authenticationUser,
         @ParameterObject @PageableDefault Pageable pageable
     ) {
-        MyPageResponse response = myPageQueryUseCase.getMyPage(authenticationUser.getUsername(),
-            pageable);
+        PageResponse<MyRecipeResponse> response = myPageQueryUseCase.getMyPageMyRecipe(
+            authenticationUser.getUsername(), pageable);
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(response))
             ;
@@ -83,7 +101,6 @@ public class MyPageController {
     public ResponseEntity<ApiResponse> leaveUser(
         @AuthenticationPrincipal AuthenticationUser authenticationUser
     ) {
-        // TODO 이메일로
         myPageUseCase.leaveUser(authenticationUser.getUsername());
         return ResponseEntity.status(200)
             .body(ApiResponse.OK("회원 탈퇴하였습니다"))
@@ -143,6 +160,20 @@ public class MyPageController {
         return ResponseEntity.status(200)
             .body(ApiResponse.OK(response))
             ;
+    }
+
+    @Operation(summary = "마이페이지 프로필 이미지 변경 요청",
+        description = "파일 확장자명을 받아서 프로필 이미지를 변경합니다.")
+    @PostMapping("/v1/mypage/profile")
+    public ResponseEntity<ApiResponse> updateMyPageProfile(
+        @AuthenticationPrincipal AuthenticationUser authenticationUser,
+        @RequestBody @Valid MyPageProfileChangeRequest myPageProfileChangeRequest
+    ) {
+        MyPageProfileImageResponse response = myPageUseCase.changeMyPageProfileImage(
+            myPageProfileChangeRequest.toServiceDto(
+                authenticationUser.getUsername()));
+        return ResponseEntity.status(200)
+            .body(ApiResponse.OK(response));
     }
 
 }

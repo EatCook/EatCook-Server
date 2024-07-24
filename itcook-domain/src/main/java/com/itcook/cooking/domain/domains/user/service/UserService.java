@@ -6,6 +6,7 @@ import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.domain.entity.UserImageRegisterService;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.AddSignupDomainResponse;
+import com.itcook.cooking.domain.domains.user.domain.entity.dto.MyPageProfileImageResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.domain.enums.EventAlertType;
@@ -14,7 +15,7 @@ import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.domain.enums.ServiceAlertType;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserCookingThemeJdbcRepository;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserCookingThemeRepository;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
@@ -90,10 +91,10 @@ public class UserService {
             userImageRegisterService);
     }
 
-    public MyPageUserDto getMyPageInfo(String email) {
+    public MyPageUserInfoResponse getMyPageInfo(String email) {
         ItCookUser user = userAdaptor.queryUserByEmail(email);
         long followerCounts = userAdaptor.getFollowerCounts(user.getId());
-        return MyPageUserDto.of(user, followerCounts);
+        return MyPageUserInfoResponse.of(user, followerCounts);
     }
 
     @Transactional
@@ -158,5 +159,11 @@ public class UserService {
     ) {
         ItCookUser user = userAdaptor.queryJoinCookingThemesByEmail(email);
         return UserReadInterestCookResponse.of(user);
+    }
+
+    @Transactional
+    public MyPageProfileImageResponse changeMyProfileImage(ItCookUser user, String fileExtension) {
+        user = userAdaptor.queryUserByEmail(user.getEmail());
+        return user.changeProfileImage(fileExtension, userImageRegisterService);
     }
 }

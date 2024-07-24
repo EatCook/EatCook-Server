@@ -9,7 +9,7 @@ import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
 import java.util.List;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
@@ -48,7 +48,7 @@ public class PostService {
         return findPostData;
     }
 
-    public Page<PostWithLikedDto> getPostsByUserId(Long userId, Pageable pageable) {
+    public Page<MyRecipeResponse> getPostsByUserId(Long userId, Pageable pageable) {
         return postAdaptor.findPostsWithLiked(userId, pageable);
     }
 

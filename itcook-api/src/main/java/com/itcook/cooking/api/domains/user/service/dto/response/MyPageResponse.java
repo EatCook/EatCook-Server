@@ -1,9 +1,9 @@
 package com.itcook.cooking.api.domains.user.service.dto.response;
 
 import com.itcook.cooking.api.global.dto.PageResponse;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class MyPageResponse {
 
     private Long userId;
+    private String email;
     private String nickName;
     private String badge;
     private Long follower;
@@ -20,12 +21,13 @@ public class MyPageResponse {
     private ProviderType providerType;
 
     //    private List<MyPagePostResponse> posts;
-    private PageResponse<PostWithLikedDto> posts;
+    private PageResponse<MyRecipeResponse> posts;
 
     @Builder
-    private MyPageResponse(Long userId, String nickName, String badge, Long follower,
-        Long following, ProviderType providerType, PageResponse<PostWithLikedDto> posts) {
+    private MyPageResponse(Long userId, String email,String nickName, String badge, Long follower,
+        Long following, ProviderType providerType, PageResponse<MyRecipeResponse> posts) {
         this.userId = userId;
+        this.email = email;
         this.nickName = nickName;
         this.badge = badge;
         this.follower = follower;
@@ -34,10 +36,11 @@ public class MyPageResponse {
         this.posts = posts;
     }
 
-    public static MyPageResponse of(MyPageUserDto myPageUserInfo,
-        PageResponse<PostWithLikedDto> posts) {
+    public static MyPageResponse of(MyPageUserInfoResponse myPageUserInfo,
+        PageResponse<MyRecipeResponse> posts) {
         return MyPageResponse.builder()
             .userId(myPageUserInfo.getUserId())
+            .email(myPageUserInfo.getEmail())
             .nickName(myPageUserInfo.getNickName())
             .badge(myPageUserInfo.getBadge())
             .follower(myPageUserInfo.getFollowerCounts())

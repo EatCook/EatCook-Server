@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.domains.user.service.dto;
+package com.itcook.cooking.domain.domains.user.service.dto.response;
 
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class MyPageUserDto {
+public class MyPageUserInfoResponse {
 
     private Long userId;
+    private String email;
     private String nickName;
     private String badge;
     private Long followerCounts;
@@ -19,9 +20,10 @@ public class MyPageUserDto {
     private ProviderType providerType;
 
     @Builder
-    private MyPageUserDto(Long userId, String nickName, String badge, Long followerCounts,
+    private MyPageUserInfoResponse(Long userId, String email,String nickName, String badge, Long followerCounts,
         Long followingCounts, ProviderType providerType) {
         this.userId = userId;
+        this.email = email;
         this.nickName = nickName;
         this.badge = badge;
         this.followerCounts = followerCounts;
@@ -29,9 +31,10 @@ public class MyPageUserDto {
         this.providerType = providerType;
     }
 
-    public static MyPageUserDto of(ItCookUser itCookUser, Long followerCounts) {
-        return MyPageUserDto.builder()
+    public static MyPageUserInfoResponse of(ItCookUser itCookUser, Long followerCounts) {
+        return MyPageUserInfoResponse.builder()
             .userId(itCookUser.getId())
+            .email(itCookUser.getEmail())
             .nickName(itCookUser.getNickName())
             .badge(itCookUser.getBadgeName())
             .providerType(itCookUser.getProviderType())

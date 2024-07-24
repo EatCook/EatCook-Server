@@ -1,4 +1,4 @@
-package com.itcook.cooking.domain.domains.post.domain.repository.dto;
+package com.itcook.cooking.domain.domains.post.domain.repository.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PostWithLikedDto {
+public class MyRecipeResponse {
 
     private Long postId;
     private String postImagePath;
@@ -15,7 +15,7 @@ public class PostWithLikedDto {
     private Long likeCounts;
 
     @Builder
-    public PostWithLikedDto(Long postId, String postImagePath, String recipeName,
+    public MyRecipeResponse(Long postId, String postImagePath, String recipeName,
         String introduction,
         Long likeCounts) {
         this.postId = postId;

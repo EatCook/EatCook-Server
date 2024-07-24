@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.user.service.dto.response;
 
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class MyPagePostResponse {
         this.liked = liked;
     }
 
-    public static MyPagePostResponse from(PostWithLikedDto post) {
+    public static MyPagePostResponse from(MyRecipeResponse post) {
         return MyPagePostResponse.builder()
             .imageFilePath(post.getPostImagePath())
             .title(post.getRecipeName())

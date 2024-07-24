@@ -10,7 +10,7 @@ import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostRepository;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
@@ -51,7 +51,7 @@ public class PostRepositoryTest extends IntegrationTestSupport {
         createLike(user2.getId(), post2.getId());
         createLike(user1.getId(), post2.getId());
         //when
-        Page<PostWithLikedDto> posts = postQuerydslRepository.findPostsWithLiked(
+        Page<MyRecipeResponse> posts = postQuerydslRepository.findPostsWithLiked(
             user1.getId(), PageRequest.of(0, 10));
 
         //then

@@ -1,9 +1,11 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.api.domains.user.service.dto.MyPagePasswordServiceDto;
+import com.itcook.cooking.api.domains.user.service.dto.MyPageProfileImageDto;
 import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
 import com.itcook.cooking.domain.domains.post.service.PostService;
+import com.itcook.cooking.domain.domains.user.domain.entity.dto.MyPageProfileImageResponse;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
@@ -16,9 +18,6 @@ import org.springframework.cache.annotation.CacheEvict;
 public class MyPageUseCase {
 
     private final UserService userService;
-    private final PostService postService;
-    private final ArchiveService archiveService;
-
 
     /**
      * 비밀번호 변경
@@ -59,6 +58,12 @@ public class MyPageUseCase {
     ) {
         userService.updateInterestCook(email, userUpdateInterestCook.cookingTypes(),
             userUpdateInterestCook.lifeType());
+    }
+
+    public MyPageProfileImageResponse changeMyPageProfileImage(
+        MyPageProfileImageDto myPageProfileImageDto) {
+        return userService.changeMyProfileImage(myPageProfileImageDto.toEntity(),
+            myPageProfileImageDto.fileExtension());
     }
 
 }
