@@ -22,7 +22,7 @@ import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.domain.enums.UserState;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdateInterestCook;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
@@ -69,7 +69,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
 
         userRepository.saveAll(List.of(user1, user2, user3));
         //when
-        MyPageUserDto myPageInfo = userService.getMyPageInfo(user1.getEmail());
+        MyPageUserInfoResponse myPageInfo = userService.getMyPageInfo(user1.getEmail());
 
         //then
         assertThat(myPageInfo.getUserId()).isEqualTo(user1.getId());

@@ -6,11 +6,11 @@ import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.archive.domain.dto.ArchivePost;
 import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserService;
-import com.itcook.cooking.domain.domains.user.service.dto.MyPageUserDto;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import java.util.List;
@@ -29,15 +29,21 @@ public class MyPageQueryUseCase {
     private final PostService postService;
     private final ArchiveService archiveService;
 
-    /**
-     * 마이페이지 조회
-     */
-    public MyPageResponse getMyPage(String email, Pageable pageable) {
-        MyPageUserDto myPageUserInfo = userService.getMyPageInfo(email);
-        Page<PostWithLikedDto> posts = postService.getPostsByUserId(
-            myPageUserInfo.getUserId(), pageable);
 
-        return MyPageResponse.of(myPageUserInfo, PageResponse.of(posts));
+    /**
+     * 마이페이지 유저 정보 조회
+     */
+    public MyPageUserInfoResponse getMyPageUserInfo(String email) {
+        return userService.getMyPageInfo(email);
+    }
+
+    /**
+     * 마이페이지의 마이레시피 조회
+     */
+    public PageResponse<MyRecipeResponse> getMyPageMyRecipe(String email, Pageable pageable) {
+        ItCookUser user = userService.findUserByEmail(email);
+        Page<MyRecipeResponse> posts = postService.getPostsByUserId(user.getId(), pageable);
+        return PageResponse.of(posts);
     }
 
     /**

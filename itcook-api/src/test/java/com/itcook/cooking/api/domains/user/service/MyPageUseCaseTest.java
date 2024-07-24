@@ -31,6 +31,7 @@ import com.itcook.cooking.domain.domains.user.service.dto.MyPageAlertUpdate;
 import com.itcook.cooking.domain.domains.user.service.dto.MyPageUpdateProfile;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
 import com.itcook.cooking.domain.common.events.user.UserLeavedEvent;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -74,8 +75,26 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
     private CacheManager cacheManager;
 
     @Test
-    @DisplayName("마이 페이지를 조회한다.")
-    void getMyPage()  {
+    @DisplayName("마이 페이지 나의 정보 조회한다.")
+    void getMyPageUserInfo() {
+        //given
+        String email = "user1@test.com";
+        ItCookUser user = createUser(email, "잇쿡1");
+
+        //when
+        var response = myPageQueryUseCase.getMyPageUserInfo(email);
+
+        //then
+        assertThat(response.getUserId()).isEqualTo(user.getId());
+        assertThat(response.getEmail()).isEqualTo(user.getEmail());
+        assertThat(response.getNickName()).isEqualTo(user.getNickName());
+        assertThat(response.getBadge()).isEqualTo(user.getBadgeName());
+    }
+
+
+    @Test
+    @DisplayName("마이 페이지의 마이레시피를 조회한다.")
+    void getMyPageMyRecipe()  {
         //given
         String email = "user1@test.com";
 
@@ -85,15 +104,11 @@ class MyPageUseCaseTest extends IntegrationTestSupport {
         createPost(user1.getId(), "책제목3", "소개글3");
 
         //when
-        var myPage = myPageQueryUseCase.getMyPage(email,
+        var myPage = myPageQueryUseCase.getMyPageMyRecipe(email,
             PageRequest.of(0, 10));
 
         //then
-
-        assertThat(myPage.getUserId()).isEqualTo(user1.getId());
-        assertThat(myPage.getNickName()).isEqualTo(user1.getNickName());
-        assertThat(myPage.getBadge()).isEqualTo(UserBadge.GIBBAB_FIRST.getDescription());
-        assertThat(myPage.getPosts().content()).hasSize(3)
+        assertThat(myPage.content()).hasSize(3)
             .extracting("recipeName", "introduction")
             .containsExactly(
                 tuple("책제목3", "소개글3"),

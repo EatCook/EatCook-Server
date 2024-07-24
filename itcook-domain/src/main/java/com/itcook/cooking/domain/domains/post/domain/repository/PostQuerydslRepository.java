@@ -6,7 +6,7 @@ import static com.itcook.cooking.domain.domains.user.domain.entity.QItCookUser.i
 
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.PostWithLikedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.SearchPostDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -28,10 +28,10 @@ public class PostQuerydslRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<PostWithLikedDto> findPostsWithLiked(Long userId, Pageable pageable) {
-        List<PostWithLikedDto> posts = jpaQueryFactory.select(
+    public Page<MyRecipeResponse> findPostsWithLiked(Long userId, Pageable pageable) {
+        List<MyRecipeResponse> posts = jpaQueryFactory.select(
                 Projections.constructor(
-                    PostWithLikedDto.class,
+                    MyRecipeResponse.class,
                     post.id,
                     post.postImagePath,
                     post.recipeName,

@@ -7,6 +7,7 @@ import com.itcook.cooking.domain.common.events.Events;
 import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.AddSignupDomainResponse;
+import com.itcook.cooking.domain.domains.user.domain.entity.dto.MyPageProfileImageResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.domain.enums.EventAlertType;
@@ -38,6 +39,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Entity
 @Getter
@@ -151,7 +153,7 @@ public class ItCookUser extends BaseTimeEntity {
         this.lifeType = lifeType;
         addUserCookingThemes(cookingTypes);
         ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(fileExtension, this);
-
+        profile = imageUrlDto.getKey();
         return AddSignupDomainResponse.of(imageUrlDto.getUrl());
     }
 
@@ -231,6 +233,13 @@ public class ItCookUser extends BaseTimeEntity {
         LifeType lifeType
     ) {
         this.lifeType = lifeType;
+    }
+
+    public MyPageProfileImageResponse changeProfileImage(String fileExtension,
+        UserImageRegisterService userImageRegisterService) {
+        ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(fileExtension, this);
+        profile = imageUrlDto.getKey();
+        return MyPageProfileImageResponse.from(imageUrlDto.getUrl());
     }
 
     public void addUserCookingThemes(List<CookingType> cookingTypes) {
