@@ -16,7 +16,7 @@ public enum LifeType {
 
     public static LifeType getByName(String lifeTypeName) {
         for (LifeType lifeType : LifeType.values()) {
-            if (lifeTypeName.equals(lifeTypeName)) {
+            if (lifeTypeName.equals(lifeType.name())) {
                 return lifeType;
             }
         }
