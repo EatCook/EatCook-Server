@@ -31,7 +31,7 @@ class LifeTypeTest {
         //given
 
         //when
-        LifeType lifeType = LifeType.getByName(lifeTypeString);
+        LifeType lifeType = LifeType.getByLifeType(lifeTypeString);
 
         //then
         assertThat(lifeType).isEqualTo(expected)
