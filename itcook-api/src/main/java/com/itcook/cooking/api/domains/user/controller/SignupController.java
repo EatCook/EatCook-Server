@@ -64,7 +64,7 @@ public class SignupController {
     public ResponseEntity<ApiResponse<UserResponse>> signup(
         @RequestBody @Valid SignupRequest signupRequest
     ) {
-        UserResponse userResponse = signupUseCase.signup(signupRequest);
+        UserResponse userResponse = signupUseCase.signup(signupRequest.toServiceDto());
         return ResponseEntity.ok(ApiResponse.OK(userResponse));
     }
 

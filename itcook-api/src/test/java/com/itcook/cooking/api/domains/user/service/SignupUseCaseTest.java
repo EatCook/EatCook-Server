@@ -132,13 +132,13 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
             .build();
 
         //when
-        UserResponse response = signupUseCase.signup(signupRequest);
+        UserResponse response = signupUseCase.signup(signupRequest.toServiceDto());
 
         //then
         ItCookUser savedUser = userRepository.findByEmail(signupRequest.getEmail()).get();
         assertThat(savedUser.getId()).isEqualTo(response.getId());
         assertThat(savedUser.getEmail()).isEqualTo(signupRequest.getEmail());
-        assertThat(savedUser.getPassword()).isNotEqualTo(signupRequest.getPassword());
+        assertThat(passwordEncoder.matches(signupRequest.getPassword(), savedUser.getPassword())).isTrue();
 
     }
 
@@ -152,7 +152,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
             .build();
 
         //when
-        assertThatThrownBy(() -> signupUseCase.signup(signupRequest))
+        assertThatThrownBy(() -> signupUseCase.signup(signupRequest.toServiceDto()))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("유효한 이메일 형식이 아닙니다.")
             ;

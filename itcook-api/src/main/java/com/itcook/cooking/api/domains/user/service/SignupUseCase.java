@@ -4,6 +4,7 @@ import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.CheckNickNameServiceDto;
+import com.itcook.cooking.api.domains.user.service.dto.SignupServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.VerifyEmailServiceDto;
 import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
@@ -20,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SignupUseCase {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private final AuthCodeRedisService authCodeRedisService;
 
 
@@ -32,9 +32,8 @@ public class SignupUseCase {
 
     }
 
-    public UserResponse signup(SignupRequest signupRequest) {
-        ItCookUser user = userService.signup(signupRequest.getEmail(),
-            passwordEncoder.encode(signupRequest.getPassword()));
+    public UserResponse signup(SignupServiceDto signupServiceDto) {
+        ItCookUser user = userService.signup(signupServiceDto.toEntity());
         return UserResponse.of(user);
     }
 
