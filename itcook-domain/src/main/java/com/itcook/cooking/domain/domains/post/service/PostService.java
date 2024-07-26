@@ -78,22 +78,25 @@ public class PostService {
         return postUpdateData;
     }
 
+    @Transactional
     public void deletePost(Long postId) {
-        Post postEntity = postRepository.findById(postId).orElse(null);
-
-        if (postEntity == null) {
-            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
-        }
+        Post postEntity = postRepository.findById(postId)
+                .orElseThrow(() -> new ApiException(PostErrorCode.POST_NOT_EXIST));
+        PostFlag.checkDisablePostFlag(postEntity.getPostFlag());
 
         postEntity.deletePost();
     }
 
-    public Page<HomeInterestDto> fetchFindPostsWithLikedAndArchiveDtoByCookingTheme(CookingType cookingTheme, Long userId, Pageable pageable) {
-        return postAdaptor.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId, pageable);
+    public Page<HomeInterestDto> fetchFindPostsWithLikedAndArchiveDtoByCookingTheme(
+            CookingType cookingTheme, Long userId, Pageable pageable) {
+        return postAdaptor.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId,
+                pageable);
     }
 
-    public Page<HomeSpecialDto> fetchFindPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(LifeType lifeType, Long userId, Pageable pageable) {
-        return postAdaptor.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType, userId, pageable);
+    public Page<HomeSpecialDto> fetchFindPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(
+            LifeType lifeType, Long userId, Pageable pageable) {
+        return postAdaptor.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType,
+                userId, pageable);
     }
 
 //    public List<Post> searchByRecipeNameOrIngredients(

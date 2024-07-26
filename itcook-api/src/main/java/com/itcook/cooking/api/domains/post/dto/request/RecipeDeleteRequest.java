@@ -15,10 +15,6 @@ import javax.validation.constraints.NotNull;
 @Schema(name = "recipe delete request")
 public class RecipeDeleteRequest {
 
-    @Schema(description = "email", example = "user@test.com")
-    @NotNull(message = "이메일을 입력해 주세요")
-    private String email;
-
     @Schema(description = "postId", example = "1")
     @NotNull(message = "게시글 번호가 없습니다.")
     private Long postId;

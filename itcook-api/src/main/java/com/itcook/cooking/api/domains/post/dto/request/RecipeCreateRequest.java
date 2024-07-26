@@ -7,16 +7,15 @@ import com.itcook.cooking.domain.domains.post.domain.entity.RecipeProcess;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -24,10 +23,6 @@ import java.util.stream.Collectors;
 @Builder
 @Schema(name = "recipe create request")
 public class RecipeCreateRequest {
-
-    @Schema(description = "email", example = "user@test.com")
-    @NotBlank(message = "이메일을 입력해 주세요")
-    private String email;
 
     @Schema(description = "제목", example = "김밥 만들기")
     @NotBlank(message = "제목을 입력해주세요")
