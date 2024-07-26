@@ -81,10 +81,11 @@ public class RecipeController {
     @Operation(summary = "recipe 삭제 요청", description = "recipe 삭제 요청 설명")
     @PostMapping("/delete")
     public ResponseEntity<ApiResponse<String>> deleteRecipe(
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody RecipeDeleteRequest recipeDeleteRequest
     ) {
 
-        recipeUseCase.deleteRecipe(recipeDeleteRequest);
+        recipeUseCase.deleteRecipe(authenticationUser.getUsername(), recipeDeleteRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.OK("삭제 되었습니다."));

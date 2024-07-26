@@ -54,13 +54,17 @@ public class RecipeUseCase {
         Post post = recipeCreateRequest.toPostDomain(itCookUser.getId());
         Post savePostData = postService.createPost(post);
 
-        List<RecipeProcess> recipeProcesses = recipeCreateRequest.toRecipeProcessDomain(savePostData);
-        List<RecipeProcess> saveRecipeProcess = recipeProcessService.createRecipeProcess(recipeProcesses);
+        List<RecipeProcess> recipeProcesses = recipeCreateRequest.toRecipeProcessDomain(
+                savePostData);
+        List<RecipeProcess> saveRecipeProcess = recipeProcessService.createRecipeProcess(
+                recipeProcesses);
 
         List<PostCookingTheme> postCookingTheme = recipeCreateRequest.toPostCookingTheme(post);
         postCookingThemeService.createPostCookingTheme(postCookingTheme);
 
-        RecipeImageUrlDto recipeImageUrlDto = getRecipeImageUrls(recipeCreateRequest.getMainFileExtension(), recipeCreateRequest.getRecipeProcess(), itCookUser, savePostData, saveRecipeProcess);
+        RecipeImageUrlDto recipeImageUrlDto = getRecipeImageUrls(
+                recipeCreateRequest.getMainFileExtension(), recipeCreateRequest.getRecipeProcess(),
+                itCookUser, savePostData, saveRecipeProcess);
 
         //Post, RecipeProcess 이미지 경로 업데이트
         updateRecipeImagePath(savePostData, recipeImageUrlDto, saveRecipeProcess);
@@ -68,13 +72,18 @@ public class RecipeUseCase {
         return RecipeCreateResponse.builder()
                 .postId(post.getId())
                 .mainPresignedUrl(recipeImageUrlDto.getMainImageUrl().getUrl())
-                .recipeProcessPresignedUrl(recipeImageUrlDto.getRecipeProcessImageUrl().stream().map(ImageUrlDto::getUrl).toList())
+                .recipeProcessPresignedUrl(recipeImageUrlDto.getRecipeProcessImageUrl().stream()
+                        .map(ImageUrlDto::getUrl).toList())
                 .build();
     }
 
-    private RecipeImageUrlDto getRecipeImageUrls(String mainImageFileExtension, List<RecipeProcessDto> recipeProcessDtos, ItCookUser itCookUser, Post savePostData, List<RecipeProcess> saveRecipeProcess1) {
-        ImageUrlDto mainUrl = getMainImagePresignedUrl(mainImageFileExtension, itCookUser, savePostData);
-        List<ImageUrlDto> recipeProcessUrl = getRecipeProcessPresignedUrl(recipeProcessDtos, itCookUser, savePostData);
+    private RecipeImageUrlDto getRecipeImageUrls(String mainImageFileExtension,
+            List<RecipeProcessDto> recipeProcessDtos, ItCookUser itCookUser, Post savePostData,
+            List<RecipeProcess> saveRecipeProcess1) {
+        ImageUrlDto mainUrl = getMainImagePresignedUrl(mainImageFileExtension, itCookUser,
+                savePostData);
+        List<ImageUrlDto> recipeProcessUrl = getRecipeProcessPresignedUrl(recipeProcessDtos,
+                itCookUser, savePostData);
 
         return RecipeImageUrlDto.builder()
                 .mainImageUrl(mainUrl)
@@ -82,21 +91,27 @@ public class RecipeUseCase {
                 .build();
     }
 
-    private ImageUrlDto getMainImagePresignedUrl(String mainFileExtension, ItCookUser itCookUser, Post savePostData) {
-        return postValidationUseCase.getPostFileExtensionValidation(itCookUser.getId(), savePostData.getId(), mainFileExtension);
+    private ImageUrlDto getMainImagePresignedUrl(String mainFileExtension, ItCookUser itCookUser,
+            Post savePostData) {
+        return postValidationUseCase.getPostFileExtensionValidation(itCookUser.getId(),
+                savePostData.getId(), mainFileExtension);
     }
 
-    private List<ImageUrlDto> getRecipeProcessPresignedUrl(List<RecipeProcessDto> recipeProcessDtos, ItCookUser itCookUser, Post savePostData) {
+    private List<ImageUrlDto> getRecipeProcessPresignedUrl(List<RecipeProcessDto> recipeProcessDtos,
+            ItCookUser itCookUser, Post savePostData) {
         return recipeProcessDtos
                 .parallelStream()
-                .map(recipeProcess -> postValidationUseCase.getRecipeProcessFileExtensionValidation(itCookUser.getId(), savePostData.getId(), recipeProcess))
+                .map(recipeProcess -> postValidationUseCase.getRecipeProcessFileExtensionValidation(
+                        itCookUser.getId(), savePostData.getId(), recipeProcess))
                 .toList();
     }
 
-    private static void updateRecipeImagePath(Post savePostData, RecipeImageUrlDto recipeImageUrlDto, List<RecipeProcess> saveRecipeProcess) {
+    private static void updateRecipeImagePath(Post savePostData,
+            RecipeImageUrlDto recipeImageUrlDto, List<RecipeProcess> saveRecipeProcess) {
         savePostData.updateFileExtension(recipeImageUrlDto.getMainImageUrl().getKey());
         IntStream.range(0, saveRecipeProcess.size())
-                .forEach(i -> saveRecipeProcess.get(i).updateFileExtension(recipeImageUrlDto.getRecipeProcessImageUrl().get(i).getKey()));
+                .forEach(i -> saveRecipeProcess.get(i).updateFileExtension(
+                        recipeImageUrlDto.getRecipeProcessImageUrl().get(i).getKey()));
     }
 
     //read
@@ -126,16 +141,19 @@ public class RecipeUseCase {
         //Archive
         Set<Archive> uniqueArchive = new HashSet<>();
 
-        collectUniquePostCookingThemeAndRecipeProcess(recipeReadDomainDto, uniquePostCookingTheme, uniqueRecipeProcess, uniqueLiked, uniqueArchive);
+        collectUniquePostCookingThemeAndRecipeProcess(recipeReadDomainDto, uniquePostCookingTheme,
+                uniqueRecipeProcess, uniqueLiked, uniqueArchive);
 
         postCookingThemeList = extractCookingTypeNames(uniquePostCookingTheme);
         recipeProcessDtoList = extractRecipeProcess(uniqueRecipeProcess);
 
         boolean followingCheck = isFollowingCheck(findByUserEmail, post);
 
-        boolean likedValidation = postValidationUseCase.getLikedValidation(uniqueLiked.stream().toList(), findByUserEmail.getId());
+        boolean likedValidation = postValidationUseCase.getLikedValidation(
+                uniqueLiked.stream().toList(), findByUserEmail.getId());
 
-        boolean archiveValidation = postValidationUseCase.getArchiveValidation(uniqueArchive.stream().toList(), findByUserEmail.getId());
+        boolean archiveValidation = postValidationUseCase.getArchiveValidation(
+                uniqueArchive.stream().toList(), findByUserEmail.getId());
 
         return RecipeReadResponse.of(
                 getRecipeReadDto(
@@ -167,14 +185,16 @@ public class RecipeUseCase {
         });
     }
 
-    private static List<String> extractCookingTypeNames(Set<PostCookingTheme> uniquePostCookingTheme) {
+    private static List<String> extractCookingTypeNames(
+            Set<PostCookingTheme> uniquePostCookingTheme) {
         return uniquePostCookingTheme.stream()
                 .map(postCookingTheme -> postCookingTheme.getCookingType().getCookingTypeName())
                 .toList();
     }
 
 
-    private static List<RecipeProcessReadDto> extractRecipeProcess(Set<RecipeProcess> uniqueRecipeProcess) {
+    private static List<RecipeProcessReadDto> extractRecipeProcess(
+            Set<RecipeProcess> uniqueRecipeProcess) {
         return uniqueRecipeProcess.stream()
                 .map(recipeProcess -> RecipeProcessReadDto.builder()
                         .stepNum(recipeProcess.getStepNum())
@@ -192,7 +212,8 @@ public class RecipeUseCase {
     private static RecipeReadDto getRecipeReadDto(Post post, ItCookUser itCookUser,
             List<String> postCookingThemeList,
             List<RecipeProcessReadDto> recipeProcessDtoList,
-            boolean followingCheck, List<Liked> findAllLiked, boolean likedValidation, boolean archiveValidation
+            boolean followingCheck, List<Liked> findAllLiked, boolean likedValidation,
+            boolean archiveValidation
     ) {
         return RecipeReadDto.builder()
                 .postId(post.getId())
@@ -223,48 +244,63 @@ public class RecipeUseCase {
     public RecipeUpdateResponse updateRecipe(RecipeUpdateRequest recipeUpdateRequest) {
         ImageUrlDto mainImageUrlDto = null;
         if (getUpdateFileExtensionValidation(recipeUpdateRequest.getMainFileExtension())) {
-            mainImageUrlDto = postValidationUseCase.getPostFileExtensionValidation(recipeUpdateRequest.getUserId(), recipeUpdateRequest.getPostId(), recipeUpdateRequest.getMainFileExtension());
+            mainImageUrlDto = postValidationUseCase.getPostFileExtensionValidation(
+                    recipeUpdateRequest.getUserId(), recipeUpdateRequest.getPostId(),
+                    recipeUpdateRequest.getMainFileExtension());
         }
 
         Post postUpdateData = recipeUpdateRequest.toPostDomain();
         Post postEntityData = postService.updatePost(postUpdateData, mainImageUrlDto);
 
-        List<RecipeProcess> recipeProcessesData = recipeUpdateRequest.toRecipeProcessDomain(postEntityData);
+        List<RecipeProcess> recipeProcessesData = recipeUpdateRequest.toRecipeProcessDomain(
+                postEntityData);
 
-        List<ImageUrlDto> recipeProcessImageUrlDto = updateRecipeProcessFileExtensionsValidation(recipeUpdateRequest, recipeProcessesData);
+        List<ImageUrlDto> recipeProcessImageUrlDto = updateRecipeProcessFileExtensionsValidation(
+                recipeUpdateRequest, recipeProcessesData);
         recipeProcessService.updateRecipeProcess(recipeProcessesData, postEntityData);
 
-        List<PostCookingTheme> postCookingThemeData = recipeUpdateRequest.toPostCookingThemeDomain(postEntityData);
+        List<PostCookingTheme> postCookingThemeData = recipeUpdateRequest.toPostCookingThemeDomain(
+                postEntityData);
         postCookingThemeService.updatePostCookingTheme(postCookingThemeData, postEntityData);
 
         String mainPresignedUrl = mainImageNullCheckValidation(mainImageUrlDto);
 
-        List<String> recipeProcessPresignedUrls = recipeProcessImageNullCheckValiation(recipeProcessImageUrlDto);
+        List<String> recipeProcessPresignedUrls = recipeProcessImageNullCheckValiation(
+                recipeProcessImageUrlDto);
 
         return getRecipeUpdateResponse(mainPresignedUrl, recipeProcessPresignedUrls);
     }
 
-    private List<ImageUrlDto> updateRecipeProcessFileExtensionsValidation(RecipeUpdateRequest recipeUpdateRequest, List<RecipeProcess> recipeProcessesData) {
+    private List<ImageUrlDto> updateRecipeProcessFileExtensionsValidation(
+            RecipeUpdateRequest recipeUpdateRequest, List<RecipeProcess> recipeProcessesData) {
         return recipeUpdateRequest.getRecipeProcess().stream()
-                .filter(recipeProcess -> getUpdateFileExtensionValidation(recipeProcess.getFileExtension()))
+                .filter(recipeProcess -> getUpdateFileExtensionValidation(
+                        recipeProcess.getFileExtension()))
                 .map(recipeProcess -> {
-                    ImageUrlDto recipeProcessFileImageUrlDto = postValidationUseCase.getRecipeProcessFileExtensionValidation(recipeUpdateRequest.getUserId(), recipeUpdateRequest.getPostId(), recipeProcess);
+                    ImageUrlDto recipeProcessFileImageUrlDto = postValidationUseCase.getRecipeProcessFileExtensionValidation(
+                            recipeUpdateRequest.getUserId(), recipeUpdateRequest.getPostId(),
+                            recipeProcess);
                     recipeProcessesData.stream()
-                            .filter(recipeProcessesDatum -> recipeProcessesDatum.getStepNum() == recipeProcess.getStepNum())
-                            .forEach(recipeProcessesDatum -> recipeProcessesDatum.updateFileExtension(recipeProcessFileImageUrlDto.getKey()));
+                            .filter(recipeProcessesDatum -> recipeProcessesDatum.getStepNum()
+                                    == recipeProcess.getStepNum())
+                            .forEach(
+                                    recipeProcessesDatum -> recipeProcessesDatum.updateFileExtension(
+                                            recipeProcessFileImageUrlDto.getKey()));
                     return recipeProcessFileImageUrlDto;
                 })
                 .toList();
     }
 
-    private static List<String> recipeProcessImageNullCheckValiation(List<ImageUrlDto> recipeProcessImageUrlDto) {
+    private static List<String> recipeProcessImageNullCheckValiation(
+            List<ImageUrlDto> recipeProcessImageUrlDto) {
         return recipeProcessImageUrlDto.stream()
                 .map(ImageUrlDto::getUrl)
                 .toList();
     }
 
 
-    private static RecipeUpdateResponse getRecipeUpdateResponse(String mainPresignedUrl, List<String> recipeProcessPresignedUrls) {
+    private static RecipeUpdateResponse getRecipeUpdateResponse(String mainPresignedUrl,
+            List<String> recipeProcessPresignedUrls) {
         return RecipeUpdateResponse.builder()
                 .mainPresignedUrl(mainPresignedUrl)
                 .recipeProcessPresignedUrl(recipeProcessPresignedUrls)
@@ -282,8 +318,11 @@ public class RecipeUseCase {
     }
 
     @Transactional
-    public void deleteRecipe(RecipeDeleteRequest recipeDeleteRequest) {
-        userService.findUserByEmail(recipeDeleteRequest.getEmail());
+    public void deleteRecipe(
+            String username,
+            RecipeDeleteRequest recipeDeleteRequest
+    ) {
+        userService.findUserByEmail(username);
 
         postService.deletePost(recipeDeleteRequest.getPostId());
     }
