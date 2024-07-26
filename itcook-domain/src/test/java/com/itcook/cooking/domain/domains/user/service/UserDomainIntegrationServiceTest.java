@@ -285,16 +285,21 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //given
         String email = "user@test.com";
         String password = "cook1234";
+        ItCookUser itCookUser = ItCookUser.builder()
+            .email(email)
+            .password(password)
+            .build();
 
         //when
-        ItCookUser user = userService.signup(email, password);
+        userService.signup(itCookUser);
 
         //then
         ItCookUser findUser = userRepository.findByEmail(email).get();
         assertThat(findUser)
-            .extracting("email", "password", "providerType")
-            .containsExactlyInAnyOrder(email, password, ProviderType.COMMON)
+            .extracting("email", "providerType")
+            .containsExactlyInAnyOrder(email, ProviderType.COMMON)
         ;
+        assertThat(passwordEncoder.matches("cook1234", findUser.getPassword())).isTrue();
     }
 
     @Test
@@ -303,11 +308,14 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         //given
         String email = null;
         String password = "cook1234";
-
+        ItCookUser itCookUser = ItCookUser.builder()
+            .email(email)
+            .password(password)
+            .build();
         //when
 
         //then
-        assertThatThrownBy(() -> userService.signup(email, password))
+        assertThatThrownBy(() -> userService.signup(itCookUser))
             .isInstanceOf(IllegalArgumentException.class)
         ;
     }
@@ -316,9 +324,13 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
     void signupDuplicateEmail() {
         //given
         createUser("user@test.com","cook12345","잇쿡");
+        ItCookUser itCookUser = ItCookUser.builder()
+            .email("user@test.com")
+            .password("cook12345")
+            .build();
 
         //when //then
-        assertThatThrownBy(() -> userService.signup("user@test.com", "cook1234"))
+        assertThatThrownBy(() -> userService.signup(itCookUser))
             .isInstanceOf(ApiException.class)
             .hasMessage(UserErrorCode.ALREADY_EXISTS_USER.getDescription())
         ;

@@ -59,7 +59,8 @@ public class UserService {
         ItCookUser user = userAdaptor.queryUserByEmail(email);
         String temporaryPassword = RandomCodeUtils.generateTemporaryPassword();
         log.info("임시 비밀번호 : {}", temporaryPassword);
-        user.issueTemporaryPassword(passwordEncoder.encode(temporaryPassword), temporaryPassword, email);
+        user.issueTemporaryPassword(passwordEncoder.encode(temporaryPassword), temporaryPassword,
+            email);
         return temporaryPassword;
     }
 
@@ -83,8 +84,10 @@ public class UserService {
     }
 
     @Transactional
-    public ItCookUser signup(String email, String password) {
-        ItCookUser user = ItCookUser.signup(SignupDto.of(email, password, ProviderType.COMMON),
+    public ItCookUser signup(ItCookUser itCookUser) {
+        ItCookUser user = ItCookUser.signup(
+            SignupDto.of(itCookUser.getEmail(), passwordEncoder.encode(itCookUser.getPassword()),
+                ProviderType.COMMON),
             userValidator);
         return userAdaptor.saveUser(user);
     }

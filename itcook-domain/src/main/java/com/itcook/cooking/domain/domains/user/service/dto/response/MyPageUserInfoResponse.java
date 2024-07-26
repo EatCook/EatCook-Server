@@ -13,6 +13,7 @@ public class MyPageUserInfoResponse {
 
     private Long userId;
     private String email;
+    private String userImagePath;
     private String nickName;
     private String badge;
     private Long followerCounts;
@@ -20,7 +21,7 @@ public class MyPageUserInfoResponse {
     private ProviderType providerType;
 
     @Builder
-    private MyPageUserInfoResponse(Long userId, String email,String nickName, String badge, Long followerCounts,
+    private MyPageUserInfoResponse(Long userId, String email,String userImagePath,String nickName, String badge, Long followerCounts,
         Long followingCounts, ProviderType providerType) {
         this.userId = userId;
         this.email = email;
@@ -29,12 +30,14 @@ public class MyPageUserInfoResponse {
         this.followerCounts = followerCounts;
         this.followingCounts = followingCounts;
         this.providerType = providerType;
+        this.userImagePath = userImagePath;
     }
 
     public static MyPageUserInfoResponse of(ItCookUser itCookUser, Long followerCounts) {
         return MyPageUserInfoResponse.builder()
             .userId(itCookUser.getId())
             .email(itCookUser.getEmail())
+            .userImagePath(itCookUser.getProfile())
             .nickName(itCookUser.getNickName())
             .badge(itCookUser.getBadgeName())
             .providerType(itCookUser.getProviderType())
