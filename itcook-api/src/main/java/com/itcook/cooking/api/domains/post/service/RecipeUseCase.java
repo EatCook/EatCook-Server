@@ -11,25 +11,25 @@ import com.itcook.cooking.api.domains.post.dto.response.RecipeCreateResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeReadResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeUpdateResponse;
 import com.itcook.cooking.domain.common.annotation.UseCase;
+import com.itcook.cooking.domain.domains.archive.domain.entity.Archive;
+import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
 import com.itcook.cooking.domain.domains.like.domain.entity.Liked;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.domain.entity.RecipeProcess;
-import com.itcook.cooking.domain.domains.like.service.LikedService;
 import com.itcook.cooking.domain.domains.post.service.PostCookingThemeService;
 import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.post.service.RecipeProcessService;
-import com.itcook.cooking.domain.domains.archive.domain.entity.Archive;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
 import com.itcook.cooking.domain.domains.user.service.UserService;
-import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.IntStream;
 
 @UseCase
 @Transactional(readOnly = true)
@@ -41,16 +41,15 @@ public class RecipeUseCase {
     private final PostService postService;
     private final RecipeProcessService recipeProcessService;
     private final PostCookingThemeService postCookingThemeService;
-    private final LikedService likedService;
-    private final ArchiveService archiveService;
-
     private final PostValidationUseCase postValidationUseCase;
 
     //create
     @Transactional
-    public RecipeCreateResponse createRecipe(RecipeCreateRequest recipeCreateRequest) {
+    public RecipeCreateResponse createRecipe(
+            String username,
+            RecipeCreateRequest recipeCreateRequest) {
         //유저 검증
-        ItCookUser itCookUser = userService.findUserByEmail(recipeCreateRequest.getEmail());
+        ItCookUser itCookUser = userService.findUserByEmail(username);
         //Post, RecipeProcess, PostCookingTheme 저장
         Post post = recipeCreateRequest.toPostDomain(itCookUser.getId());
         Post savePostData = postService.createPost(post);
@@ -67,6 +66,7 @@ public class RecipeUseCase {
         updateRecipeImagePath(savePostData, recipeImageUrlDto, saveRecipeProcess);
 
         return RecipeCreateResponse.builder()
+                .postId(post.getId())
                 .mainPresignedUrl(recipeImageUrlDto.getMainImageUrl().getUrl())
                 .recipeProcessPresignedUrl(recipeImageUrlDto.getRecipeProcessImageUrl().stream().map(ImageUrlDto::getUrl).toList())
                 .build();
@@ -190,9 +190,9 @@ public class RecipeUseCase {
     }
 
     private static RecipeReadDto getRecipeReadDto(Post post, ItCookUser itCookUser,
-                                                  List<String> postCookingThemeList,
-                                                  List<RecipeProcessReadDto> recipeProcessDtoList,
-                                                  boolean followingCheck, List<Liked> findAllLiked, boolean likedValidation, boolean archiveValidation
+            List<String> postCookingThemeList,
+            List<RecipeProcessReadDto> recipeProcessDtoList,
+            boolean followingCheck, List<Liked> findAllLiked, boolean likedValidation, boolean archiveValidation
     ) {
         return RecipeReadDto.builder()
                 .postId(post.getId())
