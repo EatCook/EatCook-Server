@@ -11,6 +11,8 @@ import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterest
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
 import java.util.List;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import lombok.RequiredArgsConstructor;
@@ -97,6 +99,10 @@ public class PostService {
             LifeType lifeType, Long userId, Pageable pageable) {
         return postAdaptor.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType,
                 userId, pageable);
+    }
+
+    public Page<OtherPagePostInfoResponse> getOtherPageInfo(ItCookUser user, Long otherUserId, Pageable pageable) {
+        return postAdaptor.getOtherPagePostInfo(otherUserId, pageable);
     }
 
 //    public List<Post> searchByRecipeNameOrIngredients(
