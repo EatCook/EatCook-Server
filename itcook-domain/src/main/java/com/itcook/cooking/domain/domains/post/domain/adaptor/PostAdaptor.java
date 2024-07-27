@@ -12,6 +12,7 @@ import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostRepository;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
+import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,12 +41,18 @@ public class PostAdaptor {
     }
 
     public Page<HomeInterestDto> findPostsWithLikedAndArchiveDtoByCookingTheme(
-        CookingType cookingTheme, Long userId, Pageable pageable) {
-        return homePostQuerydslRepository.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId, pageable);
+            CookingType cookingTheme, Long userId, Pageable pageable) {
+        return homePostQuerydslRepository.findPostsWithLikedAndArchiveDtoByCookingTheme(
+                cookingTheme, userId, pageable);
     }
 
-    public Page<HomeSpecialDto> findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(LifeType lifeType, Long userId, Pageable pageable) {
-        return homePostQuerydslRepository.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType, userId, pageable);
+    public Page<HomeSpecialDto> findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(
+            LifeType lifeType, Long userId, Pageable pageable) {
+        return homePostQuerydslRepository.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(
+                lifeType, userId, pageable);
     }
 
+    public Page<OtherPagePostInfoResponse> getOtherPagePostInfo(Long userId, Pageable pageable) {
+        return postQuerydslRepository.getOtherPagePostInfo(userId, pageable);
+    }
 }
