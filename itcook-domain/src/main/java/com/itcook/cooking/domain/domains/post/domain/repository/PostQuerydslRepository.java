@@ -7,9 +7,7 @@ import static com.itcook.cooking.domain.domains.post.domain.entity.QPostCookingT
 import static com.itcook.cooking.domain.domains.user.domain.entity.QItCookUser.itCookUser;
 
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
-import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.SearchPostDto;
 import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
@@ -201,7 +199,7 @@ public class PostQuerydslRepository {
     }
 
     public Page<OtherPagePostInfoResponse> getOtherPagePostInfo(
-            Long userId, Pageable pageable
+            Long userId, Long otherUserId, Pageable pageable
     ) {
         Set<Long> likedPostIds = findLikedByUserId(userId);
 
@@ -224,6 +222,7 @@ public class PostQuerydslRepository {
                 .join(postCookingTheme).on(post.id.eq(postCookingTheme.post.id))
                 .leftJoin(liked).on(post.id.eq(liked.postId))
                 .where(
+                        itCookUser.id.eq(otherUserId),
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 )
                 .groupBy(post.id)
@@ -242,6 +241,7 @@ public class PostQuerydslRepository {
                 .join(itCookUser).on(itCookUser.id.eq(post.userId))
                 .join(postCookingTheme).on(post.id.eq(postCookingTheme.post.id))
                 .where(
+                        itCookUser.id.eq(userId),
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 );
 

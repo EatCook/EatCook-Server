@@ -2,7 +2,6 @@ package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserService;
@@ -23,11 +22,13 @@ public class OtherPageUseCase {
         return userService.getOtherPageInfo(email, otherUserId);
     }
 
-    public PageResponse<OtherPagePostInfoResponse> getOtherPagePostInfo(String email, Long otherUserId,
-            Pageable pageable) {
+    public PageResponse<OtherPagePostInfoResponse> getOtherPagePostInfo(
+            String email, Long otherUserId, Pageable pageable
+    ) {
         ItCookUser authUser = userService.findUserByEmail(email);
-        Page<OtherPagePostInfoResponse> otherPageInfo = postService.getOtherPageInfo(
-                authUser, otherUserId, pageable);
+        ItCookUser otherUser = userService.fetchFindByUserId(otherUserId);
+        Page<OtherPagePostInfoResponse> otherPageInfo = postService
+                .getOtherPageInfo(authUser, otherUser.getId(), pageable);
         return PageResponse.of(otherPageInfo);
     }
 }
