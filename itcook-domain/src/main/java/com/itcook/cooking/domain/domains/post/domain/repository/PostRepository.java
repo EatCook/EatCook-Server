@@ -14,10 +14,9 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p, u " +
-        "FROM Post p JOIN ItCookUser u ON p.userId = u.id " +
-        "WHERE NOT u.id = :userId AND p.postFlag = :postFlag")
-    Page<Object[]> findAllByUserIdNotAndPostFlag(
-        @Param("userId") Long userId,
+            "FROM Post p JOIN ItCookUser u ON p.userId = u.id " +
+            "WHERE p.postFlag = :postFlag")
+    Page<Object[]> findAllByPostFlag(
         @Param("postFlag") PostFlag postFlag,
         Pageable pageable);
 

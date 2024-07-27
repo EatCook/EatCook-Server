@@ -30,8 +30,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostAdaptor postAdaptor;
 
-    public Page<Object[]> fetchFindAllByCookTalkFeedV2(Long userId, Pageable pageable) {
-        return postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
+    public Page<Object[]> fetchFindAllByCookTalkFeedV2(Pageable pageable) {
+        return postRepository.findAllByPostFlag(PostFlag.ACTIVATE, pageable);
     }
 
     public Page<Object[]> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
