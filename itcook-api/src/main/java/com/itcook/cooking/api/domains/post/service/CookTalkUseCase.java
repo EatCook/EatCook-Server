@@ -33,7 +33,7 @@ public class CookTalkUseCase {
     public CookTalkResponse getCookTalkFeed(String email, Pageable pageable) {
         ItCookUser findByUserEmail = userService.findUserByEmail(email);
 
-        Page<Object[]> findAllPostAndUserData = postService.fetchFindAllByCookTalkFeedV2(findByUserEmail.getId(), pageable);
+        Page<Object[]> findAllPostAndUserData = postService.fetchFindAllByCookTalkFeedV2(pageable);
 
         return getCookTalkResponse(findAllPostAndUserData, findByUserEmail);
     }
