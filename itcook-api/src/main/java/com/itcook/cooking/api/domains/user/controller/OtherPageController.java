@@ -29,7 +29,7 @@ public class OtherPageController {
 
     @Operation(summary = "특정 유저 정보 조회", description = "특정 유저의 정보를 조회한다.")
     @GetMapping("/v1/other-page/user-info/{otherUserId}")
-    public ResponseEntity<ApiResponse> getOtherPageUserInfo(
+    public ResponseEntity<ApiResponse<OtherPageUserInfoResponse>> getOtherPageUserInfo(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @PathVariable final Long otherUserId
     ) {
