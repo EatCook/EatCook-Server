@@ -52,7 +52,9 @@ public class PostAdaptor {
                 lifeType, userId, pageable);
     }
 
-    public Page<OtherPagePostInfoResponse> getOtherPagePostInfo(Long userId, Pageable pageable) {
-        return postQuerydslRepository.getOtherPagePostInfo(userId, pageable);
+    public Page<OtherPagePostInfoResponse> getOtherPagePostInfo(
+            Long authUserId, Long otherUserId, Pageable pageable
+    ) {
+        return postQuerydslRepository.getOtherPagePostInfo(authUserId, otherUserId, pageable);
     }
 }

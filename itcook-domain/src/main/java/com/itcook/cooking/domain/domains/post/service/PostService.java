@@ -101,8 +101,10 @@ public class PostService {
                 userId, pageable);
     }
 
-    public Page<OtherPagePostInfoResponse> getOtherPageInfo(ItCookUser user, Long otherUserId, Pageable pageable) {
-        return postAdaptor.getOtherPagePostInfo(otherUserId, pageable);
+    public Page<OtherPagePostInfoResponse> getOtherPageInfo(
+            ItCookUser user, Long otherUserId, Pageable pageable
+    ) {
+        return postAdaptor.getOtherPagePostInfo(user.getId(), otherUserId, pageable);
     }
 
 //    public List<Post> searchByRecipeNameOrIngredients(
