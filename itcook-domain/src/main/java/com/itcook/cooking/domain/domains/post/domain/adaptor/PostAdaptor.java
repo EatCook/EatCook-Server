@@ -5,6 +5,7 @@ import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.HomePostQuerydslRepository;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class PostAdaptor {
@@ -27,8 +30,12 @@ public class PostAdaptor {
     private final PostQuerydslRepository postQuerydslRepository;
     private final HomePostQuerydslRepository homePostQuerydslRepository;
 
-    public Page<CookTalkFeedDto> findCookTalkPostsWithLiked(Long authUserId, Pageable pageable) {
+    public Page<CookTalkFeedDto> findCookTalkFeeds(Long authUserId, Pageable pageable) {
         return postQuerydslRepository.findCookTalkPostsWithLiked(authUserId, pageable);
+    }
+
+    public Page<CookTalkFollowDto> findCookTalkFollows(Long authUserId, List<Long> userId, Pageable pageable) {
+        return postQuerydslRepository.findFollowPostWithLiked(authUserId, userId, pageable);
     }
 
     public Post queryPostByIdAndPostFlag(Long postId) {
@@ -62,5 +69,4 @@ public class PostAdaptor {
     ) {
         return postQuerydslRepository.getOtherPagePostInfo(authUserId, otherUserId, pageable);
     }
-
 }

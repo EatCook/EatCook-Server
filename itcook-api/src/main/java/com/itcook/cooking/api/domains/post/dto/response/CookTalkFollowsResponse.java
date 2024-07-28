@@ -1,7 +1,7 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Schema(name = "cooktalk feeds response")
-public class CookTalkFeedsResponse {
+public class CookTalkFollowsResponse {
 
     private Long writerUserId;
     private String writerUserEmail;
@@ -33,12 +33,12 @@ public class CookTalkFeedsResponse {
     private Boolean followCheck;
     private LocalDateTime updatedAt;
 
-    public static Page<CookTalkFeedsResponse> fromCookTalkFeedDto(
-            Page<CookTalkFeedDto> cookTalkFeeds,
+    public static Page<CookTalkFollowsResponse> fromCookTalkFeedDto(
+            Page<CookTalkFollowDto> cookTalkFeeds,
             ItCookUser findByUserEmail
     ) {
-        List<CookTalkFeedsResponse> cookTalkFeedsResponseList = cookTalkFeeds
-                .map(cf -> CookTalkFeedsResponse.builder()
+        List<CookTalkFollowsResponse> cookTalkFeedsResponseList = cookTalkFeeds
+                .map(cf -> CookTalkFollowsResponse.builder()
                         .writerUserId(cf.getWriterUserId())
                         .writerUserEmail(cf.getWriterUserEmail())
                         .postId(cf.getPostId())

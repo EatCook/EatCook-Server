@@ -3,6 +3,7 @@ package com.itcook.cooking.domain.domains.post.domain.repository;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.SearchPostDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
@@ -295,6 +296,55 @@ public class PostQuerydslRepository {
                 );
 
         return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchOne);
+    }
+
+    /**
+     * follow한 게시글 조회
+     */
+    public Page<CookTalkFollowDto> findFollowPostWithLiked(Long authUserId, List<Long> userId, Pageable pageable) {
+        Set<Long> likedByUserId = findLikedByUserId(authUserId);
+        List<CookTalkFollowDto> posts = jpaQueryFactory.select(
+                        Projections.constructor(
+                                CookTalkFollowDto.class,
+                                itCookUser.id,
+                                itCookUser.email,
+                                post.id,
+                                post.postImagePath,
+                                post.recipeName,
+                                post.introduction,
+                                post.lastModifiedAt,
+                                liked.postId.count()
+                        )
+                )
+                .from(post)
+                .join(itCookUser).on(itCookUser.id.eq(post.userId))
+                .leftJoin(liked).on(post.id.eq(liked.postId))
+                .where(
+                        itCookUser.id.in(userId),
+                        post.postFlag.eq(PostFlag.ACTIVATE)
+                )
+                .groupBy(post.id)
+                .orderBy(post.lastModifiedAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        for (CookTalkFollowDto postDto : posts) {
+            postDto.setLikedCheck(likedByUserId.contains(postDto.getPostId()));
+        }
+
+        JPAQuery<Long> countQuery = jpaQueryFactory.select(
+                        post.count()
+                )
+                .from(post)
+                .leftJoin(liked).on(post.id.eq(liked.postId))
+                .where(
+                        itCookUser.id.in(userId),
+                        post.postFlag.eq(PostFlag.ACTIVATE)
+                );
+
+        return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchOne);
+
     }
 
     private Set<Long> findLikedByUserId(Long userId) {

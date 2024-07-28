@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.post.controller;
 
 import com.itcook.cooking.api.domains.post.dto.response.CookTalkFeedsResponse;
+import com.itcook.cooking.api.domains.post.dto.response.CookTalkFollowsResponse;
 import com.itcook.cooking.api.domains.post.service.CookTalkUseCase;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
@@ -12,15 +13,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -45,15 +43,16 @@ public class CookTalkController {
                 .body(ApiResponse.OK(response));
     }
 
-    @Operation(summary = "follower 요청", description = "follower 요청 설명")
-    @GetMapping("/following")
-    public ResponseEntity<ApiResponse<CookTalkFeedsResponse>> retrieveAllFollowing(
+    @Operation(summary = "쿡톡 팔로우 페이징 조회", description = "쿡톡 팔로우한 게시글을 수정일 최신 기준으로 페이징 조회합니다.")
+    @GetMapping("/v1/posts/cooktalks/follows")
+    public ResponseEntity<ApiResponse<PageResponse<CookTalkFollowsResponse>>> retrieveAllFollowing(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @RequestParam(value = "pageNum", defaultValue = "0") int pageNum
+            @ParameterObject @PageableDefault Pageable pageable
     ) {
-        Pageable pageable = PageRequest.of(pageNum, 20, Sort.by(Sort.Direction.DESC, "lastModifiedAt"));
-        cooktalkUseCase.getFollowingTalk(authenticationUser.getUsername(), pageable);
-        return ResponseEntity.ok(ApiResponse.OK(null));
+        PageResponse<CookTalkFollowsResponse> response = cooktalkUseCase.getCookTalkFollows(
+                authenticationUser.getUsername(), pageable);
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(ApiResponse.OK(response));
     }
 
 }

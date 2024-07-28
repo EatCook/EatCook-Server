@@ -13,11 +13,6 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("select p, u " +
-            "FROM Post p JOIN ItCookUser u ON p.userId = u.id " +
-            "WHERE p.userId IN :userId AND p.postFlag = :postFlag")
-    Page<Object[]> findByUserIdInAndPostFlag(List<Long> userId, PostFlag postFlag, Pageable pageable);
-
     @Query("SELECT p, u, pct, rp, l, a " +
             "FROM Post p " +
             "JOIN FETCH ItCookUser u ON p.userId = u.id " +

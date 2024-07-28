@@ -9,6 +9,7 @@ import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
@@ -35,11 +36,11 @@ public class PostService {
     private final PostAdaptor postAdaptor;
 
     public Page<CookTalkFeedDto> getCookTalkFeeds(Long authUserId, Pageable pageable) {
-        return postAdaptor.findCookTalkPostsWithLiked(authUserId, pageable);
+        return postAdaptor.findCookTalkFeeds(authUserId, pageable);
     }
 
-    public Page<Object[]> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
-        return postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
+    public Page<CookTalkFollowDto> getCookTalkFollows(Long authUserId, List<Long> followIds, Pageable pageable) {
+        return postAdaptor.findCookTalkFollows(authUserId, followIds, pageable);
     }
 
     public List<Object[]> fetchFindByRecipe(Long postId) {
