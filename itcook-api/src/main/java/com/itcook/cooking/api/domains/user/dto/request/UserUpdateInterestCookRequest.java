@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Schema(name = "관심 요리 설정 요청")
 public record UserUpdateInterestCookRequest(
-    @Schema(description = "생활 유형", example = "다이어트만 n번째")
+    @Schema(description = "생활 유형", example = "다이어트만 n년째")
     String lifeType,
     @Size(max = 3, message = "최대 3개까지 선택 가능합니다.")
     @Schema(description = "요리 유형", example = "[\"한식\", \"중식\", \"일식\"]")
