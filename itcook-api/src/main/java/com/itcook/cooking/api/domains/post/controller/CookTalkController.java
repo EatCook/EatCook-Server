@@ -33,7 +33,7 @@ public class CookTalkController {
 
     private final CookTalkUseCase cooktalkUseCase;
 
-    @Operation(summary = "쿡톡 피드 페이징 조회", description = "쿡톡 게시글을 작성일 기준으로 페이징 조회합니다.")
+    @Operation(summary = "쿡톡 피드 페이징 조회", description = "쿡톡 게시글을 수정일 최신 기준으로 페이징 조회합니다.")
     @GetMapping("/v1/posts/cooktalks/feeds")
     public ResponseEntity<ApiResponse<PageResponse<CookTalkFeedsResponse>>> getCookTalkFeeds(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,

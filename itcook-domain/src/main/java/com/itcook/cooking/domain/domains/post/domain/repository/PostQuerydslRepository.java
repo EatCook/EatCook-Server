@@ -85,6 +85,7 @@ public class PostQuerydslRepository {
                                 post.postImagePath,
                                 post.recipeName,
                                 post.introduction,
+                                post.lastModifiedAt,
                                 liked.postId.count()
                         )
                 )
@@ -95,7 +96,7 @@ public class PostQuerydslRepository {
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 )
                 .groupBy(post.id)
-                .orderBy(post.createdAt.desc())
+                .orderBy(post.lastModifiedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

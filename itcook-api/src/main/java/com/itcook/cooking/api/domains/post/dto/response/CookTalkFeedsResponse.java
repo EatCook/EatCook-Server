@@ -1,5 +1,6 @@
 package com.itcook.cooking.api.domains.post.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +10,7 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,9 +25,13 @@ public class CookTalkFeedsResponse {
     private String postImagePath;
     private String recipeName;
     private String introduction;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastModifiedAt;
     private Long likeCounts;
     private Boolean likedCheck;
     private Boolean followCheck;
+    private LocalDateTime updatedAt;
 
     public static Page<CookTalkFeedsResponse> fromCookTalkFeedDto(
             Page<CookTalkFeedDto> cookTalkFeeds,
@@ -39,6 +45,7 @@ public class CookTalkFeedsResponse {
                         .postImagePath(cf.getPostImagePath())
                         .recipeName(cf.getRecipeName())
                         .introduction(cf.getIntroduction())
+                        .lastModifiedAt(cf.getLastModifiedAt())
                         .likeCounts(cf.getLikeCounts())
                         .likedCheck(cf.getLikedCheck())
                         .followCheck(findByUserEmail.getFollow().contains(cf.getWriterUserId()))

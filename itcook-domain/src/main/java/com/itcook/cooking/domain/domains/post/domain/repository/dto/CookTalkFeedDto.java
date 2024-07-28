@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 public class CookTalkFeedDto {
@@ -16,6 +18,7 @@ public class CookTalkFeedDto {
     private String introduction;
     private Long likeCounts;
     private Boolean likedCheck;
+    private LocalDateTime lastModifiedAt;
 
     @Builder
     public CookTalkFeedDto(
@@ -25,6 +28,7 @@ public class CookTalkFeedDto {
             String postImagePath,
             String recipeName,
             String introduction,
+            LocalDateTime lastModifiedAt,
             Long likeCounts
     ) {
         this.writerUserId = writerUserId;
@@ -33,6 +37,7 @@ public class CookTalkFeedDto {
         this.postImagePath = postImagePath;
         this.recipeName = recipeName;
         this.introduction = introduction;
+        this.lastModifiedAt = lastModifiedAt;
         this.likeCounts = likeCounts;
     }
 }
