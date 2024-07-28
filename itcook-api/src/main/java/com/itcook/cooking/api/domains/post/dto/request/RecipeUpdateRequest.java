@@ -67,7 +67,6 @@ public class RecipeUpdateRequest {
 
     public Post toPostDomain() {
         return Post.builder()
-                .id(postId)
                 .recipeName(recipeName)
                 .recipeTime(recipeTime)
                 .introduction(introduction)
