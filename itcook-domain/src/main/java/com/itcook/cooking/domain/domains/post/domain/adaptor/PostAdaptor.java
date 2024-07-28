@@ -7,6 +7,7 @@ import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.HomePostQuerydslRepository;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostQuerydslRepository;
@@ -25,6 +26,10 @@ public class PostAdaptor {
     private final PostRepository postRepository;
     private final PostQuerydslRepository postQuerydslRepository;
     private final HomePostQuerydslRepository homePostQuerydslRepository;
+
+    public Page<CookTalkFeedDto> findCookTalkPostsWithLiked(Long authUserId, Pageable pageable) {
+        return postQuerydslRepository.findCookTalkPostsWithLiked(authUserId, pageable);
+    }
 
     public Post queryPostByIdAndPostFlag(Long postId) {
         return postRepository.findByIdAndPostFlag(postId, PostFlag.ACTIVATE)
@@ -57,4 +62,5 @@ public class PostAdaptor {
     ) {
         return postQuerydslRepository.getOtherPagePostInfo(authUserId, otherUserId, pageable);
     }
+
 }
