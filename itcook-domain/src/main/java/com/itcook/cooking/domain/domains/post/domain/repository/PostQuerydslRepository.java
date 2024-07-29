@@ -247,7 +247,7 @@ public class PostQuerydslRepository {
      * follow한 게시글 조회
      */
     public Page<CookTalkFollowDto> findFollowPostWithLiked(Long authUserId, List<Long> userId, Pageable pageable) {
-//        Set<Long> likedByUserId = findLikedByUserId(authUserId);
+        Set<Long> likedByUserId = findLikedByUserId(authUserId);
         List<CookTalkFollowDto> posts = jpaQueryFactory.select(
                         Projections.constructor(
                                 CookTalkFollowDto.class,
@@ -277,13 +277,14 @@ public class PostQuerydslRepository {
                 .fetch();
 
         for (CookTalkFollowDto postDto : posts) {
-//            postDto.setLikedCheck(likedByUserId.contains(postDto.getPostId()));
+            postDto.setLikedCheck(likedByUserId.contains(postDto.getPostId()));
         }
 
         JPAQuery<Long> countQuery = jpaQueryFactory.select(
                         post.count()
                 )
                 .from(post)
+                .join(itCookUser).on(itCookUser.id.eq(post.userId))
                 .leftJoin(liked).on(post.id.eq(liked.postId))
                 .where(
                         itCookUser.id.in(userId),
