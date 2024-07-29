@@ -4,6 +4,8 @@ import com.itcook.cooking.api.domains.post.dto.response.CookTalkFeedsResponse;
 import com.itcook.cooking.api.domains.post.dto.response.CookTalkFollowsResponse;
 import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.common.annotation.UseCase;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.like.service.LikedService;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
@@ -50,6 +52,11 @@ public class CookTalkUseCase {
      */
     public PageResponse<CookTalkFollowsResponse> getCookTalkFollows(String email, Pageable pageable) {
         ItCookUser findByUserEmail = userService.findUserByEmail(email);
+
+        if (findByUserEmail.getFollow().isEmpty()) {
+            log.error("팔로우 정보 없음 Email : {}", email);
+            throw new ApiException(UserErrorCode.NO_FOLLOWERS);
+        }
 
         Page<CookTalkFollowDto> cookTalkFollows = postService
                 .getCookTalkFollows(findByUserEmail.getId(), findByUserEmail.getFollow(), pageable);
