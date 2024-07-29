@@ -21,6 +21,8 @@ public class CookTalkFeedsResponse {
 
     private Long writerUserId;
     private String writerUserEmail;
+    private String writerProfile;
+    private String writerNickname;
     private Long postId;
     private String postImagePath;
     private String recipeName;
@@ -31,9 +33,9 @@ public class CookTalkFeedsResponse {
     private Long likeCounts;
     private Boolean likedCheck;
     private Boolean followCheck;
-    private LocalDateTime updatedAt;
 
     public static Page<CookTalkFeedsResponse> fromCookTalkFeedDto(
+            Long authUserid,
             Page<CookTalkFeedDto> cookTalkFeeds,
             ItCookUser findByUserEmail
     ) {
@@ -41,6 +43,8 @@ public class CookTalkFeedsResponse {
                 .map(cf -> CookTalkFeedsResponse.builder()
                         .writerUserId(cf.getWriterUserId())
                         .writerUserEmail(cf.getWriterUserEmail())
+                        .writerProfile(cf.getWriterProfile())
+                        .writerNickname(cf.getWriterNickName())
                         .postId(cf.getPostId())
                         .postImagePath(cf.getPostImagePath())
                         .recipeName(cf.getRecipeName())
@@ -48,7 +52,8 @@ public class CookTalkFeedsResponse {
                         .lastModifiedAt(cf.getLastModifiedAt())
                         .likeCounts(cf.getLikeCounts())
                         .likedCheck(cf.getLikedCheck())
-                        .followCheck(findByUserEmail.getFollow().contains(cf.getWriterUserId()))
+                        .followCheck(findByUserEmail.getFollow().contains(cf.getWriterUserId()) &&
+                                !cf.getWriterUserId().equals(authUserid))
                         .build())
                 .getContent();
 

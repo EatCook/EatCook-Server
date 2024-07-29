@@ -82,6 +82,8 @@ public class PostQuerydslRepository {
                                 CookTalkFeedDto.class,
                                 itCookUser.id,
                                 itCookUser.email,
+                                itCookUser.profile,
+                                itCookUser.nickName,
                                 post.id,
                                 post.postImagePath,
                                 post.recipeName,
@@ -191,63 +193,6 @@ public class PostQuerydslRepository {
                 .fetch();
     }
 
-
-    private BooleanExpression lessThanId(Long lastId) {
-        return lastId != null ? post.id.lt(lastId) : null;
-    }
-
-    private BooleanExpression combineExpr(BooleanExpression containsRecipeName,
-                                          BooleanExpression containsIngredientNames) {
-        // 2개의 Expr이 null 일 경우에만 null을 리턴
-        if (containsRecipeName == null && containsIngredientNames == null) {
-            return null;
-        }
-        // 2개의 Expr이 null이 아닐 경우에는 or 조건으로 합쳐서 리턴
-        return containsRecipeName.or(containsIngredientNames);
-    }
-
-    private BooleanExpression containsRecipeName(String recipeName) {
-        return recipeName != null ? post.recipeName.containsIgnoreCase(recipeName) : null;
-    }
-
-    private BooleanExpression containsIngredientName(String ingredientName) {
-        return ingredientName != null ? post.foodIngredients.any().contains(ingredientName) : null;
-    }
-
-    private BooleanExpression containsRecipeNames(List<String> recipeNames) {
-        if (CollectionUtils.isEmpty(recipeNames)) {
-            return null;
-        }
-        BooleanExpression expr = null;
-        for (String name : recipeNames) {
-            BooleanExpression currentExpr = post.recipeName.containsIgnoreCase(name);
-            if (expr == null) {
-                expr = currentExpr;
-            } else {
-                expr = expr.or(currentExpr);
-            }
-        }
-        return expr;
-    }
-
-    private BooleanExpression containsIngredientNames(List<String> ingredientNames) {
-        if (CollectionUtils.isEmpty(ingredientNames)) {
-            return null;
-        }
-
-        BooleanExpression expr = null;
-        for (String ingredientName : ingredientNames) {
-            BooleanExpression currentExpr = post.foodIngredients.any().contains(ingredientName);
-            if (expr == null) {
-                expr = currentExpr;
-            } else {
-                expr = expr.or(currentExpr);
-            }
-        }
-        return expr;
-//        }
-    }
-
     public Page<OtherPagePostInfoResponse> getOtherPagePostInfo(
             Long userId, Long otherUserId, Pageable pageable
     ) {
@@ -308,6 +253,8 @@ public class PostQuerydslRepository {
                                 CookTalkFollowDto.class,
                                 itCookUser.id,
                                 itCookUser.email,
+                                itCookUser.profile,
+                                itCookUser.nickName,
                                 post.id,
                                 post.postImagePath,
                                 post.recipeName,
@@ -345,6 +292,62 @@ public class PostQuerydslRepository {
 
         return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchOne);
 
+    }
+
+    private BooleanExpression lessThanId(Long lastId) {
+        return lastId != null ? post.id.lt(lastId) : null;
+    }
+
+    private BooleanExpression combineExpr(BooleanExpression containsRecipeName,
+                                          BooleanExpression containsIngredientNames) {
+        // 2개의 Expr이 null 일 경우에만 null을 리턴
+        if (containsRecipeName == null && containsIngredientNames == null) {
+            return null;
+        }
+        // 2개의 Expr이 null이 아닐 경우에는 or 조건으로 합쳐서 리턴
+        return containsRecipeName.or(containsIngredientNames);
+    }
+
+    private BooleanExpression containsRecipeName(String recipeName) {
+        return recipeName != null ? post.recipeName.containsIgnoreCase(recipeName) : null;
+    }
+
+    private BooleanExpression containsIngredientName(String ingredientName) {
+        return ingredientName != null ? post.foodIngredients.any().contains(ingredientName) : null;
+    }
+
+    private BooleanExpression containsRecipeNames(List<String> recipeNames) {
+        if (CollectionUtils.isEmpty(recipeNames)) {
+            return null;
+        }
+        BooleanExpression expr = null;
+        for (String name : recipeNames) {
+            BooleanExpression currentExpr = post.recipeName.containsIgnoreCase(name);
+            if (expr == null) {
+                expr = currentExpr;
+            } else {
+                expr = expr.or(currentExpr);
+            }
+        }
+        return expr;
+    }
+
+    private BooleanExpression containsIngredientNames(List<String> ingredientNames) {
+        if (CollectionUtils.isEmpty(ingredientNames)) {
+            return null;
+        }
+
+        BooleanExpression expr = null;
+        for (String ingredientName : ingredientNames) {
+            BooleanExpression currentExpr = post.foodIngredients.any().contains(ingredientName);
+            if (expr == null) {
+                expr = currentExpr;
+            } else {
+                expr = expr.or(currentExpr);
+            }
+        }
+        return expr;
+//        }
     }
 
     private Set<Long> findLikedByUserId(Long userId) {

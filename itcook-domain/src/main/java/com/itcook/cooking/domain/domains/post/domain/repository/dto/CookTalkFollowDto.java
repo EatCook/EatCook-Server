@@ -12,6 +12,8 @@ public class CookTalkFollowDto {
 
     private Long writerUserId;
     private String writerUserEmail;
+    private String writerProfile;
+    private String writerNickName;
     private Long postId;
     private String postImagePath;
     private String recipeName;
@@ -24,6 +26,8 @@ public class CookTalkFollowDto {
     public CookTalkFollowDto(
             Long writerUserId,
             String writerUserEmail,
+            String writerProfile,
+            String writerNickName,
             Long postId,
             String postImagePath,
             String recipeName,
@@ -33,6 +37,8 @@ public class CookTalkFollowDto {
     ) {
         this.writerUserId = writerUserId;
         this.writerUserEmail = writerUserEmail;
+        this.writerProfile = writerProfile;
+        this.writerNickName = writerNickName;
         this.postId = postId;
         this.postImagePath = postImagePath;
         this.recipeName = recipeName;
@@ -40,5 +46,6 @@ public class CookTalkFollowDto {
         this.lastModifiedAt = lastModifiedAt;
         this.likeCounts = likeCounts;
     }
+
 }
 
