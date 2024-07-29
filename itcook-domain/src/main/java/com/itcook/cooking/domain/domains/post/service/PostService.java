@@ -2,25 +2,28 @@ package com.itcook.cooking.domain.domains.post.service;
 
 import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
 import com.itcook.cooking.domain.domains.post.domain.adaptor.PostAdaptor;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostRepository;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
-import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
-import java.util.List;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
+import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -32,12 +35,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostAdaptor postAdaptor;
 
-    public Page<Object[]> fetchFindAllByCookTalkFeedV2(Pageable pageable) {
-        return postRepository.findAllByPostFlag(PostFlag.ACTIVATE, pageable);
+    public Page<CookTalkFeedDto> getCookTalkFeeds(Long authUserId, Pageable pageable) {
+        return postAdaptor.findCookTalkFeeds(authUserId, pageable);
     }
 
-    public Page<Object[]> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
-        return postRepository.findByUserIdInAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
+    public Page<CookTalkFollowDto> getCookTalkFollows(Long authUserId, List<Long> followIds, Pageable pageable) {
+        return postAdaptor.findCookTalkFollows(authUserId, followIds, pageable);
     }
 
     public List<Object[]> fetchFindByRecipe(Long postId) {
