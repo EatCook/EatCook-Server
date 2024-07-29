@@ -38,7 +38,7 @@ public class CookTalkUseCase {
                 .getCookTalkFeeds(findByUserEmail.getId(), pageable);
 
         Page<CookTalkFeedsResponse> cookTalkResponse = CookTalkFeedsResponse
-                .fromCookTalkFeedDto(cookTalkFeeds, findByUserEmail);
+                .fromCookTalkFeedDto(findByUserEmail.getId(), cookTalkFeeds, findByUserEmail);
 
         return PageResponse.of(cookTalkResponse);
     }

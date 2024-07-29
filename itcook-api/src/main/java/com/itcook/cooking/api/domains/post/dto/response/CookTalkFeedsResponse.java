@@ -35,6 +35,7 @@ public class CookTalkFeedsResponse {
     private Boolean followCheck;
 
     public static Page<CookTalkFeedsResponse> fromCookTalkFeedDto(
+            Long authUserid,
             Page<CookTalkFeedDto> cookTalkFeeds,
             ItCookUser findByUserEmail
     ) {
@@ -42,8 +43,8 @@ public class CookTalkFeedsResponse {
                 .map(cf -> CookTalkFeedsResponse.builder()
                         .writerUserId(cf.getWriterUserId())
                         .writerUserEmail(cf.getWriterUserEmail())
-                        .writerProfile(cf.getProfile())
-                        .writerNickname(cf.getNickName())
+                        .writerProfile(cf.getWriterProfile())
+                        .writerNickname(cf.getWriterNickName())
                         .postId(cf.getPostId())
                         .postImagePath(cf.getPostImagePath())
                         .recipeName(cf.getRecipeName())
@@ -51,7 +52,8 @@ public class CookTalkFeedsResponse {
                         .lastModifiedAt(cf.getLastModifiedAt())
                         .likeCounts(cf.getLikeCounts())
                         .likedCheck(cf.getLikedCheck())
-                        .followCheck(findByUserEmail.getFollow().contains(cf.getWriterUserId()))
+                        .followCheck(findByUserEmail.getFollow().contains(cf.getWriterUserId()) &&
+                                !cf.getWriterUserId().equals(authUserid))
                         .build())
                 .getContent();
 

@@ -12,6 +12,8 @@ public class CookTalkFeedDto {
 
     private Long writerUserId;
     private String writerUserEmail;
+    private String writerProfile;
+    private String writerNickName;
     private Long postId;
     private String postImagePath;
     private String recipeName;
@@ -19,31 +21,30 @@ public class CookTalkFeedDto {
     private Long likeCounts;
     private Boolean likedCheck;
     private LocalDateTime lastModifiedAt;
-    private String profile;
-    private String nickName;
 
     @Builder
     public CookTalkFeedDto(
             Long writerUserId,
             String writerUserEmail,
+            String writerProfile,
+            String writerNickName,
             Long postId,
             String postImagePath,
             String recipeName,
             String introduction,
             LocalDateTime lastModifiedAt,
-            Long likeCounts,
-            String profile,
-            String nickName
+            Long likeCounts
     ) {
         this.writerUserId = writerUserId;
         this.writerUserEmail = writerUserEmail;
+        this.writerProfile = writerProfile;
+        this.writerNickName = writerNickName;
         this.postId = postId;
         this.postImagePath = postImagePath;
         this.recipeName = recipeName;
         this.introduction = introduction;
         this.lastModifiedAt = lastModifiedAt;
         this.likeCounts = likeCounts;
-        this.profile = profile;
-        this.nickName = nickName;
     }
+
 }

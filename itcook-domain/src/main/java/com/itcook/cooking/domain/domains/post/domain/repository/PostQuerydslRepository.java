@@ -82,14 +82,14 @@ public class PostQuerydslRepository {
                                 CookTalkFeedDto.class,
                                 itCookUser.id,
                                 itCookUser.email,
+                                itCookUser.profile,
+                                itCookUser.nickName,
                                 post.id,
                                 post.postImagePath,
                                 post.recipeName,
                                 post.introduction,
                                 post.lastModifiedAt,
-                                liked.postId.count(),
-                                itCookUser.profile,
-                                itCookUser.nickName
+                                liked.postId.count()
                         )
                 )
                 .from(post)
