@@ -9,13 +9,12 @@ import com.itcook.cooking.api.domains.user.dto.request.UserUpdateInterestCookReq
 import com.itcook.cooking.api.domains.user.service.MyPageQueryUseCase;
 import com.itcook.cooking.api.domains.user.service.MyPageUseCase;
 import com.itcook.cooking.api.domains.user.service.dto.response.MyPageArchivePostsResponse;
-import com.itcook.cooking.api.domains.user.service.dto.response.MyPageResponse;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.api.global.dto.PageResponse;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.MyPageProfileImageResponse;
-import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
