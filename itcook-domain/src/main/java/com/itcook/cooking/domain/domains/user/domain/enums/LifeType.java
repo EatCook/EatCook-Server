@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum LifeType {
-    DIET("다이어트만 n번째"),
+    DIET("다이어트만 n년째"),
     HEALTH_DIET("건강한 식단관리"),
     CONVENIENCE_STORE("편의점은 내 구역"),
     DELIVERY_FOOD("배달음식 단골고객"),
-    MEAL_KIT("밀키트 lover");
+    MEAL_KIT("밀키트 lover"),
+    EMPTY("없음")
+    ;
 
     private final String lifeTypeName;
 

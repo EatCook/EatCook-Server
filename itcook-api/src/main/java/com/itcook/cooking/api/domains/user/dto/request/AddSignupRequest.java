@@ -35,7 +35,7 @@ public class AddSignupRequest {
     @Schema(description = "요리 유형", example = "[\"한식\", \"중식\", \"일식\"]")
     private List<String> cookingType;
 
-    @Schema(description = "생활 유형", example = "다이어트만 n번째")
+    @Schema(description = "생활 유형", example = "다이어트만 n년째")
     private String lifeType;
 
     public AddSignupServiceDto toServiceDto() {
