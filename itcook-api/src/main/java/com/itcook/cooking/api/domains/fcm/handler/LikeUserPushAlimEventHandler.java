@@ -1,6 +1,6 @@
 package com.itcook.cooking.api.domains.fcm.handler;
 
-import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
+import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
 import com.itcook.cooking.domain.domains.infra.fcm.FcmService;
 import com.itcook.cooking.domain.domains.infra.fcm.dto.FcmSend;
 import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
- * 팔로우 요청 푸쉬 알림 이벤트 핸들러
+ * 좋아요 요청 푸쉬 알림 이벤트 핸들러
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FollowUserPushAlimEventHandler {
+public class LikeUserPushAlimEventHandler {
 
     private final FcmService fcmService;
     private final UserAdaptor userAdaptor;
@@ -27,17 +27,16 @@ public class FollowUserPushAlimEventHandler {
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
-    public void handleUserFollowEvent(UserFollowedEvent userFollowedEvent) {
-        log.info("{}의 팔로잉 요청 푸쉬 알림 생성", userFollowedEvent.getFollowerNickName());
-        ItCookUser followingUser = userAdaptor.queryUserById(userFollowedEvent.getFollowingId());
-        if (!followingUser.isAlim()) {
+    public void handleUserLikedEvent(UserLikedEvent event) {
+        log.info("{}의 좋아요 요청 푸쉬 알림 생성", event.getFromUserNickName());
+        ItCookUser postWriter = userAdaptor.queryUserById(event.getToUserId());
+        if (!postWriter.isAlim()) {
             return;
         }
         fcmService.sendMessageTo(FcmSend.builder()
-            .title("팔로우 요청")
-            .body(String.format("%s님이 회원님을 팔로우 했습니다.", userFollowedEvent.getFollowerNickName()))
-            .targetUserId(followingUser.getId())
+            .title("좋아요 요청")
+            .body(String.format("%s님이 회원님의 레시피를 좋아합니다.", event.getFromUserNickName()))
+            .targetUserId(postWriter.getId())
             .build());
     }
-
 }

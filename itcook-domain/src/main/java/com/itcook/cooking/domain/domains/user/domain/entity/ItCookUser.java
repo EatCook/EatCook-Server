@@ -243,6 +243,10 @@ public class ItCookUser extends BaseTimeEntity {
         this.lifeType = lifeType;
     }
 
+    public Boolean isAlim() {
+        return serviceAlertType == ServiceAlertType.ACTIVATE;
+    }
+
     public MyPageProfileImageResponse changeProfileImage(String fileExtension,
         UserImageRegisterService userImageRegisterService) {
         ImageUrlDto imageUrlDto = userImageRegisterService.getImageUrlDto(fileExtension, this);
