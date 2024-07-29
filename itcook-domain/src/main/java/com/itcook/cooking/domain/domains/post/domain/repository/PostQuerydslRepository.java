@@ -353,6 +353,7 @@ public class PostQuerydslRepository {
     private Set<Long> findLikedByUserId(Long userId) {
         return new HashSet<>(jpaQueryFactory.select(liked.postId)
                 .from(liked)
+                .join(post).on(liked.postId.eq(post.id))
                 .where(liked.itCookUserId.eq(userId))
                 .fetch());
     }
