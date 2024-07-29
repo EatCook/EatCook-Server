@@ -35,7 +35,8 @@ public class HomeUseCase {
         return HomeUserCookingThemeReadResponse.of(findItCookUserData);
     }
 
-    public HomePagingInterestReadResponse getPostByCookingTheme(String cookingTheme, String username, Pageable pageable) {
+    public HomePagingInterestReadResponse getPostByCookingTheme(String cookingTheme,
+            String username, Pageable pageable) {
         ItCookUser findItCookUserData = userService.findUserByEmail(username);
 
         UserCookingTheme userCookingTheme = findItCookUserData.getUserCookingThemes().stream()
@@ -52,10 +53,11 @@ public class HomeUseCase {
         return HomePagingInterestReadResponse.of(postsByCookingTypeData);
     }
 
-    public HomePagingSpacialReadResponse getLifeTypeByPost(String lifeType, String username, Pageable pageable) {
+    public HomePagingSpacialReadResponse getLifeTypeByPost(String lifeType, String username,
+            Pageable pageable) {
         ItCookUser findItCookUserData = userService.findUserByEmail(username);
 
-        LifeType findLifeType = LifeType.getByName(lifeType);
+        LifeType findLifeType = LifeType.getByLifeType(lifeType);
         if (findLifeType == null) {
             log.error("잘못된 생활 유형 요청 Request lifeType : {} ", lifeType);
             throw new ApiException(LifeTypeErrorCode.LIFETYPE_NOT_FOUND);

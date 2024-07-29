@@ -11,6 +11,8 @@ import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterest
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
 import java.util.List;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +32,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostAdaptor postAdaptor;
 
-    public Page<Object[]> fetchFindAllByCookTalkFeedV2(Long userId, Pageable pageable) {
-        return postRepository.findAllByUserIdNotAndPostFlag(userId, PostFlag.ACTIVATE, pageable);
+    public Page<Object[]> fetchFindAllByCookTalkFeedV2(Pageable pageable) {
+        return postRepository.findAllByPostFlag(PostFlag.ACTIVATE, pageable);
     }
 
     public Page<Object[]> fetchFindFollowingCookTalk(List<Long> userId, Pageable pageable) {
@@ -78,22 +80,31 @@ public class PostService {
         return postUpdateData;
     }
 
+    @Transactional
     public void deletePost(Long postId) {
-        Post postEntity = postRepository.findById(postId).orElse(null);
-
-        if (postEntity == null) {
-            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
-        }
+        Post postEntity = postRepository.findById(postId)
+                .orElseThrow(() -> new ApiException(PostErrorCode.POST_NOT_EXIST));
+        PostFlag.checkDisablePostFlag(postEntity.getPostFlag());
 
         postEntity.deletePost();
     }
 
-    public Page<HomeInterestDto> fetchFindPostsWithLikedAndArchiveDtoByCookingTheme(CookingType cookingTheme, Long userId, Pageable pageable) {
-        return postAdaptor.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId, pageable);
+    public Page<HomeInterestDto> fetchFindPostsWithLikedAndArchiveDtoByCookingTheme(
+            CookingType cookingTheme, Long userId, Pageable pageable) {
+        return postAdaptor.findPostsWithLikedAndArchiveDtoByCookingTheme(cookingTheme, userId,
+                pageable);
     }
 
-    public Page<HomeSpecialDto> fetchFindPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(LifeType lifeType, Long userId, Pageable pageable) {
-        return postAdaptor.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType, userId, pageable);
+    public Page<HomeSpecialDto> fetchFindPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(
+            LifeType lifeType, Long userId, Pageable pageable) {
+        return postAdaptor.findPostsWithLikedAndArchiveDtoByLifeTypeDefaultHealthDiet(lifeType,
+                userId, pageable);
+    }
+
+    public Page<OtherPagePostInfoResponse> getOtherPageInfo(
+            ItCookUser user, Long otherUserId, Pageable pageable
+    ) {
+        return postAdaptor.getOtherPagePostInfo(user.getId(), otherUserId, pageable);
     }
 
 //    public List<Post> searchByRecipeNameOrIngredients(

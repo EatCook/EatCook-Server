@@ -22,4 +22,18 @@ class LifeTypeTest {
         assertThat(lifeType).isEqualTo(expected)
         ;
     }
+
+    @ParameterizedTest
+    @DisplayName("lifetype을 받아 LifeType 객체 변환")
+    @CsvSource({"DIET,DIET", "HEALTH_DIET,HEALTH_DIET", "CONVENIENCE_STORE,CONVENIENCE_STORE"})
+    void getByLifeType(String lifeTypeString, LifeType expected) {
+        //given
+
+        //when
+        LifeType lifeType = LifeType.getByLifeType(lifeTypeString);
+
+        //then
+        assertThat(lifeType).isEqualTo(expected)
+        ;
+    }
 }
