@@ -7,7 +7,8 @@ import lombok.Builder;
 public record UserOAuth2Login(
     String email,
     ProviderType providerType,
-    String token
+    String token,
+    String deviceToken
 ) {
 
     public InfoForLogin of() {

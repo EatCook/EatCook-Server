@@ -228,6 +228,10 @@ public class ItCookUser extends BaseTimeEntity {
         return lifeType.getLifeTypeName();
     }
 
+    public void changeDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+
     public List<String> getCookingTypes() {
         return this.userCookingThemes.stream().map(UserCookingTheme::getCookingTypeName)
             .toList();

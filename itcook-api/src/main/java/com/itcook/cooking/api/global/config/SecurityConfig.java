@@ -10,6 +10,7 @@ import com.itcook.cooking.api.global.security.jwt.filter.JwtLogoutHandler;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtLogoutSuccessHandler;
 import com.itcook.cooking.api.global.security.jwt.service.ItCookUserDetailsService;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
+import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,7 @@ public class SecurityConfig {
     private final JwtLogoutHandler jwtLogoutHandler;
     private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
     private final PasswordEncoder passwordEncoder;
+    private final UserAdaptor userAdaptor;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -75,7 +77,7 @@ public class SecurityConfig {
     @Bean
     public JwtLoginFilter jwtLoginFilter() {
         JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(objectMapper,
-                jwtTokenProvider);
+                jwtTokenProvider, userAdaptor);
         jwtLoginFilter.setAuthenticationManager(authenticationManager());
         return jwtLoginFilter;
     }

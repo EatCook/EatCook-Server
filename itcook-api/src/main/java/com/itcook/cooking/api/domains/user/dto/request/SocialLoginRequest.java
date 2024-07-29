@@ -11,8 +11,9 @@ public record SocialLoginRequest(
     @Schema(description = "카카오일 경우 access token (Bearer 포함한)")
     String token,
     @Schema(description = "애플일 경우에만 애플 아이디를 보내주세요. ")
-    String email
-
+    String email,
+    @Schema(description = "fcm 디바이스 토큰을 보내주세요.")
+    String deviceToken
 ) {
 
     public UserOAuth2Login of() {
@@ -20,6 +21,7 @@ public record SocialLoginRequest(
             .providerType(providerType)
             .email(email)
             .token(token)
+            .deviceToken(deviceToken)
             .build();
     }
 }

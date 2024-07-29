@@ -1,22 +1,17 @@
 package com.itcook.cooking.api.global.security.jwt.filter;
 
-import static com.itcook.cooking.api.global.consts.ItCookConstants.ACCESS_TOKEN_HEADER;
-import static com.itcook.cooking.api.global.consts.ItCookConstants.BEARER;
-import static com.itcook.cooking.api.global.consts.ItCookConstants.REFRESH_TOKEN_HEADER;
 import static com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper.sendLoginErrorResponse;
 import static com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper.sendTokensSuccessResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.domains.user.dto.request.UserLogin;
-import com.itcook.cooking.api.global.dto.ApiResponse;
-import com.itcook.cooking.api.global.dto.ErrorResponse;
-import com.itcook.cooking.api.global.security.jwt.helper.SecurityHelper;
-import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
-import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
-import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
+import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -25,8 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -39,10 +32,13 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserAdaptor userAdaptor;
 
-    public JwtLoginFilter(ObjectMapper objectMapper, JwtTokenProvider jwtTokenProvider) {
+    public JwtLoginFilter(ObjectMapper objectMapper, JwtTokenProvider jwtTokenProvider,
+        UserAdaptor userAdaptor) {
         this.objectMapper = objectMapper;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userAdaptor = userAdaptor;
     }
 
     @Override
@@ -58,6 +54,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
             UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken
                 .unauthenticated(userLogin.getEmail(), userLogin.getPassword());
 
+            unauthenticated.setDetails(userLogin);
+
             return getAuthenticationManager().authenticate(unauthenticated);
 
         } catch (IOException e) {
@@ -72,6 +70,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         throws IOException, ServletException {
         log.info("successfulAuthentication 로그인 성공 및 JWT 토큰 발행");
 
+        saveFcmToken(authResult);
+
         AuthenticationUser principalUser = (AuthenticationUser) authResult.getPrincipal();
         String username = principalUser.getUsername();
         List<String> authorities = principalUser.getAuthorities().stream()
@@ -81,6 +81,13 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         sendTokensSuccessResponse(objectMapper, response, "로그인 성공",
             tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+    }
+
+    private void saveFcmToken(Authentication authResult) {
+        UserLogin userLogin = (UserLogin) authResult.getDetails();
+        ItCookUser user = userAdaptor.queryUserByEmail(userLogin.getEmail());
+        user.changeDeviceToken(userLogin.getDeviceToken());
+        userAdaptor.saveUser(user);
     }
 
     @Override

@@ -31,19 +31,24 @@ public class LoginUseCase {
     public SocialLoginResponse socialLogin(UserOAuth2Login userOAuth2Login) {
         UserInfo userInfo = socialLoginFactory.socialLogin(userOAuth2Login);
 
-        signup(userOAuth2Login, userInfo);
+        ItCookUser user = signup(userOAuth2Login, userInfo);
+        changeFcmToken(userOAuth2Login, user);
 
         return SocialLoginResponse.of(
             jwtTokenProvider.generateAccessTokenAndRefreshToken(userInfo.getEmail(),
                 List.of("ROLE_" + UserRole.USER.getRoleName())));
     }
 
-    private void signup(UserOAuth2Login userOAuth2Login, UserInfo userInfo) {
-        userRepository.findByEmail(userInfo.getEmail())
+    private ItCookUser signup(UserOAuth2Login userOAuth2Login, UserInfo userInfo) {
+        return userRepository.findByEmail(userInfo.getEmail())
             .orElseGet(() -> userRepository.save(
                 ItCookUser.signup(SignupDto.of(userInfo.getEmail(), userInfo.getNickName(),
                     UUID.randomUUID().toString(), userOAuth2Login.providerType()), userValidator)
             ));
+    }
+
+    private void changeFcmToken(UserOAuth2Login userOAuth2Login, ItCookUser user) {
+        user.changeDeviceToken(userOAuth2Login.deviceToken());
     }
 
 }
