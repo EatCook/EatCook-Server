@@ -87,7 +87,9 @@ public class PostQuerydslRepository {
                                 post.recipeName,
                                 post.introduction,
                                 post.lastModifiedAt,
-                                liked.postId.count()
+                                liked.postId.count(),
+                                itCookUser.profile,
+                                itCookUser.nickName
                         )
                 )
                 .from(post)

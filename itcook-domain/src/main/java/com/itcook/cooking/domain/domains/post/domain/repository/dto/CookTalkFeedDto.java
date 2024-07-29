@@ -19,6 +19,8 @@ public class CookTalkFeedDto {
     private Long likeCounts;
     private Boolean likedCheck;
     private LocalDateTime lastModifiedAt;
+    private String profile;
+    private String nickName;
 
     @Builder
     public CookTalkFeedDto(
@@ -29,7 +31,9 @@ public class CookTalkFeedDto {
             String recipeName,
             String introduction,
             LocalDateTime lastModifiedAt,
-            Long likeCounts
+            Long likeCounts,
+            String profile,
+            String nickName
     ) {
         this.writerUserId = writerUserId;
         this.writerUserEmail = writerUserEmail;
@@ -39,5 +43,7 @@ public class CookTalkFeedDto {
         this.introduction = introduction;
         this.lastModifiedAt = lastModifiedAt;
         this.likeCounts = likeCounts;
+        this.profile = profile;
+        this.nickName = nickName;
     }
 }

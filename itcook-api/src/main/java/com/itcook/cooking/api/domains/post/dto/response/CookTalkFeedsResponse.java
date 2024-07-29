@@ -21,6 +21,8 @@ public class CookTalkFeedsResponse {
 
     private Long writerUserId;
     private String writerUserEmail;
+    private String writerProfile;
+    private String writerNickname;
     private Long postId;
     private String postImagePath;
     private String recipeName;
@@ -40,6 +42,8 @@ public class CookTalkFeedsResponse {
                 .map(cf -> CookTalkFeedsResponse.builder()
                         .writerUserId(cf.getWriterUserId())
                         .writerUserEmail(cf.getWriterUserEmail())
+                        .writerProfile(cf.getProfile())
+                        .writerNickname(cf.getNickName())
                         .postId(cf.getPostId())
                         .postImagePath(cf.getPostImagePath())
                         .recipeName(cf.getRecipeName())
