@@ -31,7 +31,6 @@ public class CookTalkFeedsResponse {
     private Long likeCounts;
     private Boolean likedCheck;
     private Boolean followCheck;
-    private LocalDateTime updatedAt;
 
     public static Page<CookTalkFeedsResponse> fromCookTalkFeedDto(
             Page<CookTalkFeedDto> cookTalkFeeds,
