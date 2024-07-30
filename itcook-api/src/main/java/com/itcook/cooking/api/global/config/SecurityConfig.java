@@ -13,6 +13,7 @@ import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,14 +49,14 @@ public class SecurityConfig {
 
         http.authorizeRequests()
             .antMatchers(SWAGGER_PATTERNS).permitAll()
-            .antMatchers("/oauth2/login").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
             .antMatchers("/api/v1/users/**").permitAll()
             .antMatchers("/api/v1/emails/**").permitAll()
             .antMatchers("/api/v1/users/find/**").permitAll()
             .anyRequest().hasRole("USER");
 
 //        http.addFilterBefore(oAuth2LoginFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class);
 
         // todo
@@ -72,13 +73,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public JwtLoginFilter jwtLoginFilter() {
-        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(objectMapper,
-                jwtTokenProvider);
-        jwtLoginFilter.setAuthenticationManager(authenticationManager());
-        return jwtLoginFilter;
-    }
+//    @Bean
+//    public JwtLoginFilter jwtLoginFilter() {
+//        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(objectMapper,
+//                jwtTokenProvider);
+//        jwtLoginFilter.setAuthenticationManager(authenticationManager());
+//        return jwtLoginFilter;
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager() {
