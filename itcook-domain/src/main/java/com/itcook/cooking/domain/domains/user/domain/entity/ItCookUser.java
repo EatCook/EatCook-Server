@@ -123,6 +123,7 @@ public class ItCookUser extends BaseTimeEntity {
             .providerType(signupDto.providerType())
             .nickName(signupDto.nickName())
             .userRole(UserRole.USER)
+            .deviceToken(signupDto.deviceToken())
             .build();
         userValidator.validateSignup(user);
         return user;

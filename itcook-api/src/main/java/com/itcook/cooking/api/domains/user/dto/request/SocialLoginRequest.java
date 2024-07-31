@@ -1,5 +1,6 @@
 package com.itcook.cooking.api.domains.user.dto.request;
 
+import com.itcook.cooking.api.domains.user.service.dto.SocialLoginServiceDto;
 import com.itcook.cooking.domain.domains.infra.oauth.dto.UserOAuth2Login;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +21,15 @@ public record SocialLoginRequest(
 
     public UserOAuth2Login of() {
         return UserOAuth2Login.builder()
+            .providerType(providerType)
+            .email(email)
+            .token(token)
+            .deviceToken(deviceToken)
+            .build();
+    }
+
+    public SocialLoginServiceDto toServiceDto() {
+        return SocialLoginServiceDto.builder()
             .providerType(providerType)
             .email(email)
             .token(token)

@@ -32,7 +32,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> socialLogin(
         @RequestBody SocialLoginRequest socialLoginRequest
     ) {
-        SocialLoginResponse response = loginUseCase.socialLogin(socialLoginRequest.of());
+        SocialLoginResponse response = loginUseCase.socialLogin(socialLoginRequest.toServiceDto());
         return ResponseEntity.status(200)
             .header(ACCESS_TOKEN_HEADER, response.accessToken())
             .header(REFRESH_TOKEN_HEADER, response.refreshToken())

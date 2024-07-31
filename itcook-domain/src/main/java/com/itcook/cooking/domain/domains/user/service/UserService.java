@@ -62,7 +62,7 @@ public class UserService {
         String temporaryPassword = RandomCodeUtils.generateTemporaryPassword();
         log.info("임시 비밀번호 : {}", temporaryPassword);
         user.issueTemporaryPassword(passwordEncoder.encode(temporaryPassword), temporaryPassword,
-                email);
+            email);
         return temporaryPassword;
     }
 
@@ -87,27 +87,30 @@ public class UserService {
     @Transactional
     public void changePassword(ItCookUser user) {
         ItCookUser findUser
-                = userAdaptor.queryUserByEmail(user.getEmail());
+            = userAdaptor.queryUserByEmail(user.getEmail());
         findUser.changePassword(passwordEncoder.encode(user.getPassword()));
     }
 
     @Transactional
     public ItCookUser signup(ItCookUser itCookUser) {
         ItCookUser user = ItCookUser.signup(
-                SignupDto.of(itCookUser.getEmail(),
-                        passwordEncoder.encode(itCookUser.getPassword()),
-                        ProviderType.COMMON),
-                userValidator);
+            SignupDto.of(itCookUser.getEmail(),
+                itCookUser.getNickName(),
+                passwordEncoder.encode(itCookUser.getPassword()),
+                itCookUser.getProviderType(),
+                itCookUser.getDeviceToken()
+            ),
+            userValidator);
         return userAdaptor.saveUser(user);
     }
 
     @Transactional
     public AddSignupDomainResponse addSignup(ItCookUser user, String fileExtension,
-            List<CookingType> cookingTypes) {
+        List<CookingType> cookingTypes) {
         ItCookUser findUser = userAdaptor.queryUserByEmail(user.getEmail());
         return findUser.addSignup(user.getNickName(),
-                user.getLifeType(), cookingTypes, fileExtension, userValidator,
-                userImageRegisterService);
+            user.getLifeType(), cookingTypes, fileExtension, userValidator,
+            userImageRegisterService);
     }
 
     public MyPageUserInfoResponse getMyPageInfo(String email) {
@@ -143,13 +146,13 @@ public class UserService {
      */
     @Transactional
     public void updateMyPageSetUp(String email,
-            ServiceAlertType serviceAlertType,
-            EventAlertType eventAlertType
+        ServiceAlertType serviceAlertType,
+        EventAlertType eventAlertType
     ) {
         log.info("updateMyPageSetUp");
         ItCookUser user = userAdaptor.queryUserByEmail(email);
         user.updateAlertTypes(serviceAlertType,
-                eventAlertType);
+            eventAlertType);
     }
 
     public ItCookUser fetchFindByUserId(Long userId) {
@@ -161,9 +164,9 @@ public class UserService {
      */
     @Transactional
     public void updateInterestCook(
-            String email,
-            List<CookingType> cookingTypes,
-            LifeType lifeType
+        String email,
+        List<CookingType> cookingTypes,
+        LifeType lifeType
     ) {
         ItCookUser user = userAdaptor.queryUserByEmail(email);
         userCookingThemeRepository.deleteByUser(user);
@@ -174,7 +177,7 @@ public class UserService {
      * 관심요리 조회
      */
     public UserReadInterestCookResponse getInterestCook(
-            String email
+        String email
     ) {
         ItCookUser user = userAdaptor.queryJoinCookingThemesByEmail(email);
         return UserReadInterestCookResponse.of(user);

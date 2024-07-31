@@ -1,6 +1,7 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.api.domains.user.service.dto.LoginServiceDto;
+import com.itcook.cooking.api.domains.user.service.dto.SocialLoginServiceDto;
 import com.itcook.cooking.api.domains.user.service.dto.response.LoginResponse;
 import com.itcook.cooking.domain.domains.infra.oauth.dto.UserOAuth2Login;
 import com.itcook.cooking.api.domains.user.service.dto.response.SocialLoginResponse;
@@ -33,23 +34,20 @@ public class LoginUseCase {
     private final UserService userService;
 
     @Transactional
-    public SocialLoginResponse socialLogin(UserOAuth2Login userOAuth2Login) {
-        UserInfo userInfo = socialLoginFactory.socialLogin(userOAuth2Login);
+    public SocialLoginResponse socialLogin(SocialLoginServiceDto serviceDto) {
+        UserInfo userInfo = socialLoginFactory.socialLogin(serviceDto.toOAuth2Login());
 
-        signup(userOAuth2Login, userInfo);
+        signup(serviceDto.toEntity(userInfo));
 
         return SocialLoginResponse.of(
             jwtTokenProvider.generateAccessTokenAndRefreshToken(userInfo.getEmail(),
                 List.of("ROLE_" + UserRole.USER.getRoleName())));
     }
 
-    private void signup(UserOAuth2Login userOAuth2Login, UserInfo userInfo) {
-        ItCookUser user = userRepository.findByEmail(userInfo.getEmail())
-            .orElseGet(
-                () -> ItCookUser.signup(SignupDto.of(userInfo.getEmail(), userInfo.getNickName(),
-                    UUID.randomUUID().toString(), userOAuth2Login.providerType()), userValidator));
-        user.changeDeviceToken(userOAuth2Login.deviceToken());
-        userRepository.save(user);
+    private void signup(ItCookUser entity) {
+        ItCookUser user = userRepository.findByEmail(entity.getEmail())
+            .orElseGet(() -> userService.signup(entity));
+        user.changeDeviceToken(entity.getDeviceToken());
     }
 
     public LoginResponse login(LoginServiceDto loginServiceDto) {
