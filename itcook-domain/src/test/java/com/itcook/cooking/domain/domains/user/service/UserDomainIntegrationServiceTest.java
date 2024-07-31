@@ -288,6 +288,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser itCookUser = ItCookUser.builder()
             .email(email)
             .password(password)
+            .providerType(ProviderType.COMMON)
             .build();
 
         //when
@@ -327,6 +328,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         ItCookUser itCookUser = ItCookUser.builder()
             .email("user@test.com")
             .password("cook12345")
+            .providerType(ProviderType.COMMON)
             .build();
 
         //when //then
@@ -471,6 +473,73 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
         assertThat(passwordEncoder.matches("cook12345", findUser.getPassword()))
             .isTrue();
 
+    }
+
+    @Test
+    @DisplayName("로그인을 시도한다.")
+    void login() {
+        //given
+        String email = "user@test.com";
+        String password = "cook12345";
+        String nickName = "잇쿡";
+        ItCookUser user = createUser(email, password, nickName);
+
+        //when
+        userService.login(ItCookUser.builder()
+                .email(email)
+                .password(password)
+                .deviceToken("deviceToken")
+                .build());
+
+        //then
+        ItCookUser findUser = userRepository.findById(user.getId()).get();
+        assertThat(passwordEncoder.matches("cook12345", findUser.getPassword()))
+            .isTrue();
+        assertThat(findUser.getNickName()).isEqualTo(nickName);
+        assertThat(findUser.getEmail()).isEqualTo(email);
+        assertThat(findUser.getDeviceToken()).isEqualTo("deviceToken");
+    }
+
+    @Test
+    @DisplayName("등록된 유저가 아니라 예외를 발생한다.")
+    void loginNotFoundUser() {
+        //given
+        String email = "user@test.com";
+        String password = "cook12345";
+
+        //when
+        assertThatThrownBy(() -> userService.login(ItCookUser.builder()
+            .email(email)
+            .password(password)
+            .deviceToken("deviceToken")
+            .build()))
+            .isInstanceOf(ApiException.class)
+            .hasMessage(UserErrorCode.USER_NOT_FOUND.getDescription())
+        ;
+
+        //then
+    }
+
+    @Test
+    @DisplayName("패스워드가 맞지 않아 로그인에 실패한다.")
+    void loginNotEqualPassword() {
+        //given
+        String email = "user@test.com";
+        String password = "cook1234";
+        String nickName = "잇쿡";
+        createUser(email, password, nickName);
+
+        //when
+        assertThatThrownBy(() -> userService.login(ItCookUser.builder()
+            .email(email)
+            .password("cook12345")
+            .deviceToken("deviceToken")
+            .build()))
+            .isInstanceOf(ApiException.class)
+            .hasMessage(UserErrorCode.NOT_EQUAL_PASSWORD.getDescription())
+        ;
+
+        //then
     }
 
     private ItCookUser createUser(String username, String password, String nickName) {
