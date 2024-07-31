@@ -1,5 +1,7 @@
 package com.itcook.cooking.api.domains.user.service;
 
+import com.itcook.cooking.api.domains.user.service.dto.LoginServiceDto;
+import com.itcook.cooking.api.domains.user.service.dto.response.LoginResponse;
 import com.itcook.cooking.domain.domains.infra.oauth.dto.UserOAuth2Login;
 import com.itcook.cooking.api.domains.user.service.dto.response.SocialLoginResponse;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
@@ -7,10 +9,12 @@ import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.infra.oauth.SocialLoginFactory;
 import com.itcook.cooking.domain.domains.infra.oauth.dto.UserInfo;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.entity.dto.LoginDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
+import com.itcook.cooking.domain.domains.user.service.UserService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,7 @@ public class LoginUseCase {
     private final UserValidator userValidator;
     private final JwtTokenProvider jwtTokenProvider;
     private final SocialLoginFactory socialLoginFactory;
+    private final UserService userService;
 
     @Transactional
     public SocialLoginResponse socialLogin(UserOAuth2Login userOAuth2Login) {
@@ -47,4 +52,10 @@ public class LoginUseCase {
         userRepository.save(user);
     }
 
+    public LoginResponse login(LoginServiceDto loginServiceDto) {
+        userService.login(loginServiceDto.toEntity());
+        return LoginResponse.of(jwtTokenProvider.generateAccessTokenAndRefreshToken(
+            loginServiceDto.email(), List.of("ROLE_" + UserRole.USER.getRoleName())
+        ));
+    }
 }

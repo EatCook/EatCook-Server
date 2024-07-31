@@ -6,6 +6,7 @@ import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.domain.entity.UserImageRegisterService;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.AddSignupDomainResponse;
+import com.itcook.cooking.domain.domains.user.domain.entity.dto.LoginDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.MyPageProfileImageResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.validator.UserValidator;
@@ -63,6 +64,12 @@ public class UserService {
         user.issueTemporaryPassword(passwordEncoder.encode(temporaryPassword), temporaryPassword,
                 email);
         return temporaryPassword;
+    }
+
+    @Transactional
+    public void login(ItCookUser user) {
+        ItCookUser findUser = userAdaptor.queryActiveUserByEmail(user.getEmail());
+        findUser.login(LoginDto.of(user), userValidator);
     }
 
     /**

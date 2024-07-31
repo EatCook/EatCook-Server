@@ -3,6 +3,9 @@ package com.itcook.cooking.domain.domains.post.domain.entity;
 import com.itcook.cooking.domain.common.BaseTimeEntity;
 
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
+import com.itcook.cooking.domain.domains.user.domain.entity.UserCookingTheme;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
@@ -31,6 +34,11 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private Long userId;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<RecipeProcess> recipeProcesses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostCookingTheme> postCookingThemes = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "food_ingredients", joinColumns = @JoinColumn(name = "post_id"))
@@ -47,16 +55,19 @@ public class Post extends BaseTimeEntity {
     private PostFlag postFlag;
 
     @Builder
-    private Post(Long id, String recipeName, Integer recipeTime, String introduction, String postImagePath,
-                 Long userId, List<String> foodIngredients, List<LifeType> lifeTypes, PostFlag postFlag) {
-        this.id = id;
+    public Post(String recipeName, Integer recipeTime, String introduction, String postImagePath,
+                Long userId, List<RecipeProcess> recipeProcesses,
+                List<PostCookingTheme> postCookingThemes,
+                List<String> foodIngredients, List<LifeType> lifeTypes, PostFlag postFlag) {
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
         this.introduction = introduction;
+        this.postImagePath = postImagePath;
         this.userId = userId;
+        this.recipeProcesses = recipeProcesses;
+        this.postCookingThemes = postCookingThemes;
         this.foodIngredients = foodIngredients;
         this.lifeTypes = lifeTypes;
-        this.postImagePath = postImagePath;
         this.postFlag = postFlag;
     }
 
