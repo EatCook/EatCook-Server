@@ -92,6 +92,7 @@ public class HomePostQuerydslRepository {
                                 post.id,
                                 post.postImagePath,
                                 post.recipeName,
+                                post.introduction,
                                 post.recipeTime,
                                 liked.count()
                         )
