@@ -63,8 +63,8 @@ public class UserAdaptor {
         return userQueryRepository.getUserPostCounts(userId);
     }
 
-    public void queryActiveUserByEmail(String email) {
-        userRepository.findByEmailAndUserState(email, UserState.ACTIVE)
+    public ItCookUser queryActiveUserByEmail(String email) {
+        return userRepository.findByEmailAndUserState(email, UserState.ACTIVE)
             .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
     }
 }

@@ -1,5 +1,6 @@
 package com.itcook.cooking.api.domains.user.dto.request;
 
+import com.itcook.cooking.api.domains.user.service.dto.LoginServiceDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotBlank;
 
@@ -15,4 +16,11 @@ public record LoginRequest(
     String deviceToken
 ) {
 
+    public LoginServiceDto toServiceDto() {
+        return LoginServiceDto.builder()
+            .email(email)
+            .password(password)
+            .deviceToken(deviceToken)
+            .build();
+    }
 }

@@ -168,7 +168,8 @@ public class ItCookUser extends BaseTimeEntity {
     }
 
     public void login(LoginDto loginDto,UserValidator userValidator) {
-        userValidator.validateCurrentPassword(this, null);
+        userValidator.validateCurrentPassword(this, loginDto.password());
+        deviceToken = loginDto.deviceToken();
     }
 
     public void changePassword(String newEncodedPassword, String rawCurrentPassword,
