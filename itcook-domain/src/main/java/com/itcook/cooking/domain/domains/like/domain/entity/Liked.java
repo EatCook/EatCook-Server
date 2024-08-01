@@ -1,5 +1,7 @@
 package com.itcook.cooking.domain.domains.like.domain.entity;
 
+import com.itcook.cooking.domain.common.events.Events;
+import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,5 +31,9 @@ public class Liked {
         this.postId = postId;
     }
 
+    @PostPersist
+    public void registerEvent() {
+        Events.raise(UserLikedEvent.of(postId, itCookUserId));
+    }
 
 }

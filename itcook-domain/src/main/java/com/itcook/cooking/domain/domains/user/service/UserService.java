@@ -49,10 +49,6 @@ public class UserService {
         userAdaptor.checkDuplicateEmail(email);
     }
 
-    public ItCookUser save(ItCookUser user) {
-        return userAdaptor.saveUser(user);
-    }
-
     /**
      * 재발급
      */

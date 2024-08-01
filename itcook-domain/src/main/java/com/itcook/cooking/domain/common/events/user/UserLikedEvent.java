@@ -1,29 +1,27 @@
 package com.itcook.cooking.domain.common.events.user;
 
+import com.itcook.cooking.domain.common.events.DomainEvent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
-public class UserLikedEvent {
+public class UserLikedEvent extends DomainEvent {
 
-    private final String fromUserNickName; // 좋아요 누른 유저의 닉네임
     private final Long postId;
-    private final Long toUserId; // 좋아요 요청 게시물의 작성자
+    private final Long fromUserId; // 좋아요 요청 게시물의 작성자
 
     @Builder
-    private UserLikedEvent(String fromUserNickName, Long postId, Long toUserId) {
-        this.fromUserNickName = fromUserNickName;
+    private UserLikedEvent(Long postId, Long fromUserId) {
         this.postId = postId;
-        this.toUserId = toUserId;
+        this.fromUserId = fromUserId;
     }
 
-    public static UserLikedEvent of(String fromUserNickName, Long postId, Long toUserId) {
+    public static UserLikedEvent of(Long postId, Long fromUserId) {
         return UserLikedEvent.builder()
-            .fromUserNickName(fromUserNickName)
             .postId(postId)
-            .toUserId(toUserId)
+            .fromUserId(fromUserId)
             .build();
     }
 }

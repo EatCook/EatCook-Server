@@ -14,7 +14,6 @@ public class EventPublisherAspect implements ApplicationEventPublisherAware {
     private ApplicationEventPublisher publisher;
     private ThreadLocal<Boolean> appliedLocal = new ThreadLocal<>();
 
-    // TODO 이벤트 테스트
     @Around("@annotation(org.springframework.transaction.annotation.Transactional)")
     public Object handleEvent(ProceedingJoinPoint joinPoint) throws Throwable {
 
