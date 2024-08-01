@@ -42,7 +42,7 @@ public class AuthController {
 
     @Operation(summary = "일반 로그인 구현", description = "id, password, fcm device token을 받아 로그인을 시도한다.")
     @PostMapping("/login")
-    public ResponseEntity<?> login(
+    public ResponseEntity<ApiResponse> login(
         @RequestBody @Valid LoginRequest request
     ) {
         LoginResponse response = loginUseCase.login(request.toServiceDto());
