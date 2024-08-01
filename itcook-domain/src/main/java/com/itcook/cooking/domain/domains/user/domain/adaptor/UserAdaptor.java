@@ -1,7 +1,10 @@
 package com.itcook.cooking.domain.domains.user.domain.adaptor;
 
+import static com.itcook.cooking.domain.common.errorcode.UserErrorCode.USER_NOT_FOUND;
+
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserState;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserQueryRepository;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
@@ -58,5 +61,10 @@ public class UserAdaptor {
 
     public long getUserPostCounts(Long userId) {
         return userQueryRepository.getUserPostCounts(userId);
+    }
+
+    public ItCookUser queryActiveUserByEmail(String email) {
+        return userRepository.findByEmailAndUserState(email, UserState.ACTIVE)
+            .orElseThrow(() -> new ApiException(USER_NOT_FOUND));
     }
 }

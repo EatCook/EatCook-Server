@@ -65,4 +65,24 @@ class ItCookUserTest {
         //then
         assertThat(user.getProfile()).isEqualTo(key);
     }
+
+    @Test
+    @DisplayName("유저의 알림이 유형에 따라 true false를 반환한다.")
+    void isAlim() {
+        //given
+        ItCookUser user = ItCookUser.builder()
+            .email("user@test.com")
+            .password("cook1234")
+            .providerType(ProviderType.COMMON)
+            .nickName("잇쿡")
+            .profile("myProfile")
+            .userRole(UserRole.USER)
+            .build();
+
+        //when
+        Boolean alim = user.isAlim();
+
+        //then
+        assertThat(alim).isFalse();
+    }
 }

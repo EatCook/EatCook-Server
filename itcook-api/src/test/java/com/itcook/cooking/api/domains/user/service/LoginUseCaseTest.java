@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import com.itcook.cooking.api.IntegrationTestSupport;
+import com.itcook.cooking.api.domains.user.service.dto.SocialLoginServiceDto;
 import com.itcook.cooking.api.global.consts.ItCookConstants;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.infra.oauth.SocialLoginFactory;
@@ -51,7 +52,10 @@ class LoginUseCaseTest extends IntegrationTestSupport {
                 .build());
 
         //when
-        loginUseCase.socialLogin(userOAuth2Login);
+        loginUseCase.socialLogin(SocialLoginServiceDto.builder()
+            .token("kakaoAccessToken")
+            .providerType(ProviderType.KAKAO)
+            .build());
 
         //then
         ItCookUser itCookUser = userRepository.findByEmail("hangs0908@kakao.com")

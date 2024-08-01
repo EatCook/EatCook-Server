@@ -2,25 +2,18 @@ package com.itcook.cooking.api.global.config;
 
 import static com.itcook.cooking.api.global.consts.ItCookConstants.SWAGGER_PATTERNS;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcook.cooking.api.global.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtCheckFilter;
-import com.itcook.cooking.api.global.security.jwt.filter.JwtLoginFilter;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtLogoutHandler;
 import com.itcook.cooking.api.global.security.jwt.filter.JwtLogoutSuccessHandler;
-import com.itcook.cooking.api.global.security.jwt.service.ItCookUserDetailsService;
-import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,14 +22,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final ObjectMapper objectMapper;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final ItCookUserDetailsService userDetailsService;
     private final JwtCheckFilter jwtCheckFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtLogoutHandler jwtLogoutHandler;
     private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
-    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,14 +37,12 @@ public class SecurityConfig {
 
         http.authorizeRequests()
             .antMatchers(SWAGGER_PATTERNS).permitAll()
-            .antMatchers("/oauth2/login").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
             .antMatchers("/api/v1/users/**").permitAll()
             .antMatchers("/api/v1/emails/**").permitAll()
             .antMatchers("/api/v1/users/find/**").permitAll()
             .anyRequest().hasRole("USER");
 
-//        http.addFilterBefore(oAuth2LoginFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtCheckFilter, UsernamePasswordAuthenticationFilter.class);
 
         // todo
@@ -71,23 +58,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-    @Bean
-    public JwtLoginFilter jwtLoginFilter() {
-        JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(objectMapper,
-                jwtTokenProvider);
-        jwtLoginFilter.setAuthenticationManager(authenticationManager());
-        return jwtLoginFilter;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
-        authenticationProvider.setUserDetailsService(userDetailsService);
-        return new ProviderManager(authenticationProvider);
-    }
-
 
     @Bean
     public RoleHierarchy roleHierarchy() {

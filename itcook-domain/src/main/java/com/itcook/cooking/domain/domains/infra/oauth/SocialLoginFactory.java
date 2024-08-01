@@ -4,7 +4,6 @@ import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.infra.oauth.dto.UserInfo;
 import com.itcook.cooking.domain.domains.infra.oauth.dto.UserOAuth2Login;
-import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

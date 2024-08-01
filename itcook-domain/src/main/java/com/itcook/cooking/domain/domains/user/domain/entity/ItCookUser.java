@@ -7,6 +7,7 @@ import com.itcook.cooking.domain.common.events.Events;
 import com.itcook.cooking.domain.common.events.email.EmailSendEvent;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.AddSignupDomainResponse;
+import com.itcook.cooking.domain.domains.user.domain.entity.dto.LoginDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.MyPageProfileImageResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.validator.UserValidator;
@@ -122,6 +123,7 @@ public class ItCookUser extends BaseTimeEntity {
             .providerType(signupDto.providerType())
             .nickName(signupDto.nickName())
             .userRole(UserRole.USER)
+            .deviceToken(signupDto.deviceToken())
             .build();
         userValidator.validateSignup(user);
         return user;
@@ -166,6 +168,11 @@ public class ItCookUser extends BaseTimeEntity {
         addUserCookingThemes(cookingTypes);
     }
 
+    public void login(LoginDto loginDto,UserValidator userValidator) {
+        userValidator.validateCurrentPassword(this, loginDto.password());
+        deviceToken = loginDto.deviceToken();
+    }
+
     public void changePassword(String newEncodedPassword, String rawCurrentPassword,
         UserValidator userValidator) {
         userValidator.validateCurrentPassword(this, rawCurrentPassword);
@@ -199,10 +206,6 @@ public class ItCookUser extends BaseTimeEntity {
         return getBadge().getDescription();
     }
 
-    public void updateProfile(String profile) {
-        this.profile = profile;
-    }
-
     public void updateNickName(String newNickName, UserValidator userValidator) {
         userValidator.validateDuplicateNickName(newNickName);
         this.nickName = newNickName;
@@ -228,6 +231,10 @@ public class ItCookUser extends BaseTimeEntity {
         return lifeType.getLifeTypeName();
     }
 
+    public void changeDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+
     public List<String> getCookingTypes() {
         return this.userCookingThemes.stream().map(UserCookingTheme::getCookingTypeName)
             .toList();
@@ -237,6 +244,10 @@ public class ItCookUser extends BaseTimeEntity {
         LifeType lifeType
     ) {
         this.lifeType = lifeType;
+    }
+
+    public Boolean isAlim() {
+        return serviceAlertType == ServiceAlertType.ACTIVATE;
     }
 
     public MyPageProfileImageResponse changeProfileImage(String fileExtension,

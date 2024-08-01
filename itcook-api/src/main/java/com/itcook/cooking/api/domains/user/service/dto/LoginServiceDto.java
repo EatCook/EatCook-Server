@@ -1,21 +1,19 @@
 package com.itcook.cooking.api.domains.user.service.dto;
 
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import lombok.Builder;
 
 @Builder
-public record SignupServiceDto(
+public record LoginServiceDto(
     String email,
-    String password
+    String password,
+    String deviceToken
 ) {
-
     public ItCookUser toEntity() {
         return ItCookUser.builder()
             .email(email)
             .password(password)
-            .providerType(ProviderType.COMMON)
-            .build()
-            ;
+            .deviceToken(deviceToken)
+            .build();
     }
 }

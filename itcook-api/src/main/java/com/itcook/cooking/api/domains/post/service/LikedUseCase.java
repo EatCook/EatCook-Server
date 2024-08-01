@@ -31,15 +31,11 @@ public class LikedUseCase {
         likedService.validateDuplicateLiked(findByItCookUser.getId(), reqPostId);
 
         Liked newLiked = Liked.builder()
-                .postId(findByPost.getId())
-                .itCookUserId(findByItCookUser.getId())
+                .postId(findByPost.getId()) // 좋아요 누른 게시글 id
+                .itCookUserId(findByItCookUser.getId()) // from user
                 .build();
 
         likedService.createLiked(newLiked);
-
-        // 게시물 작성자에게 좋아요 요청 알림
-        eventPublisher.publishEvent(UserLikedEvent.of(findByItCookUser.getNickName(), reqPostId,
-                findByItCookUser.getId()));
     }
 
     public void likedDel(String email, Long reqPostId) {

@@ -8,24 +8,17 @@ public record SignupDto(
     String email,
     String password,
     ProviderType providerType,
-    String nickName
+    String nickName,
+    String deviceToken
 ) {
 
-    public static SignupDto of(String email, String password, ProviderType providerType) {
-        return SignupDto.builder()
-            .email(email)
-            .password(password)
-            .providerType(providerType)
-            .build()
-            ;
-    }
-
-    public static SignupDto of(String email, String nickName,String password, ProviderType providerType) {
+    public static SignupDto of(String email, String nickName, String password, ProviderType providerType, String deviceToken) {
         return SignupDto.builder()
             .email(email)
             .password(password)
             .nickName(nickName)
             .providerType(providerType)
+            .deviceToken(deviceToken)
             .build()
             ;
     }
