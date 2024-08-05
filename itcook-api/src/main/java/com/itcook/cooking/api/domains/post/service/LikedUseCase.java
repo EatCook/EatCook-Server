@@ -21,7 +21,6 @@ public class LikedUseCase {
     private final UserService userService;
     private final PostService postService;
     private final LikedService likedService;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void likedAdd(String email, Long reqPostId) {
