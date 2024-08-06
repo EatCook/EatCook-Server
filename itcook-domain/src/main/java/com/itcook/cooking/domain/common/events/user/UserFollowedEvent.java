@@ -1,12 +1,13 @@
 package com.itcook.cooking.domain.common.events.user;
 
+import com.itcook.cooking.domain.common.events.DomainEvent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
-public class UserFollowedEvent {
+public class UserFollowedEvent extends DomainEvent {
 
     private final String followerNickName;
     private final Long followingId;

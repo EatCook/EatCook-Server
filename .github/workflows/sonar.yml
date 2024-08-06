@@ -40,7 +40,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
 
       - name: Start Containers
-        run: docker-compose -f docker-compose-dev.yml up -d
+        run: docker compose -f docker-compose-dev.yml up -d
 
       - name: Build and analyze
         env:
