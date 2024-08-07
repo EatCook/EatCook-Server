@@ -40,7 +40,7 @@ public class FollowUseCase {
 
         fromItCookUserData.updateFollow(follow);
 
-        Events.raise(UserFollowedEvent.of(fromItCookUserData.getNickName(),
+        Events.raise(UserFollowedEvent.of(fromItCookUserData.getId(),fromItCookUserData.getNickName(),
             followRequest.getToUserId()));
     }
 
