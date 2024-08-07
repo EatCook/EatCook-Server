@@ -46,7 +46,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
     private SignupQueryUseCase signupQueryUseCase;
 
     @Autowired
-    private FindUserCase findUserCase;
+    private FindUserUseCase findUserUseCase;
 
     @Autowired
     private FindUserQueryUseCase findUserQueryUseCase;
@@ -287,7 +287,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         given(redisService.getData(anyString())).willReturn("123456");
 
         //when
-        findUserCase.verifyFindUser(serviceDto);
+        findUserUseCase.verifyFindUser(serviceDto);
 
         //then
 
@@ -309,7 +309,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         //when
 
         //then
-        assertThatThrownBy(() -> findUserCase.verifyFindUser(serviceDto))
+        assertThatThrownBy(() -> findUserUseCase.verifyFindUser(serviceDto))
             .isInstanceOf(ApiException.class)
             .hasMessage("인증 코드가 일치하지 않습니다.")
         ;
@@ -332,7 +332,7 @@ public class SignupUseCaseTest extends IntegrationTestSupport {
         //when
 
         //then
-        assertThatThrownBy(() -> findUserCase.verifyFindUser(serviceDto))
+        assertThatThrownBy(() -> findUserUseCase.verifyFindUser(serviceDto))
             .isInstanceOf(ApiException.class)
             .hasMessage("인증 요청을 먼저 해주세요.")
         ;

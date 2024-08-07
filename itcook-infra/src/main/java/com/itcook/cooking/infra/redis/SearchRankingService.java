@@ -83,8 +83,8 @@ public class SearchRankingService {
         log.info("검색어 랭킹 업데이트 {}", lastUpdateTime);
     }
 
-    public LocalDateTime getLastUpdateTime() {
-        return lastUpdateTime;
-    }
+//    public LocalDateTime getLastUpdateTime() {
+//        return lastUpdateTime;
+//    }
 }
 

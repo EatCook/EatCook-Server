@@ -1,5 +1,7 @@
 package com.itcook.cooking.api.domains.user.service;
 
+import static com.itcook.cooking.domain.common.constant.UserConstant.EMAIL_PREFIX;
+
 import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
 import com.itcook.cooking.api.domains.user.service.dto.AddSignupServiceDto;
@@ -28,7 +30,7 @@ public class SignupUseCase {
      * 이메일 인증 코드 검증 서비스
      */
     public void verifyAuthCode(VerifyEmailServiceDto verifyEmailServiceDto) {
-        authCodeRedisService.verifyAuthCode(verifyEmailServiceDto.email(), verifyEmailServiceDto.authCode());
+        authCodeRedisService.verifyAuthCode(EMAIL_PREFIX+ verifyEmailServiceDto.email(), verifyEmailServiceDto.authCode());
 
     }
 
