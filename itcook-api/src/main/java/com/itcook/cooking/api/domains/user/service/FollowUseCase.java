@@ -8,12 +8,10 @@ import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Slf4j
@@ -22,7 +20,6 @@ import java.util.List;
 public class FollowUseCase {
 
     private final UserService userService;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void toUserFollowAdd(String fromUserEmail, FollowRequest followRequest) {

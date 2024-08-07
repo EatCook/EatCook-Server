@@ -52,8 +52,7 @@ public class FcmServiceImpl implements FcmService {
             firebaseMessaging.sendAsync(message).get();
         } catch (InterruptedException | ExecutionException e) {
             log.error("파이어베이스 메시징 실패 to user ID: {}", itCookUser.getId(), e);
-            if (e.getCause() instanceof FirebaseMessagingException) {
-                FirebaseMessagingException fme = (FirebaseMessagingException) e.getCause();
+            if (e.getCause() instanceof FirebaseMessagingException fme) {
                 log.error("파이어베이스 메세징 error code: {}", fme.getErrorCode());
             }
         }
