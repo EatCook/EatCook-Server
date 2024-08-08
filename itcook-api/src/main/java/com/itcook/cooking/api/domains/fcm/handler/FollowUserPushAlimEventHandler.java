@@ -3,6 +3,7 @@ package com.itcook.cooking.api.domains.fcm.handler;
 import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
 import com.itcook.cooking.domain.domains.infra.fcm.FcmService;
 import com.itcook.cooking.domain.domains.infra.fcm.dto.FcmSend;
+import com.itcook.cooking.domain.domains.notification.domain.entity.NotificationType;
 import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,8 @@ public class FollowUserPushAlimEventHandler {
         fcmService.sendMessageTo(FcmSend.builder()
             .title("팔로우 요청")
             .body(String.format("%s님이 회원님을 팔로우 했습니다.", userFollowedEvent.getFollowerNickName()))
+            .fromUserId(userFollowedEvent.getFollowerId())
+            .notificationType(NotificationType.FOLLOW)
             .targetUserId(followingUser.getId())
             .build());
     }

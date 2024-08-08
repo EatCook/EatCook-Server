@@ -3,6 +3,7 @@ package com.itcook.cooking.api.domains.fcm.handler;
 import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
 import com.itcook.cooking.domain.domains.infra.fcm.FcmService;
 import com.itcook.cooking.domain.domains.infra.fcm.dto.FcmSend;
+import com.itcook.cooking.domain.domains.notification.domain.entity.NotificationType;
 import com.itcook.cooking.domain.domains.post.domain.adaptor.PostAdaptor;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
@@ -43,6 +44,9 @@ public class LikeUserPushAlimEventHandler {
             .title("좋아요 요청")
             .body(String.format("%s님이 회원님의 레시피를 좋아합니다.", fromUser.getNickName()))
             .targetUserId(postWriter.getId())
+            .notificationType(NotificationType.LIKE)
+            .postId(post.getId())
+            .fromUserId(fromUser.getId())
             .build());
     }
 }

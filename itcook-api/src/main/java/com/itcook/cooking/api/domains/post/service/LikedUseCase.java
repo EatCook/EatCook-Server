@@ -1,7 +1,6 @@
 package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
 import com.itcook.cooking.domain.domains.like.domain.entity.Liked;
 import com.itcook.cooking.domain.domains.like.service.LikedService;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
@@ -10,7 +9,6 @@ import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 @UseCase

@@ -1,5 +1,6 @@
 package com.itcook.cooking.domain.domains.user.service;
 
+import static com.itcook.cooking.domain.common.constant.UserConstant.EMAIL_PREFIX;
 import static com.itcook.cooking.domain.domains.infra.email.EmailTemplate.AUTH_EMAIL;
 
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
@@ -38,7 +39,7 @@ public class AuthCodeRedisService {
 
     public void sendAuthCode(String toEmail) {
         String authCode = RandomCodeUtils.generateRandomCode();
-        redisService.setDataWithExpire(toEmail, authCode, 180L);
+        redisService.setDataWithExpire(EMAIL_PREFIX + toEmail, authCode, 180L);
         eventPublisher.publishEvent(
             EmailSendEvent.of(AUTH_EMAIL.getSub(), AUTH_EMAIL.formatBody(authCode),
                 toEmail));

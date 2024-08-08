@@ -9,17 +9,20 @@ import lombok.ToString;
 @ToString
 public class UserFollowedEvent extends DomainEvent {
 
+    private final Long followerId;
     private final String followerNickName;
     private final Long followingId;
 
     @Builder
-    private UserFollowedEvent(String followerNickName, Long followingId) {
+    private UserFollowedEvent(Long followerId, String followerNickName, Long followingId) {
+        this.followerId = followerId;
         this.followerNickName = followerNickName;
         this.followingId = followingId;
     }
 
-    public static UserFollowedEvent of(String followerNickName, Long followingId) {
+    public static UserFollowedEvent of(Long followerId,String followerNickName, Long followingId) {
         return UserFollowedEvent.builder()
+            .followerId(followerId)
             .followerNickName(followerNickName)
             .followingId(followingId)
             .build()

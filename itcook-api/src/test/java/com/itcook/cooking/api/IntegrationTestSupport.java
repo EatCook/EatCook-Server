@@ -30,7 +30,5 @@ public abstract class IntegrationTestSupport {
 //    @MockBean
 //    protected FcmConfig fcmConfig;
 
-    @MockBean
-    protected FcmService fcmService;
 
 }

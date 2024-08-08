@@ -9,7 +9,7 @@ import com.itcook.cooking.api.domains.user.dto.request.SignupRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyEmailAuthRequest;
 import com.itcook.cooking.api.domains.user.dto.request.VerifyFindUserRequest;
 import com.itcook.cooking.api.domains.user.dto.response.UserResponse;
-import com.itcook.cooking.api.domains.user.service.FindUserCase;
+import com.itcook.cooking.api.domains.user.service.FindUserUseCase;
 import com.itcook.cooking.api.domains.user.service.FindUserQueryUseCase;
 import com.itcook.cooking.api.domains.user.service.SignupQueryUseCase;
 import com.itcook.cooking.api.domains.user.service.SignupUseCase;
@@ -35,7 +35,7 @@ public class SignupController {
 
     private final SignupUseCase signupUseCase;
     private final SignupQueryUseCase signupQueryUseCase;
-    private final FindUserCase findUserCase;
+    private final FindUserUseCase findUserUseCase;
     private final FindUserQueryUseCase findUserQueryUseCase;
 
     @Operation(summary = "이메일 인증 요청", description = "가입할 이메일 인증 요청")
@@ -108,7 +108,7 @@ public class SignupController {
     public ResponseEntity<ApiResponse> verifyFindUser(
         @RequestBody @Valid VerifyFindUserRequest verifyFindUserRequest
     ) {
-        findUserCase.verifyFindUser(
+        findUserUseCase.verifyFindUser(
             verifyFindUserRequest.toServiceDto());
         return ResponseEntity.ok(ApiResponse.OK("계정 찾기 인증코드 검증 성공."));
     }
@@ -118,7 +118,7 @@ public class SignupController {
     public ResponseEntity<ApiResponse> newPassword(
         @RequestBody @Valid FindUserNewPasswordRequest request
     ) {
-        findUserCase.findUserChangeNewPassword(request.toServiceDto());
+        findUserUseCase.findUserChangeNewPassword(request.toServiceDto());
         return ResponseEntity.ok(ApiResponse.OK("비밀번호 변경 성공."));
     }
 
