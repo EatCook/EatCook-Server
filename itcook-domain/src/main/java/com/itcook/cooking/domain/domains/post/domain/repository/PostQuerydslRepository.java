@@ -1,9 +1,12 @@
 package com.itcook.cooking.domain.domains.post.domain.repository;
 
+import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.RecipeDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.SearchPostDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
@@ -292,7 +295,38 @@ public class PostQuerydslRepository {
                 );
 
         return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchOne);
+    }
 
+    /**
+     * 레시피 조회
+     */
+    public RecipeDto findRecipe(Long postId, Long authUserId) {
+        RecipeDto recipeDto = jpaQueryFactory.select(
+                        Projections.constructor(
+                                RecipeDto.class,
+                                post,
+                                itCookUser,
+                                liked.postId.count()
+                        )
+                )
+                .from(post)
+                .join(itCookUser).on(itCookUser.id.eq(post.userId))
+                .leftJoin(liked).on(post.id.eq(liked.postId))
+                .where(
+                        post.id.eq(postId),
+                        post.postFlag.eq(PostFlag.ACTIVATE)
+                )
+                .fetchOne();
+        if (recipeDto == null) {
+            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
+        }
+        Set<Long> likedByUserId = findLikedByUserId(authUserId);
+        Set<Long> archiveByUserId = findArchiveByUserId(authUserId);
+
+        recipeDto.setLikedCheck(likedByUserId.contains(recipeDto.getPost().getId()));
+        recipeDto.setArchiveCheck(archiveByUserId.contains(recipeDto.getPost().getId()));
+
+        return recipeDto;
     }
 
     private BooleanExpression lessThanId(Long lastId) {
@@ -365,5 +399,6 @@ public class PostQuerydslRepository {
                 .where(archive.itCookUserId.eq(userId))
                 .fetch());
     }
+
 }
 

@@ -12,6 +12,7 @@ import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeed
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.RecipeDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
@@ -43,14 +44,8 @@ public class PostService {
         return postAdaptor.findCookTalkFollows(authUserId, followIds, pageable);
     }
 
-    public List<Object[]> fetchFindByRecipe(Long postId) {
-        List<Object[]> findPostData = postRepository.findRecipeData(postId, PostFlag.ACTIVATE);
-
-        if (findPostData.isEmpty()) {
-            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
-        }
-
-        return findPostData;
+    public RecipeDto getRecipe(Long postId, ItCookUser authUser) {
+        return postAdaptor.findRecipe(postId, authUser.getId());
     }
 
     public Page<MyRecipeResponse> getPostsByUserId(Long userId, Pageable pageable) {
