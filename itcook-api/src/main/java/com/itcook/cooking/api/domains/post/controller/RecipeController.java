@@ -4,39 +4,42 @@ import com.itcook.cooking.api.domains.post.dto.request.RecipeCreateRequest;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeDeleteRequest;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeUpdateRequest;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeCreateResponse;
-import com.itcook.cooking.api.domains.post.dto.response.RecipeReadResponse;
+import com.itcook.cooking.api.domains.post.dto.response.RecipeGetResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeUpdateResponse;
 import com.itcook.cooking.api.domains.post.service.RecipeUseCase;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
+import com.itcook.cooking.domain.common.constant.StatusCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/recipe")
+@RequestMapping("/api")
 @SecurityRequirement(name = "access-token")
 @Tag(name = "03. Recipe")
 public class RecipeController {
 
     private final RecipeUseCase recipeUseCase;
 
+    @Deprecated
     @Operation(summary = "recipe 생성 요청", description = "recipe 생성 요청 설명")
-    @PostMapping("/create")
+    @PostMapping("/v1/recipe/create")
     public ResponseEntity<ApiResponse<RecipeCreateResponse>> createRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody RecipeCreateRequest recipeCreateRequest
@@ -47,27 +50,39 @@ public class RecipeController {
                 authenticationUser.getUsername(),
                 recipeCreateRequest);
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(StatusCode.OK.code)
                 .body(ApiResponse.OK(recipeCreateResponse));
     }
 
+//    @Operation(summary = "레시피 저장", description = "레시피 정보를 저장합니다.")
+//    @PostMapping("/v2/recipes")
+//    public ResponseEntity<ApiResponse<RecipeAddResponse>> addRecipe(
+//            @AuthenticationPrincipal AuthenticationUser authenticationUser,
+//            @Valid @RequestBody RecipeAddRequest request
+//    ) {
+//        RecipeAddResponse recipeCreateResponse = recipeUseCase.addRecipe(
+//                authenticationUser.getUsername(), request);
+//
+//        return ResponseEntity.status(StatusCode.OK.code)
+//                .body(ApiResponse.OK(recipeCreateResponse));
+//    }
+
     @Operation(summary = "recipe 조회 요청", description = "recipe 조회 요청 설명")
-    @GetMapping("/read")
-    public ResponseEntity<ApiResponse<RecipeReadResponse>> readRecipe(
+    @GetMapping("/v1/recipes/{recipeId}")
+    public ResponseEntity<ApiResponse<RecipeGetResponse>> readRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @RequestParam("postId") Long postId
+            @PathVariable Long recipeId
     ) {
 
-        RecipeReadResponse recipeResponses = recipeUseCase.getReadRecipeV1(
-                authenticationUser.getUsername(),
-                postId);
+        RecipeGetResponse response = recipeUseCase
+                .getReadRecipe(authenticationUser.getUsername(), recipeId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.OK(recipeResponses));
+                .body(ApiResponse.OK(response));
     }
 
     @Operation(summary = "recipe 수정 요청", description = "recipe 수정 요청 설명")
-    @PostMapping("/update")
+    @PostMapping("/v1/recipe/update")
     public ResponseEntity<ApiResponse<RecipeUpdateResponse>> updateRecipe(
             @Valid @RequestBody RecipeUpdateRequest recipeUpdateRequest
     ) {
