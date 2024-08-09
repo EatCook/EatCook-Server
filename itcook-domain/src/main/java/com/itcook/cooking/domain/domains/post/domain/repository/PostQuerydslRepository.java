@@ -206,12 +206,15 @@ public class PostQuerydslRepository {
         List<OtherPagePostInfoResponse> posts = jpaQueryFactory.select(
                         Projections.constructor(
                                 OtherPagePostInfoResponse.class,
+                                itCookUser.id,
+                                itCookUser.email,
+                                itCookUser.profile,
+                                itCookUser.nickName,
                                 post.id,
+                                post.introduction,
                                 post.postImagePath,
                                 post.recipeName,
                                 post.recipeTime,
-                                itCookUser.profile,
-                                itCookUser.nickName,
                                 liked.count()
                         )
                 )
