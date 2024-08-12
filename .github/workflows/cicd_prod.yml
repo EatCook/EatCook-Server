@@ -81,5 +81,5 @@ jobs:
             sudo touch .env
             echo "${{ secrets.PROD_ENV_VARS }}" | sudo tee .env > /dev/null
             docker system prune -a -f
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-prod
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api
             docker-compose up -d
