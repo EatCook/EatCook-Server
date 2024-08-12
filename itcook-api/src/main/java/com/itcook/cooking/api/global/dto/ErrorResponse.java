@@ -1,6 +1,9 @@
 package com.itcook.cooking.api.global.dto;
 
-import com.itcook.cooking.api.global.errorcode.ErrorCode;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.itcook.cooking.domain.common.errorcode.ErrorCode;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,9 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter @Setter
 public class ErrorResponse extends ApiResponse{
 
-    private final Map<String, String> validation;
+//    @Schema(description = "에러 validation 필드",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @JsonInclude(Include.NON_EMPTY)
+    private final ConcurrentHashMap<String, String> validation;
 
-    protected ErrorResponse(Integer code, String message) {
+    protected ErrorResponse(String code, String message) {
         super(false, code, message, null);
         this.validation = new ConcurrentHashMap<>();
     }
@@ -22,7 +27,7 @@ public class ErrorResponse extends ApiResponse{
         this.validation = new ConcurrentHashMap<>();
     }
 
-    public static ErrorResponse ERROR(Integer code, String message) {
+    public static ErrorResponse ERROR(String code, String message) {
         return new ErrorResponse(code, message);
     }
 

@@ -1,19 +1,79 @@
 spring:
   config:
     activate:
-      on-profile: domain
+      on-profile: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/${MYSQL_DB}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://${DEV_URL}/${DEV_DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    username: ${DEV_ID}
+    password: ${DEV_PW}
   jpa:
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+        jdbc:
+          batch_size: 20
+          order_inserts: true
+          order_updates: true
     hibernate:
-      ddl-auto: create
-#    database-platform: org.hibernate.dialect.MySQL8Dialect
+      ddl-auto: validate
+    #    database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/itcook_local?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    username: root
+    password: cook1234
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        jdbc:
+          batch_size: 20
+          order_inserts: true
+          order_updates: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  flyway:
+    enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${PROD_URL}/${PROD_DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    username: ${PROD_ID}
+    password: ${PROD_PW}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        jdbc:
+          batch_size: 20
+          order_inserts: true
+          order_updates: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  flyway:
+    enabled: false

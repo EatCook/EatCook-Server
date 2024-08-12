@@ -1,4 +1,26 @@
 dependencies {
+    // redis
     api 'org.springframework.boot:spring-boot-starter-data-redis'
+    api 'org.springframework.boot:spring-boot-starter-cache'
+    // mail
+    implementation 'com.amazonaws:aws-java-sdk-ses:1.12.665'
+    api 'org.springframework.boot:spring-boot-starter-mail'
+    api 'com.sun.mail:javax.mail:1.6.2'
+    // s3
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.667'
+
+    // firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+    // jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // openfeign
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:2021.0.5")
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5', 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 }

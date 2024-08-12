@@ -1,9 +1,10 @@
 package com.itcook.cooking;
 
-import com.itcook.cooking.domain.domains.user.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 
+import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ItCookUserCreate {
@@ -13,6 +14,8 @@ public class ItCookUserCreate {
                 .email("test@gmail.com")
                 .password("1234")
                 .nickName("테스트")
+                .userRole(UserRole.USER)
+            .providerType(ProviderType.COMMON)
                 .build()
                 ;
     }
@@ -25,6 +28,8 @@ public class ItCookUserCreate {
                             .email("test" + i + "@gmail.com")
                             .password("1234")
                             .nickName("테스트" + i)
+                            .userRole(UserRole.USER)
+                        .providerType(ProviderType.COMMON)
                             .build();
                 })
                 .toList();

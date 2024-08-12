@@ -2,4 +2,5 @@ rootProject.name = 'itcook-service'
 include 'itcook-domain'
 include 'itcook-api'
 include 'itcook-infra'
+include 'itcook-batch'
 

@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    container_name: mysql
+    environment:
+      TZ: Asia/Seoul
+      MYSQL_DATABASE: itcook_local
+      MYSQL_ROOT_PASSWORD: cook1234
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+  redis:
+    container_name: redis
+    image: redis:alpine
+    command: redis-server
+    environment:
+      TZ: Asia/Seoul
+    ports:
+      - "6379:6379"
+#  server:
+#    build:
+#      context: ./itcook-api
+#      dockerfile: Dockerfile
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/itcook_local?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+#    depends_on:
+#      - mysql
+#      - redis
+#    ports:
+#      - "8080:8080"

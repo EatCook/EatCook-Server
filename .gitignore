@@ -4,9 +4,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-docker-compose.yml
 application-local.yml
-application-test.yml
+generated/
+*.json
+!.gitkeep
 
 ### IntelliJ IDEA ###
 .idea

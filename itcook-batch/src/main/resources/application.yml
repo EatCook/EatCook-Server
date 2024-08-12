@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: local
+    include:
+      - domain
+      - infra
+  batch:
+    jdbc:
+      initialize-schema: never
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local

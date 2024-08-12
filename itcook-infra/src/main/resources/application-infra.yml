@@ -1,0 +1,63 @@
+oauth:
+  apple:
+    grant-type: authorization_code
+    client-id: ${APPLE_CLIENT_ID}
+    key-id: ${APPLE_KEY_ID}
+    team-id: ${APPLE_TEAM_ID}
+    audience: https://appleid.apple.com
+    private-key: YOUR_APPLE_P8_KEY (-----BEGIN PRIVATE KEY-----, -----END PRIVATE KEY----- 를 제외한 key 문자열을 띄어쓰기 없이 넣어야 합니다)
+aws:
+  ses:
+    access-key: ${SES_ACCESS_KEY}
+    secret-key: ${SES_SECRET_KEY}
+  s3:
+    access-key: ${S3_ACCESS_KEY}
+    secret-key: ${S3_SECRET_KEY}
+    bucket: ${S3_BUCKET}
+app:
+  firebase:
+    config:
+      file: ${FIREBASE_CONFIG_FILE:firebase/firebase-adminsdk.json}
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+logging:
+  level:
+    com.itcook.cooking.infra.*: debug
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+  redis:
+    host: localhost
+    port: 6379
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  redis:
+    host: ${DEV_REDIS_HOST:localhost}
+    port: ${DEV_REDIS_PORT:6379}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  redis:
+    host: ${PROD_REDIS_HOST}
+    port: ${PROD_REDIS_PORT}

@@ -1,12 +1,42 @@
 spring:
   profiles:
-    active: local
     include:
       - domain
       - infra
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 logging:
   config: classpath:logback-${spring.profiles.active}.xml
+#  level:
+#    org.hibernate.type: trace
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    enabled: true
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+    display-request-duration: true
+
+swagger-server:
+  host: ${SWAGGER_DEV_HOST}
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY:testkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkeytestkey}
+  access-exp: ${JWT_ACCESS_EXP:1800}
+  refresh-exp: ${JWT_REFRESH_EXP:3600}
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
 ---
 spring:
   config:
