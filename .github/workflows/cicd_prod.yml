@@ -1,4 +1,4 @@
-name: eatcook dev api CI/CD script
+name: Deploy Api Server
 
 on:
   push:
