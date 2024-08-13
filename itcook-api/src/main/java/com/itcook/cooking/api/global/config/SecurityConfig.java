@@ -52,6 +52,7 @@ public class SecurityConfig {
         ;
 
         http.logout()
+                .logoutUrl("/api/v1/auth/logout")
                 .addLogoutHandler(jwtLogoutHandler)
                 .logoutSuccessHandler(jwtLogoutSuccessHandler)
         ;
