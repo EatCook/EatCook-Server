@@ -8,6 +8,7 @@ import static com.itcook.cooking.api.global.consts.ItCookConstants.USERNAME_CLAI
 import static io.jsonwebtoken.SignatureAlgorithm.HS512;
 
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
+import com.itcook.cooking.api.global.security.jwt.properties.JwtProperties;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
@@ -21,29 +22,21 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final Long accessExp;
-    private final Long refreshExp;
-    private final Key key;
     private final RedisService redisService;
+    private final JwtProperties jwtProperties;
 
-    public JwtTokenProvider(
-        @Value("${jwt.secret-key}") String secretKey,
-        @Value("${jwt.access-exp}") Long accessExp,
-        @Value("${jwt.refresh-exp}") Long refreshExp,
-        RedisService redisService
-    ) {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        this.redisService = redisService;
-        this.accessExp = accessExp;
-        this.refreshExp = refreshExp;
+
+    private Key getSecretKey() {
+        return Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
     }
 
 
@@ -51,7 +44,7 @@ public class JwtTokenProvider {
         String accessToken = generateAccessToken(username, authorities);
         String refreshToken = generateRefreshToken(username);
 
-        redisService.setDataWithExpire(username, refreshToken, refreshExp);
+        redisService.setDataWithExpire(username, refreshToken, jwtProperties.getRefreshExp());
 
         return TokenDto.builder()
             .accessToken(accessToken)
@@ -61,26 +54,28 @@ public class JwtTokenProvider {
 
 
     public String generateAccessToken(String username, List<String> authorities) {
+        Key encodedKey = getSecretKey();
         return Jwts.builder()
             .setIssuer(TOKEN_ISSUER)
             .setSubject(ACCESS_TOKEN_SUBJECT)
             .setIssuedAt(new Date())
             .claim(USERNAME_CLAIM, username)
             .claim(ROLES_CLAIM, authorities)
-            .setExpiration(new Date(new Date().getTime() + accessExp * 1000L))
-            .signWith(key, HS512)
+            .setExpiration(new Date(new Date().getTime() + jwtProperties.getAccessExp() * 1000L))
+            .signWith(encodedKey, HS512)
             .compact()
             ;
     }
 
     public String generateRefreshToken(String username) {
+        Key encodedKey = getSecretKey();
         return Jwts.builder()
             .setIssuer(TOKEN_ISSUER)
             .setSubject(REFRESH_TOKEN_SUBJECT)
             .setIssuedAt(new Date())
             .claim(USERNAME_CLAIM, username)
-            .setExpiration(new Date(new Date().getTime() + refreshExp * 1000L))
-            .signWith(key, HS512)
+            .setExpiration(new Date(new Date().getTime() + jwtProperties.getRefreshExp() * 1000L))
+            .signWith(encodedKey, HS512)
             .compact()
             ;
     }
@@ -88,7 +83,7 @@ public class JwtTokenProvider {
     public Claims isTokenValid(String token) {
         try {
             return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSecretKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -123,7 +118,7 @@ public class JwtTokenProvider {
     public Claims parseAccessToken(String accessToken) {
         try {
             return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSecretKey())
                 .build()
                 .parseClaimsJws(accessToken)
                 .getBody();

@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 
 import com.itcook.cooking.api.global.mock.MockRedisService;
 import com.itcook.cooking.api.global.security.jwt.dto.TokenDto;
+import com.itcook.cooking.api.global.security.jwt.properties.JwtProperties;
 import com.itcook.cooking.api.global.security.jwt.service.JwtTokenProvider;
 import com.itcook.cooking.domain.common.errorcode.CommonErrorCode;
 import com.itcook.cooking.domain.common.errorcode.ErrorCode;
@@ -35,7 +36,8 @@ class JwtTokenProviderTest {
         Long accessExp = 3L;
         Long refreshExp = 5L;
         redisService = mock(MockRedisService.class);
-        jwtTokenProvider = new JwtTokenProvider(key,accessExp,refreshExp,redisService);
+        JwtProperties jwtProperties = new JwtProperties(key, accessExp, refreshExp);
+        jwtTokenProvider = new JwtTokenProvider(redisService, jwtProperties);
     }
 
     @Test
