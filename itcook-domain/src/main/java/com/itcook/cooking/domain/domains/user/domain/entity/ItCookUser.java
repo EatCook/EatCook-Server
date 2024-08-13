@@ -93,7 +93,7 @@ public class ItCookUser extends BaseTimeEntity {
     @Column(name = "device_token")
     private String deviceToken;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserCookingTheme> userCookingThemes = new ArrayList<>();
 
     @Builder

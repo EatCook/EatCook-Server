@@ -237,7 +237,7 @@ class UserDomainIntegrationServiceTest extends IntegrationTestSupport {
             updateInterestCook.lifeType());
 
         //then
-        ItCookUser findUser = userRepository.findByEmail("user1@test.com").get();
+        ItCookUser findUser = userRepository.findById(user.getId()).get();
 
         assertThat(findUser.getUserCookingThemes()).isEmpty();
     }

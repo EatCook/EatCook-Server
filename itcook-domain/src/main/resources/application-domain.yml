@@ -74,6 +74,7 @@ spring:
           order_updates: true
     hibernate:
       ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
   flyway:
     enabled: true
