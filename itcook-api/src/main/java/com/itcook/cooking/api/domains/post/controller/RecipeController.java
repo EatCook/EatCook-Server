@@ -37,35 +37,18 @@ public class RecipeController {
 
     private final RecipeUseCase recipeUseCase;
 
-    @Deprecated
-    @Operation(summary = "recipe 생성 요청", description = "recipe 생성 요청 설명")
-    @PostMapping("/v1/recipe/create")
+    @Operation(summary = "레시피 등록 요청", description = "쿡톡에 레시피를 등록합니다.")
+    @PostMapping("/v1/recipes")
     public ResponseEntity<ApiResponse<RecipeCreateResponse>> createRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody RecipeCreateRequest recipeCreateRequest
-
     ) {
-
         RecipeCreateResponse recipeCreateResponse = recipeUseCase.createRecipe(
-                authenticationUser.getUsername(),
-                recipeCreateRequest);
+                authenticationUser.getUsername(), recipeCreateRequest);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(ApiResponse.OK(recipeCreateResponse));
     }
-
-//    @Operation(summary = "레시피 저장", description = "레시피 정보를 저장합니다.")
-//    @PostMapping("/v2/recipes")
-//    public ResponseEntity<ApiResponse<RecipeAddResponse>> addRecipe(
-//            @AuthenticationPrincipal AuthenticationUser authenticationUser,
-//            @Valid @RequestBody RecipeAddRequest request
-//    ) {
-//        RecipeAddResponse recipeCreateResponse = recipeUseCase.addRecipe(
-//                authenticationUser.getUsername(), request);
-//
-//        return ResponseEntity.status(StatusCode.OK.code)
-//                .body(ApiResponse.OK(recipeCreateResponse));
-//    }
 
     @Operation(summary = "recipe 조회 요청", description = "recipe 조회 요청 설명")
     @GetMapping("/v1/recipes/{recipeId}")
@@ -73,7 +56,6 @@ public class RecipeController {
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @PathVariable Long recipeId
     ) {
-
         RecipeGetResponse response = recipeUseCase
                 .getReadRecipe(authenticationUser.getUsername(), recipeId);
 

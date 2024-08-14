@@ -12,6 +12,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Data
 @Builder
@@ -41,7 +42,7 @@ public class RecipeGetResponse {
 
     public static RecipeGetResponse of(
             RecipeDto dto,
-            Long authUserId
+            boolean followCheck
     ) {
         Post post = dto.getPost();
         ItCookUser itCookUser = dto.getItCookUser();
@@ -66,7 +67,7 @@ public class RecipeGetResponse {
                 .recipeProcess(recipeProcessGetResponses)
                 .lastModifiedAt(post.getLastModifiedAt())
                 .likedCount(dto.getLikedCount())
-                .followCheck(itCookUser.getFollow().contains(authUserId))
+                .followCheck(followCheck)
                 .likedCheck(dto.getLikedCheck())
                 .archiveCheck(dto.getArchiveCheck())
                 .build();

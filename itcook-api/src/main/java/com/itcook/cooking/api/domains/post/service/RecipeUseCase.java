@@ -78,6 +78,19 @@ public class RecipeUseCase {
                 .build();
     }
 
+    /**
+     * 레시피 상세 조회
+     */
+    public RecipeGetResponse getReadRecipe(String email, Long postId) {
+        ItCookUser authUser = userService.findUserByEmail(email);
+
+        RecipeDto recipe = postService.getRecipe(postId, authUser);
+        List<Long> follow = authUser.getFollow();
+
+        boolean contains = follow.contains(recipe.getItCookUser().getId());
+        return RecipeGetResponse.of(recipe,contains);
+    }
+
     private RecipeImageUrlDto getRecipeImageUrls(String mainImageFileExtension,
                                                  List<RecipeProcessDto> recipeProcessDtos, ItCookUser itCookUser, Post savePostData,
                                                  List<RecipeProcess> saveRecipeProcess1) {
@@ -113,13 +126,6 @@ public class RecipeUseCase {
         IntStream.range(0, saveRecipeProcess.size())
                 .forEach(i -> saveRecipeProcess.get(i).updateFileExtension(
                         recipeImageUrlDto.getRecipeProcessImageUrl().get(i).getKey()));
-    }
-
-    public RecipeGetResponse getReadRecipe(String email, Long postId) {
-        ItCookUser authUser = userService.findUserByEmail(email);
-        
-        RecipeDto recipe = postService.getRecipe(postId, authUser);
-        return RecipeGetResponse.of(recipe, authUser.getId());
     }
 
     private static void collectUniquePostCookingThemeAndRecipeProcess(
