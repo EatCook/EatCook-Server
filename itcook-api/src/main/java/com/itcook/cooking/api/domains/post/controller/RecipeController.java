@@ -38,7 +38,7 @@ public class RecipeController {
     private final RecipeUseCase recipeUseCase;
 
     @Operation(summary = "레시피 등록 요청", description = "쿡톡에 레시피를 등록합니다.")
-    @PostMapping("/v1/recipes")
+    @PostMapping("/v1/recipe/create")
     public ResponseEntity<ApiResponse<RecipeCreateResponse>> createRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody RecipeCreateRequest recipeCreateRequest
