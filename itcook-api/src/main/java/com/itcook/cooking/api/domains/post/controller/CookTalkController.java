@@ -35,10 +35,10 @@ public class CookTalkController {
     @GetMapping("/v1/posts/cooktalks/feeds")
     public ResponseEntity<ApiResponse<PageResponse<CookTalkFeedsResponse>>> getCookTalkFeeds(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @ParameterObject @PageableDefault Pageable pageable
+            @ParameterObject @PageableDefault(size = 20) Pageable pageable
     ) {
-        PageResponse<CookTalkFeedsResponse> response = cooktalkUseCase.getCookTalkFeeds(
-                authenticationUser.getUsername(), pageable);
+        PageResponse<CookTalkFeedsResponse> response = cooktalkUseCase
+                .getCookTalkFeeds(authenticationUser.getUsername(), pageable);
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(ApiResponse.OK(response));
     }
@@ -47,7 +47,7 @@ public class CookTalkController {
     @GetMapping("/v1/posts/cooktalks/follows")
     public ResponseEntity<ApiResponse<PageResponse<CookTalkFollowsResponse>>> retrieveAllFollowing(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @ParameterObject @PageableDefault Pageable pageable
+            @ParameterObject @PageableDefault(size = 20) Pageable pageable
     ) {
         PageResponse<CookTalkFollowsResponse> response = cooktalkUseCase.getCookTalkFollows(
                 authenticationUser.getUsername(), pageable);

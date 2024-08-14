@@ -117,7 +117,6 @@ public class PostQuerydslRepository {
                 .from(post)
                 .leftJoin(liked).on(post.id.eq(liked.postId))
                 .where(
-                        post.userId.eq(userId),
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 );
 
