@@ -283,10 +283,10 @@ public class RecipeUseCase {
      * 레시피 삭제
      */
     @Transactional
-    public void deleteRecipe(String email, Long recipeId) {
+    public void removeRecipe(String email, Long recipeId) {
         Long authUserId = userService.findIdByEmail(email);
 
-        postService.deletePost(authUserId, recipeId);
+        postService.removePost(authUserId, recipeId);
     }
 
 }

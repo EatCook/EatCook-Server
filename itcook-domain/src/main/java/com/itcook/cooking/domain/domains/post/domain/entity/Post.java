@@ -94,7 +94,7 @@ public class Post extends BaseTimeEntity {
         this.postImagePath = postImagePath;
     }
 
-    public void deletePost() {
+    public void removePost() {
         this.postFlag = PostFlag.DISABLED;
     }
 

@@ -63,7 +63,7 @@ public class RecipeController {
     }
 
     @Operation(summary = "recipe 수정 요청", description = "recipe 수정 요청 설명")
-    @PostMapping("/v1/recipe/update")
+    @PostMapping("/v1/recipes/update")
     public ResponseEntity<ApiResponse<RecipeUpdateResponse>> updateRecipe(
             @Valid @RequestBody RecipeUpdateRequest recipeUpdateRequest
     ) {
@@ -76,11 +76,11 @@ public class RecipeController {
 
     @Operation(summary = "recipe 삭제 요청", description = "recipe 삭제 요청 설명")
     @PostMapping("/v1/recipes/{recipeId}")
-    public ResponseEntity<ApiResponse<String>> deleteRecipe(
+    public ResponseEntity<ApiResponse<String>> removeRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @PathVariable Long recipeId
     ) {
-        recipeUseCase.deleteRecipe(authenticationUser.getUsername(), recipeId);
+        recipeUseCase.removeRecipe(authenticationUser.getUsername(), recipeId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.OK("삭제 되었습니다."));

@@ -79,7 +79,7 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long userId, Long postId) {
+    public void removePost(Long userId, Long postId) {
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new ApiException(PostErrorCode.POST_NOT_EXIST));
 
@@ -87,7 +87,7 @@ public class PostService {
         if (!postEntity.isAuthor(userId)) {
             throw new ApiException(PostErrorCode.POST_NOT_PERMISSION_DELETE);
         }
-        postEntity.deletePost();
+        postEntity.removePost();
     }
 
     public Page<HomeInterestDto> fetchFindPostsWithLikedAndArchiveDtoByCookingTheme(
