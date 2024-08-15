@@ -12,21 +12,20 @@ import com.itcook.cooking.domain.domains.user.domain.entity.dto.SignupDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.validator.UserValidator;
 import com.itcook.cooking.domain.domains.user.domain.enums.EventAlertType;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
-import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.domain.enums.ServiceAlertType;
-import com.itcook.cooking.domain.domains.user.domain.repository.UserCookingThemeJdbcRepository;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserCookingThemeRepository;
-import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
+import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPageUserInfoResponse;
 import com.itcook.cooking.domain.domains.user.service.dto.response.UserReadInterestCookResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserCookingThemeRepository userCookingThemeRepository;
-    private final UserCookingThemeJdbcRepository userCookingThemeJdbcRepository;
     private final UserImageRegisterService userImageRegisterService;
     private final UserValidator userValidator;
     private final UserAdaptor userAdaptor;
@@ -43,6 +41,10 @@ public class UserService {
 
     public ItCookUser findUserByEmail(String email) {
         return userAdaptor.queryUserByEmail(email);
+    }
+
+    public Long findIdByEmail(String email) {
+        return userAdaptor.queryUserByEmail(email).getId();
     }
 
     public void checkDuplicateMail(String email) {

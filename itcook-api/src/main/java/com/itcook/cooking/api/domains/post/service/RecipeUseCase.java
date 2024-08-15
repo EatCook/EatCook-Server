@@ -5,7 +5,6 @@ import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessDto;
 import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessGetResponse;
 import com.itcook.cooking.api.domains.post.dto.recipe.RecipeReadDto;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeCreateRequest;
-import com.itcook.cooking.api.domains.post.dto.request.RecipeDeleteRequest;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeUpdateRequest;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeCreateResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeGetResponse;
@@ -88,7 +87,7 @@ public class RecipeUseCase {
         List<Long> follow = authUser.getFollow();
 
         boolean contains = follow.contains(recipe.getItCookUser().getId());
-        return RecipeGetResponse.of(recipe,contains);
+        return RecipeGetResponse.of(recipe, contains);
     }
 
     private RecipeImageUrlDto getRecipeImageUrls(String mainImageFileExtension,
@@ -280,14 +279,14 @@ public class RecipeUseCase {
         return !fileExtension.equals("default");
     }
 
+    /**
+     * 레시피 삭제
+     */
     @Transactional
-    public void deleteRecipe(
-            String username,
-            RecipeDeleteRequest recipeDeleteRequest
-    ) {
-        userService.findUserByEmail(username);
+    public void deleteRecipe(String email, Long recipeId) {
+        Long authUserId = userService.findIdByEmail(email);
 
-        postService.deletePost(recipeDeleteRequest.getPostId());
+        postService.deletePost(authUserId, recipeId);
     }
 
 }

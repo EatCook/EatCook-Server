@@ -1,7 +1,6 @@
 package com.itcook.cooking.api.domains.post.controller;
 
 import com.itcook.cooking.api.domains.post.dto.request.RecipeCreateRequest;
-import com.itcook.cooking.api.domains.post.dto.request.RecipeDeleteRequest;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeUpdateRequest;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeCreateResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeGetResponse;
@@ -76,13 +75,12 @@ public class RecipeController {
     }
 
     @Operation(summary = "recipe 삭제 요청", description = "recipe 삭제 요청 설명")
-    @PostMapping("/delete")
+    @PostMapping("/v1/recipes/{recipeId}")
     public ResponseEntity<ApiResponse<String>> deleteRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @Valid @RequestBody RecipeDeleteRequest recipeDeleteRequest
+            @PathVariable Long recipeId
     ) {
-
-        recipeUseCase.deleteRecipe(authenticationUser.getUsername(), recipeDeleteRequest);
+        recipeUseCase.deleteRecipe(authenticationUser.getUsername(), recipeId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.OK("삭제 되었습니다."));

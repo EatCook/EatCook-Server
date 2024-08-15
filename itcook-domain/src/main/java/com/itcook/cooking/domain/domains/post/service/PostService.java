@@ -79,11 +79,14 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(Long userId, Long postId) {
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new ApiException(PostErrorCode.POST_NOT_EXIST));
-        PostFlag.checkDisablePostFlag(postEntity.getPostFlag());
 
+        PostFlag.checkDisablePostFlag(postEntity.getPostFlag());
+        if (!postEntity.isAuthor(userId)) {
+            throw new ApiException(PostErrorCode.POST_NOT_PERMISSION_DELETE);
+        }
         postEntity.deletePost();
     }
 
