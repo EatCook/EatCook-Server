@@ -2,17 +2,13 @@ package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.api.domains.post.dto.recipe.RecipeImageUrlDto;
 import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessDto;
-import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessGetResponse;
-import com.itcook.cooking.api.domains.post.dto.recipe.RecipeReadDto;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeCreateRequest;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeUpdateRequest;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeCreateResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeGetResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeUpdateResponse;
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.archive.domain.entity.Archive;
 import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
-import com.itcook.cooking.domain.domains.like.domain.entity.Liked;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.domain.entity.RecipeProcess;
@@ -28,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 @UseCase
@@ -127,87 +122,13 @@ public class RecipeUseCase {
                         recipeImageUrlDto.getRecipeProcessImageUrl().get(i).getKey()));
     }
 
-    private static void collectUniquePostCookingThemeAndRecipeProcess(
-            List<Object[]> recipeReadDomainDto,
-            Set<PostCookingTheme> uniquePostCookingTheme,
-            Set<RecipeProcess> uniqueRecipeProcess,
-            Set<Liked> uniqueLiked,
-            Set<Archive> uniqueArchive
-    ) {
-
-        recipeReadDomainDto.forEach(objects -> {
-            uniquePostCookingTheme.add((PostCookingTheme) objects[2]);
-            uniqueRecipeProcess.add((RecipeProcess) objects[3]);
-            if (objects[4] != null) {
-                uniqueLiked.add((Liked) objects[4]);
-            }
-            if (objects[5] != null) {
-                uniqueArchive.add((Archive) objects[5]);
-            }
-        });
-    }
-
-    private static List<String> extractCookingTypeNames(
-            Set<PostCookingTheme> uniquePostCookingTheme) {
-        return uniquePostCookingTheme.stream()
-                .map(postCookingTheme -> postCookingTheme.getCookingType().getCookingTypeName())
-                .toList();
-    }
-
-
-    private static List<RecipeProcessGetResponse> extractRecipeProcess(
-            Set<RecipeProcess> uniqueRecipeProcess) {
-        return uniqueRecipeProcess.stream()
-                .map(recipeProcess -> RecipeProcessGetResponse.builder()
-                        .stepNum(recipeProcess.getStepNum())
-                        .recipeWriting(recipeProcess.getRecipeWriting())
-                        .recipeProcessImagePath(recipeProcess.getRecipeProcessImagePath())
-                        .build())
-                .toList();
-    }
-
-    private boolean isFollowingCheck(ItCookUser findByUserEmail, Post post) {
-        List<Long> follow = findByUserEmail.getFollow();
-        return postValidationUseCase.getFollowingCheck(post.getUserId(), follow);
-    }
-
-    private static RecipeReadDto getRecipeReadDto(Post post, ItCookUser itCookUser,
-                                                  List<String> postCookingThemeList,
-                                                  List<RecipeProcessGetResponse> recipeProcessDtoList,
-                                                  boolean followingCheck, List<Liked> findAllLiked, boolean likedValidation,
-                                                  boolean archiveValidation
-    ) {
-        return RecipeReadDto.builder()
-                .postId(post.getId())
-                .recipeName(post.getRecipeName())
-                .recipeTime(post.getRecipeTime())
-                .introduction(post.getIntroduction())
-                .postImagePath(post.getPostImagePath())
-                .createdAt(post.getCreatedAt())
-                .lastModifiedAt(post.getLastModifiedAt())
-                .userId(itCookUser.getId())
-                .nickName(itCookUser.getNickName())
-                .profile(itCookUser.getProfile())
-                .followerCount(itCookUser.getFollow().size())
-                .foodIngredientsCnt(post.getFoodIngredients().size())
-                .foodIngredients(post.getFoodIngredients())
-                .cookingType(postCookingThemeList)
-                .recipeProcess(recipeProcessDtoList)
-                .likedCount(findAllLiked.size())
-                .likedCheck(likedValidation)
-                .followCheck(followingCheck)
-                .archiveCheck(archiveValidation)
-                .build();
-
-    }
-
     //update
     @Transactional
-    public RecipeUpdateResponse updateRecipe(RecipeUpdateRequest recipeUpdateRequest) {
+    public RecipeUpdateResponse updateRecipe(RecipeUpdateRequest recipeUpdateRequest, Long recipeId) {
         ImageUrlDto mainImageUrlDto = null;
         if (getUpdateFileExtensionValidation(recipeUpdateRequest.getMainFileExtension())) {
             mainImageUrlDto = postValidationUseCase.getPostFileExtensionValidation(
-                    recipeUpdateRequest.getUserId(), recipeUpdateRequest.getPostId(),
+                    recipeUpdateRequest.getUserId(), recipeId,
                     recipeUpdateRequest.getMainFileExtension());
         }
 
@@ -218,7 +139,7 @@ public class RecipeUseCase {
                 postEntityData);
 
         List<ImageUrlDto> recipeProcessImageUrlDto = updateRecipeProcessFileExtensionsValidation(
-                recipeUpdateRequest, recipeProcessesData);
+                recipeUpdateRequest, recipeProcessesData, recipeId);
         recipeProcessService.updateRecipeProcess(recipeProcessesData, postEntityData);
 
         List<PostCookingTheme> postCookingThemeData = recipeUpdateRequest.toPostCookingThemeDomain(
@@ -234,13 +155,13 @@ public class RecipeUseCase {
     }
 
     private List<ImageUrlDto> updateRecipeProcessFileExtensionsValidation(
-            RecipeUpdateRequest recipeUpdateRequest, List<RecipeProcess> recipeProcessesData) {
+            RecipeUpdateRequest recipeUpdateRequest, List<RecipeProcess> recipeProcessesData, Long recipeId) {
         return recipeUpdateRequest.getRecipeProcess().stream()
                 .filter(recipeProcess -> getUpdateFileExtensionValidation(
                         recipeProcess.getFileExtension()))
                 .map(recipeProcess -> {
                     ImageUrlDto recipeProcessFileImageUrlDto = postValidationUseCase.getRecipeProcessFileExtensionValidation(
-                            recipeUpdateRequest.getUserId(), recipeUpdateRequest.getPostId(),
+                            recipeUpdateRequest.getUserId(), recipeId,
                             recipeProcess);
                     recipeProcessesData.stream()
                             .filter(recipeProcessesDatum -> recipeProcessesDatum.getStepNum()

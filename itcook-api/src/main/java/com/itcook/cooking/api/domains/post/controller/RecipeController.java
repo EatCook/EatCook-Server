@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,7 +39,7 @@ public class RecipeController {
     private final RecipeUseCase recipeUseCase;
 
     @Operation(summary = "레시피 등록 요청", description = "쿡톡에 레시피를 등록합니다.")
-    @PostMapping("/v1/recipe/create")
+    @PostMapping("/v1/recipes")
     public ResponseEntity<ApiResponse<RecipeCreateResponse>> createRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody RecipeCreateRequest recipeCreateRequest
@@ -50,7 +51,7 @@ public class RecipeController {
                 .body(ApiResponse.OK(recipeCreateResponse));
     }
 
-    @Operation(summary = "recipe 조회 요청", description = "recipe 조회 요청 설명")
+    @Operation(summary = "레시피 조회 요청", description = "쿡톡에 등록된 특정 레시피를 조회합니다.")
     @GetMapping("/v1/recipes/{recipeId}")
     public ResponseEntity<ApiResponse<RecipeGetResponse>> readRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
@@ -63,19 +64,22 @@ public class RecipeController {
                 .body(ApiResponse.OK(response));
     }
 
-    @Operation(summary = "recipe 수정 요청", description = "recipe 수정 요청 설명")
-    @PostMapping("/v1/recipes/update")
+    @Operation(summary = "레시피 수정 요청", description = "쿡톡에 등록된 레시피를 수정합니다.")
+    @PatchMapping("/v1/recipes/{recipeId}")
     public ResponseEntity<ApiResponse<RecipeUpdateResponse>> updateRecipe(
-            @Valid @RequestBody RecipeUpdateRequest recipeUpdateRequest
+            @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @Valid @RequestBody RecipeUpdateRequest recipeUpdateRequest,
+            @PathVariable Long recipeId
     ) {
 
-        RecipeUpdateResponse recipeUpdateResponse = recipeUseCase.updateRecipe(recipeUpdateRequest);
+        RecipeUpdateResponse recipeUpdateResponse = recipeUseCase
+                .updateRecipe(recipeUpdateRequest, recipeId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.OK(recipeUpdateResponse));
     }
 
-    @Operation(summary = "recipe 삭제 요청", description = "recipe 삭제 요청 설명")
+    @Operation(summary = "레시피 삭제 요청", description = "쿡톡에 등록된 레시피를 삭제합니다.")
     @DeleteMapping("/v1/recipes/{recipeId}")
     public ResponseEntity<ApiResponse<String>> removeRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,

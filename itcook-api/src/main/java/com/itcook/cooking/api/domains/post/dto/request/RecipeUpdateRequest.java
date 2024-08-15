@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 @Schema(name = "recipe update request")
 public class RecipeUpdateRequest {
 
-    @Schema(description = "email", example = "user@test.com")
-    @NotBlank(message = "이메일을 입력해 주세요")
-    private String email;
+//    @Schema(description = "email", example = "user@test.com")
+//    @NotBlank(message = "이메일을 입력해 주세요")
+//    private String email;
 
-    @Schema(description = "postId", example = "1")
-    @NotNull(message = "게시물 번호가 없습니다.")
-    private Long postId;
+//    @Schema(description = "postId", example = "1")
+//    @NotNull(message = "게시물 번호가 없습니다.")
+//    private Long postId;
 
     @Schema(description = "제목", example = "김밥 만들기")
     @NotBlank(message = "제목을 입력해 주세요")
