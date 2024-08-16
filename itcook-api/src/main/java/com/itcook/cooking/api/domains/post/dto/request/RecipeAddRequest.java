@@ -36,7 +36,7 @@ import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_PROC
  * 조리과정 최대 등록 수
  * 레시피 설명 최대 최소 길이 100자
  */
-@Schema(name = "쿡톡에 저장할 레시피 저장")
+@Schema(name = "쿡톡에 저장할 레시피 정보")
 public record RecipeAddRequest(
         @NotBlank(message = "레시피 제목이 입력해주세요.")
         @Size(max = RECIPE_NAME_MAX_SIZE, message = "레시피 제목 최대 길이를 정해주세요.")
