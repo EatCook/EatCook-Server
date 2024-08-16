@@ -1,10 +1,11 @@
 package com.itcook.cooking.domain.domains.post.service.dto.reponse;
 
-import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 @Builder
 public class RecipeAddResponse {
 

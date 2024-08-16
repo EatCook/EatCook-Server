@@ -66,6 +66,7 @@ public class PostService {
         return postAdaptor.findByIdOrElseThrow(postId);
     }
 
+    @Transactional
     public RecipeAddResponse addPost(RecipeAddDto recipeAddDto) {
         Long authUser = recipeAddDto.userId();
 
@@ -96,7 +97,6 @@ public class PostService {
         }
         post.addRecipeProcess(recipeProcesses);
 
-        postAdaptor.savePost(post);
         return RecipeAddResponse.of(
                 saveRecipe.getId(),
                 mainImageUrlDto.getUrl(),
@@ -151,7 +151,7 @@ public class PostService {
         return postAdaptor.getOtherPagePostInfo(user.getId(), otherUserId, pageable);
     }
 
- //    public List<Post> searchByRecipeNameOrIngredients(
+    //    public List<Post> searchByRecipeNameOrIngredients(
 //            Long lastId, List<String> names, Integer size
 //    ) {
 //        return postQuerydslRepository.findNamesWithPagination(lastId, names, size);

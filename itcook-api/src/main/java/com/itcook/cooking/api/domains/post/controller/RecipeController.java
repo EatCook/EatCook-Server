@@ -44,11 +44,11 @@ public class RecipeController {
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody RecipeAddRequest request
     ) {
-        RecipeAddResponse recipeAddResponse = recipeUseCase
+        RecipeAddResponse response = recipeUseCase
                 .addRecipe(request.toServiceDto(authenticationUser.getUsername()));
 
         return ResponseEntity.status(StatusCode.OK.code)
-                .body(ApiResponse.OK(recipeAddResponse));
+                .body(ApiResponse.OK(response));
     }
 
     @Operation(summary = "레시피 조회 요청", description = "쿡톡에 등록된 특정 레시피를 조회합니다.")
