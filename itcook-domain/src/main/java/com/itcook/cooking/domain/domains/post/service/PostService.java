@@ -4,7 +4,6 @@ import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
 import com.itcook.cooking.domain.domains.post.domain.adaptor.PostAdaptor;
-import com.itcook.cooking.domain.domains.post.domain.adaptor.RecipeProcessAdapter;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.domain.entity.PostImageRegisterService;
@@ -45,7 +44,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostImageRegisterService postImageRegisterService;
     private final PostAdaptor postAdaptor;
-    private final RecipeProcessAdapter recipeProcessAdapter;
     private final PostValidator postValidator;
 
     public Page<CookTalkFeedDto> getCookTalkFeeds(Long authUserId, Pageable pageable) {
@@ -153,7 +151,7 @@ public class PostService {
         return postAdaptor.getOtherPagePostInfo(user.getId(), otherUserId, pageable);
     }
 
-//    public List<Post> searchByRecipeNameOrIngredients(
+ //    public List<Post> searchByRecipeNameOrIngredients(
 //            Long lastId, List<String> names, Integer size
 //    ) {
 //        return postQuerydslRepository.findNamesWithPagination(lastId, names, size);
