@@ -44,7 +44,7 @@ public record RecipeAddRequest(
 
         @NotBlank(message = "레시피 소개글이 입력해주세요.")
         @Size(max = RECIPE_INTRODUCTION_MAX_SIZE, message = "레시피 제목 최대 길이를 초과하였습니다.")
-        String mainIntroduction,
+        String introduction,
 
         @NotNull(message = "조리시간이 입력해주세요.")
         @Max(value = RECIPE_MAX_TIME, message = "최대 조리시간을 초과하였습니다.")
@@ -91,7 +91,7 @@ public record RecipeAddRequest(
 
             @NotBlank(message = "조리과정의 설명을 입력해주세요.")
             @Size(max = RECIPE_INTRODUCTION_MAX_SIZE, message = "조리 설명 최대 길이를 초과하였습니다.")
-            String subIntroduction,
+            String recipeWriting,
 
             @NotBlank(message = "조리과정의 이미지를 등록해주세요")
             String fileExtension
@@ -102,7 +102,7 @@ public record RecipeAddRequest(
         return RecipeAddServiceDto.builder()
                 .email(email)
                 .recipeName(recipeName)
-                .introduction(mainIntroduction)
+                .introduction(introduction)
                 .recipeTime(recipeTime)
                 .mainFileExtension(mainFileExtension)
                 .foodIngredients(foodIngredients)
@@ -116,7 +116,7 @@ public record RecipeAddRequest(
         return recipeProcess.stream()
                 .map(rp -> RecipeProcessAddServiceDto.builder()
                         .stepNum(rp.stepNum)
-                        .recipeWriting(rp.subIntroduction)
+                        .recipeWriting(rp.recipeWriting)
                         .fileExtension(rp.fileExtension)
                         .build()).toList();
     }
