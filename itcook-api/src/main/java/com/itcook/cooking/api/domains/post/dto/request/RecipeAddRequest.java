@@ -1,85 +1,123 @@
 package com.itcook.cooking.api.domains.post.dto.request;
 
-import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessDto;
-import com.itcook.cooking.domain.domains.post.domain.entity.Post;
-import com.itcook.cooking.domain.domains.post.domain.entity.PostCookingTheme;
-import com.itcook.cooking.domain.domains.post.domain.entity.RecipeProcess;
+import com.itcook.cooking.api.domains.post.service.dto.RecipeAddServiceDto;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
-import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
+import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Schema(name = "recipe create request")
-public class RecipeAddRequest {
+import static com.itcook.cooking.api.domains.post.service.dto.RecipeAddServiceDto.RecipeProcessAddServiceDto;
+import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_FOOD_INGREDIENTS_MAX_SIZE;
+import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_FOOD_INGREDIENTS_VALUE_MAX_SIZE;
+import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_FOOD_INGREDIENTS_VALUE_MIN_SIZE;
+import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_INTRODUCTION_MAX_SIZE;
+import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_MAX_TIME;
+import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_MIN_TIME;
+import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_NAME_MAX_SIZE;
+import static com.itcook.cooking.domain.common.constant.PostConstant.RECIPE_PROCESS_MIN_STEP_NUM;
 
-    @Schema(description = "제목", example = "김밥 만들기")
-    @NotBlank(message = "제목을 입력해주세요")
-    private String recipeName;
-    @Schema(description = "조리 시간", example = "10")
-    @NotNull(message = "조리 시간을 입력해 주세요")
-    private Integer recipeTime;
+/**
+ * TODO
+ * 레시피 제목 최대 최소 길이
+ * 레시피 설명 최대 최소 길이 100자
+ * 조리시간 1분 ~ 23시간 59초
+ * 재료 최대 최소 길이
+ * 재료 최대 입력 수
+ * 쿠킹타입 최대, 최소 선택 수
+ * lifetype 최대 최소 선택 수,
+ * 조리과정 최대 등록 수
+ * 레시피 설명 최대 최소 길이 100자
+ */
+@Schema(name = "쿡톡에 저장할 레시피 저장")
+public record RecipeAddRequest(
+        @NotBlank(message = "레시피 제목이 입력해주세요.")
+        @Size(max = RECIPE_NAME_MAX_SIZE, message = "레시피 제목 최대 길이를 정해주세요.")
+        String recipeName,
 
-    @Schema(description = "본문", example = "간단하게 만들 수 있어요")
-    @NotBlank(message = "본문을 입력해 주세요")
-    private String introduction;
-    @Schema(description = "메인 이미지 확장자명", example = "jpg")
-    @NotBlank(message = "메인 이미지 확장자 명이 빈 값입니다.")
-    private String mainFileExtension;
+        @NotBlank(message = "레시피 소개글이 입력해주세요.")
+        @Size(max = RECIPE_INTRODUCTION_MAX_SIZE, message = "레시피 제목 최대 길이를 초과하였습니다.")
+        String mainIntroduction,
 
-    @Schema(description = "재료", example = "[\"김밥\",\"밥\"]")
-    @NotEmpty(message = "재료를 입력해 주세요")
-    private List<String> foodIngredients;
+        @NotNull(message = "조리시간이 입력해주세요.")
+        @Max(value = RECIPE_MAX_TIME, message = "최대 조리시간을 초과하였습니다.")
+        @Min(value = RECIPE_MIN_TIME, message = "최소 조리시간을 정해주세요.")
+        Integer recipeTime,
 
-    @Schema(description = "테마", example = "[\"한식\",\"중식\"]")
-    @NotEmpty(message = "테마를 선택해 주세요")
-    private List<String> cookingType;
+        @NotBlank(message = "메인이미지를 등록해주세요")
+        String mainFileExtension,
 
-    @Schema(description = "조리 과정", example = "[ {\n \"stepNum\": 1,\n \"recipeWriting\": \"밥을 준비해 주세요\",\n \"fileExtension\": \"jpeg\"\n },\n" +
-            "    {\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"fileExtension\": \"jpeg\"\n }\n" +
-            "  ]")
-    @NotEmpty(message = "조리 과정을 입력해 주세요")
-    private List<RecipeProcessDto> recipeProcess;
+        @NotEmpty(message = "재료를 입력해주세요")
+        @Size(max = RECIPE_FOOD_INGREDIENTS_MAX_SIZE, message = "최대로 입력할 수 있는 재료 수를 초과하였습니다.")
+        List<@Size(max = RECIPE_FOOD_INGREDIENTS_VALUE_MAX_SIZE,
+                min = RECIPE_FOOD_INGREDIENTS_VALUE_MIN_SIZE,
+                message = "재료에 대한 설명을 수정해주세요") String> foodIngredients,
 
-    public Post toPostDomain(Long userId) {
-        return Post.builder()
+        @NotEmpty(message = "요리 테마를 선택해주세요")
+        @Schema(description = "KOREAN_FOOD(\"한식\") \n" +
+                "    JAPANESE_FOOD(\"일식\")\n" +
+                "    WESTERN_FOOD(\"양식\")\n" +
+                "    CHINESE_FOOD(\"중식\")\n" +
+                "    SIDE_DISH(\"반찬\")\n" +
+                "    LATE_NIGHT_SNACK(\"야식\")\n" +
+                "    DESERT(\"디저트\")\n" +
+                "    BUNSIK(\"분식\")\n" +
+                "    ASIAN_FOOD(\"아시안\")", example = "KOREAN_FOOD")
+        List<CookingType> cookingType,
+        @NotEmpty(message = "요리 유형을 선택해주세요")
+        @Schema(description = "DIET(\"다이어트식\")\n" +
+                "    HEALTH_DIET(\"건강식\")\n" +
+                "    CONVENIENCE_STORE(\"편의점 요리\")\n" +
+                "    DELIVERY_FOOD(\"배달음식 단골고객\")\n" +
+                "    MEAL_KIT(\"밀키트 요리\")\n"
+                , example = "DIET")
+        List<LifeType> lifeType,
+
+        @Valid
+        @NotNull(message = "조리 과정을 입력해주세요")
+        List<RecipeProcessAddRequest> recipeProcess
+) {
+    public record RecipeProcessAddRequest(
+            @NotNull(message = "조리과정의 번호가 누락되었습니다.")
+            @Min(value = RECIPE_PROCESS_MIN_STEP_NUM, message = "최소 1개 이상을 등록해주세요")
+            Integer stepNum,
+
+            @NotBlank(message = "조리과정의 설명을 입력해주세요.")
+            @Size(max = RECIPE_INTRODUCTION_MAX_SIZE, message = "조리 설명 최대 길이를 초과하였습니다.")
+            String subIntroduction,
+
+            @NotBlank(message = "조리과정의 이미지를 등록해주세요")
+            String fileExtension
+    ) {
+    }
+
+    public RecipeAddServiceDto toServiceDto(String email) {
+        return RecipeAddServiceDto.builder()
+                .email(email)
                 .recipeName(recipeName)
+                .introduction(mainIntroduction)
                 .recipeTime(recipeTime)
-                .introduction(introduction)
-                .userId(userId)
+                .mainFileExtension(mainFileExtension)
                 .foodIngredients(foodIngredients)
-                .postFlag(PostFlag.ACTIVATE).build();
+                .cookingType(cookingType)
+                .lifeType(lifeType)
+                .recipeProcess(toServiceDto())
+                .build();
     }
 
-    public List<RecipeProcess> toRecipeProcessDomain(Post post) {
+    private List<RecipeProcessAddServiceDto> toServiceDto() {
         return recipeProcess.stream()
-                .map(process -> RecipeProcess.builder()
-                        .stepNum(process.getStepNum())
-                        .recipeWriting(process.getRecipeWriting())
-                        .post(post)
-                        .build())
-                .collect(Collectors.toList());
+                .map(rp -> RecipeProcessAddServiceDto.builder()
+                        .stepNum(rp.stepNum)
+                        .recipeWriting(rp.subIntroduction)
+                        .fileExtension(rp.fileExtension)
+                        .build()).toList();
     }
-
-    public List<PostCookingTheme> toPostCookingTheme(Post post) {
-        return cookingType.stream()
-                .map(name -> {
-                    CookingType byName = CookingType.getByName(name);
-                    return PostCookingTheme.builder().cookingType(byName).post(post).build();
-                })
-                .collect(Collectors.toList());
-    }
-
 }

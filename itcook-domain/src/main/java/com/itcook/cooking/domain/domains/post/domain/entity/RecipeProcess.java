@@ -1,5 +1,10 @@
 package com.itcook.cooking.domain.domains.post.domain.entity;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,11 +13,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.List;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import static com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto.RecipeProcessAddDto;
 
 @Entity
 @Getter
@@ -42,6 +45,15 @@ public class RecipeProcess {
         this.recipeWriting = recipeWriting;
         this.stepNum = stepNum;
         this.post = post;
+    }
+
+    public static List<RecipeProcess> addRecipeProcess(List<RecipeProcessAddDto> recipeProcessAddDtoList, Post post) {
+        return recipeProcessAddDtoList.stream()
+                .map(dto -> RecipeProcess.builder()
+                        .recipeWriting(dto.recipeWriting())
+                        .stepNum(dto.stepNum())
+                        .post(post)
+                        .build()).toList();
     }
 
     public void updateRecipeProcess(RecipeProcess recipeProcess) {

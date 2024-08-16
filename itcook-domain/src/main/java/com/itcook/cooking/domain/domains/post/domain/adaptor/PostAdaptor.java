@@ -31,6 +31,13 @@ public class PostAdaptor {
     private final PostQuerydslRepository postQuerydslRepository;
     private final HomePostQuerydslRepository homePostQuerydslRepository;
 
+    /**
+     * 레시피 저장
+     */
+    public Post savePost(Post post) {
+        return postRepository.save(post);
+    }
+
     public Page<CookTalkFeedDto> findCookTalkFeeds(Long authUserId, Pageable pageable) {
         return postQuerydslRepository.findCookTalkPostsWithLiked(authUserId, pageable);
     }

@@ -4,7 +4,13 @@ import com.itcook.cooking.domain.common.errorcode.PostErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.domains.infra.s3.ImageUrlDto;
 import com.itcook.cooking.domain.domains.post.domain.adaptor.PostAdaptor;
+import com.itcook.cooking.domain.domains.post.domain.adaptor.RecipeProcessAdapter;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
+import com.itcook.cooking.domain.domains.post.domain.entity.PostCookingTheme;
+import com.itcook.cooking.domain.domains.post.domain.entity.PostImageRegisterService;
+import com.itcook.cooking.domain.domains.post.domain.entity.RecipeProcess;
+import com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto;
+import com.itcook.cooking.domain.domains.post.domain.entity.validator.PostValidator;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostRepository;
@@ -14,6 +20,7 @@ import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterest
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.RecipeDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
+import com.itcook.cooking.domain.domains.post.service.dto.reponse.RecipeAddResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
@@ -26,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto.RecipeProcessAddDto;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -34,7 +43,10 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostImageRegisterService postImageRegisterService;
     private final PostAdaptor postAdaptor;
+    private final RecipeProcessAdapter recipeProcessAdapter;
+    private final PostValidator postValidator;
 
     public Page<CookTalkFeedDto> getCookTalkFeeds(Long authUserId, Pageable pageable) {
         return postAdaptor.findCookTalkFeeds(authUserId, pageable);
@@ -56,8 +68,41 @@ public class PostService {
         return postAdaptor.findByIdOrElseThrow(postId);
     }
 
-    public Post createPost(Post post) {
-        return postRepository.save(post);
+    public RecipeAddResponse addPost(RecipeAddDto recipeAddDto) {
+        Long authUser = recipeAddDto.userId();
+
+        Post post = Post.addPost(recipeAddDto, postValidator);
+        List<PostCookingTheme> postCookingThemes = PostCookingTheme
+                .addPostCookingTheme(recipeAddDto.cookingType(), post, postValidator);
+        post.updateCookingTheme(postCookingThemes);
+
+        Post saveRecipe = postAdaptor.savePost(post);
+
+        ImageUrlDto mainImageUrlDto = postImageRegisterService
+                .getPostImageUrlDto(authUser, saveRecipe.getId(), recipeAddDto.mainFileExtension());
+        post.updateFileExtension(mainImageUrlDto.getKey(), postValidator);
+
+        List<RecipeProcessAddDto> recipeProcessAddDtoList = recipeAddDto.recipeProcess();
+
+        List<ImageUrlDto> subImageUrlDto = recipeProcessAddDtoList.stream()
+                .map(rpDto -> postImageRegisterService
+                        .getRecipeImageUrlDto(authUser, saveRecipe.getId(), rpDto.fileExtension())).toList();
+
+        List<RecipeProcess> recipeProcesses = RecipeProcess.addRecipeProcess(recipeProcessAddDtoList, post);
+        List<String> list = subImageUrlDto.stream()
+                .map(ImageUrlDto::getKey)
+                .toList();
+
+        for (int i = 0; i < list.size() && i < recipeProcesses.size(); i++) {
+            recipeProcesses.get(i).updateFileExtension(list.get(i));
+        }
+        post.addRecipeProcess(recipeProcesses);
+
+        postAdaptor.savePost(post);
+        return RecipeAddResponse.of(
+                saveRecipe.getId(),
+                mainImageUrlDto.getUrl(),
+                subImageUrlDto.stream().map(ImageUrlDto::getUrl).toList());
     }
 
     public Post updatePost(Post postUpdateData, ImageUrlDto mainImageUrlDto) {
@@ -68,9 +113,9 @@ public class PostService {
         }
 
         if (mainImageUrlDto != null) {
-            postUpdateData.updateFileExtension(mainImageUrlDto.getKey());
+            postUpdateData.updateFileExtension(mainImageUrlDto.getKey(), postValidator);
         } else {
-            postUpdateData.updateFileExtension(postEntityData.getPostImagePath());
+            postUpdateData.updateFileExtension(postEntityData.getPostImagePath(), postValidator);
         }
 
         postEntityData.updatePost(postUpdateData);

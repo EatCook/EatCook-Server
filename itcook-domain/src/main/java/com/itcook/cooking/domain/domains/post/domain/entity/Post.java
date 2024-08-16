@@ -1,6 +1,8 @@
 package com.itcook.cooking.domain.domains.post.domain.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
+import com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto;
+import com.itcook.cooking.domain.domains.post.domain.entity.validator.PostValidator;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import lombok.AccessLevel;
@@ -65,10 +67,12 @@ public class Post extends BaseTimeEntity {
     private PostFlag postFlag;
 
     @Builder
-    public Post(String recipeName, Integer recipeTime, String introduction, String postImagePath,
-                Long userId, List<RecipeProcess> recipeProcesses,
-                List<PostCookingTheme> postCookingThemes,
-                List<String> foodIngredients, List<LifeType> lifeTypes, PostFlag postFlag) {
+    private Post(
+            String recipeName, Integer recipeTime, String introduction,
+            String postImagePath, Long userId, List<RecipeProcess> recipeProcesses,
+            List<PostCookingTheme> postCookingThemes, List<String> foodIngredients,
+            List<LifeType> lifeTypes, PostFlag postFlag
+    ) {
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
         this.introduction = introduction;
@@ -81,6 +85,33 @@ public class Post extends BaseTimeEntity {
         this.postFlag = postFlag;
     }
 
+    /**
+     * 레시피 등록
+     */
+    public static Post addPost(RecipeAddDto dto, PostValidator postValidator) {
+        Post post = Post.builder()
+                .recipeName(dto.recipeName())
+                .recipeTime(dto.recipeTime())
+                .introduction(dto.introduction())
+                .userId(dto.userId())
+                .foodIngredients(dto.foodIngredients())
+                .lifeTypes(dto.lifeTypes())
+                .postFlag(PostFlag.ACTIVATE)
+                .build();
+        postValidator.validateAdd(post);
+        return post;
+    }
+
+    public void addRecipeProcess(List<RecipeProcess> recipeProcesses) {
+        this.recipeProcesses = recipeProcesses;
+    }
+
+    public void updateCookingTheme(
+            List<PostCookingTheme> postCookingThemes
+    ) {
+        this.postCookingThemes = postCookingThemes;
+    }
+
     public void updatePost(Post updateData) {
         this.recipeName = updateData.getRecipeName();
         this.recipeTime = updateData.getRecipeTime();
@@ -90,7 +121,8 @@ public class Post extends BaseTimeEntity {
         this.postImagePath = updateData.postImagePath;
     }
 
-    public void updateFileExtension(String postImagePath) {
+    public void updateFileExtension(String postImagePath, PostValidator postValidator) {
+        postValidator.validatePostImagePath(postImagePath);
         this.postImagePath = postImagePath;
     }
 
