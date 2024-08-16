@@ -16,7 +16,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -47,7 +49,8 @@ public class PostCookingTheme {
     public static List<PostCookingTheme> addPostCookingTheme(
             List<CookingType> cookingType, Post post, PostValidator postValidator
     ) {
-        List<PostCookingTheme> postCookingThemeList = cookingType.stream()
+        Set<CookingType> cookingTypes = new HashSet<>(cookingType);
+        List<PostCookingTheme> postCookingThemeList = cookingTypes.stream()
                 .map(dto -> PostCookingTheme.builder()
                         .cookingType(dto)
                         .post(post).build()).toList();

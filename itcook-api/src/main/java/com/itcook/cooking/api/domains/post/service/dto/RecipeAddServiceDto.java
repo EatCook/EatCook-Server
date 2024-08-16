@@ -7,7 +7,7 @@ import lombok.Builder;
 
 import java.util.List;
 
-import static com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto.*;
+import static com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto.RecipeProcessAddDto;
 
 @Builder
 public record RecipeAddServiceDto(

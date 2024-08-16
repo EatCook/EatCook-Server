@@ -24,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,13 +90,14 @@ public class Post extends BaseTimeEntity {
      * 레시피 등록
      */
     public static Post addPost(RecipeAddDto dto, PostValidator postValidator) {
+        List<LifeType> lifeTypeList = new HashSet<>(dto.lifeTypes()).stream().toList();
         Post post = Post.builder()
                 .recipeName(dto.recipeName())
                 .recipeTime(dto.recipeTime())
                 .introduction(dto.introduction())
                 .userId(dto.userId())
                 .foodIngredients(dto.foodIngredients())
-                .lifeTypes(dto.lifeTypes())
+                .lifeTypes(lifeTypeList)
                 .postFlag(PostFlag.ACTIVATE)
                 .build();
         postValidator.validateAdd(post);
