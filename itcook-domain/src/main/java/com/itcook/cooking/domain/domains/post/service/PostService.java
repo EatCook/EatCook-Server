@@ -60,12 +60,9 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post updatePost(Post postUpdateData, ImageUrlDto mainImageUrlDto) {
-        Post postEntityData = postRepository.findById(postUpdateData.getId()).orElse(null);
-
-        if (postEntityData == null) {
-            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
-        }
+    public Post updatePost(Long recipeId, Post postUpdateData, ImageUrlDto mainImageUrlDto) {
+        Post postEntityData = postRepository.findById(recipeId)
+                .orElseThrow(() -> new ApiException(PostErrorCode.POST_NOT_EXIST));
 
         if (mainImageUrlDto != null) {
             postUpdateData.updateFileExtension(mainImageUrlDto.getKey());
@@ -75,7 +72,7 @@ public class PostService {
 
         postEntityData.updatePost(postUpdateData);
 
-        return postUpdateData;
+        return postEntityData;
     }
 
     @Transactional

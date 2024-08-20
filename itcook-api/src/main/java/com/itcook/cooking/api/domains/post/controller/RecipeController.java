@@ -71,7 +71,6 @@ public class RecipeController {
             @Valid @RequestBody RecipeUpdateRequest recipeUpdateRequest,
             @PathVariable Long recipeId
     ) {
-
         RecipeUpdateResponse recipeUpdateResponse = recipeUseCase
                 .updateRecipe(recipeUpdateRequest, authenticationUser.getUsername(), recipeId);
 
