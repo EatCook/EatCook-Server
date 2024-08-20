@@ -68,12 +68,12 @@ public class RecipeController {
     @PatchMapping("/v1/recipes/{recipeId}")
     public ResponseEntity<ApiResponse<RecipeUpdateResponse>> updateRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @Valid @RequestBody RecipeUpdateRequest recipeUpdateRequest,
+            @Valid @RequestBody RecipeUpdateRequest request,
             @PathVariable Long recipeId
     ) {
 
         RecipeUpdateResponse recipeUpdateResponse = recipeUseCase
-                .updateRecipe(recipeUpdateRequest, recipeId);
+                .updateRecipe(request.toServiceDto(authenticationUser.getUsername(), recipeId));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.OK(recipeUpdateResponse));

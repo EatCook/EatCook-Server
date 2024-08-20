@@ -9,6 +9,7 @@ import com.itcook.cooking.domain.domains.post.domain.entity.PostCookingTheme;
 import com.itcook.cooking.domain.domains.post.domain.entity.PostImageRegisterService;
 import com.itcook.cooking.domain.domains.post.domain.entity.RecipeProcess;
 import com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto;
+import com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeUpdateDto;
 import com.itcook.cooking.domain.domains.post.domain.entity.validator.PostValidator;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto.RecipeProcessAddDto;
 
@@ -103,22 +105,15 @@ public class PostService {
                 subImageUrlDto.stream().map(ImageUrlDto::getUrl).toList());
     }
 
-    public Post updatePost(Post postUpdateData, ImageUrlDto mainImageUrlDto) {
-        Post postEntityData = postRepository.findById(postUpdateData.getId()).orElse(null);
-
-        if (postEntityData == null) {
-            throw new ApiException(PostErrorCode.POST_NOT_EXIST);
+    /**
+     * 레시피 수정
+     */
+    public void updatePost(RecipeUpdateDto recipeUpdateDto) {
+        Post findPost = postAdaptor.findByIdOrElseThrow(recipeUpdateDto.recipeId());
+        if (!Objects.equals(findPost.getId(), recipeUpdateDto.userId())) {
+            throw new ApiException(PostErrorCode.POST_NOT_PERMISSION_UPDATE);
         }
 
-        if (mainImageUrlDto != null) {
-            postUpdateData.updateFileExtension(mainImageUrlDto.getKey(), postValidator);
-        } else {
-            postUpdateData.updateFileExtension(postEntityData.getPostImagePath(), postValidator);
-        }
-
-        postEntityData.updatePost(postUpdateData);
-
-        return postUpdateData;
     }
 
     @Transactional
