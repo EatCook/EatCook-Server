@@ -129,19 +129,18 @@ public class RecipeUseCase {
         ImageUrlDto mainImageUrlDto = null;
         if (getUpdateFileExtensionValidation(recipeUpdateRequest.getMainFileExtension())) {
             mainImageUrlDto = postValidationUseCase.getPostFileExtensionValidation(
-                    authUserId, recipeId,
-                    recipeUpdateRequest.getMainFileExtension());
+                    authUserId, recipeId, recipeUpdateRequest.getMainFileExtension());
         }
 
         Post postUpdateData = recipeUpdateRequest.toPostDomain();
-        Post postEntityData = postService.updatePost(postUpdateData, mainImageUrlDto);
+        Post postEntityData = postService.updatePost(recipeId, postUpdateData, mainImageUrlDto);
 
-        List<RecipeProcess> recipeProcessesData = recipeUpdateRequest.toRecipeProcessDomain(
-                postEntityData);
+        List<RecipeProcess> recipeProcessesData = recipeUpdateRequest
+                .toRecipeProcessDomain(postEntityData);
 
         List<ImageUrlDto> recipeProcessImageUrlDto = updateRecipeProcessFileExtensionsValidation(
-                authUserId,
-                recipeUpdateRequest, recipeProcessesData, recipeId);
+                authUserId, recipeId, recipeUpdateRequest, recipeProcessesData);
+
         recipeProcessService.updateRecipeProcess(recipeProcessesData, postEntityData);
 
         List<PostCookingTheme> postCookingThemeData = recipeUpdateRequest.toPostCookingThemeDomain(
@@ -157,14 +156,14 @@ public class RecipeUseCase {
     }
 
     private List<ImageUrlDto> updateRecipeProcessFileExtensionsValidation(
-            Long authUserId,
-            RecipeUpdateRequest recipeUpdateRequest, List<RecipeProcess> recipeProcessesData, Long recipeId) {
+            Long userId, Long postId,
+            RecipeUpdateRequest recipeUpdateRequest, List<RecipeProcess> recipeProcessesData) {
         return recipeUpdateRequest.getRecipeProcess().stream()
                 .filter(recipeProcess -> getUpdateFileExtensionValidation(
                         recipeProcess.getFileExtension()))
                 .map(recipeProcess -> {
                     ImageUrlDto recipeProcessFileImageUrlDto = postValidationUseCase.getRecipeProcessFileExtensionValidation(
-                            authUserId, recipeId,
+                            userId, postId,
                             recipeProcess);
                     recipeProcessesData.stream()
                             .filter(recipeProcessesDatum -> recipeProcessesDatum.getStepNum()
