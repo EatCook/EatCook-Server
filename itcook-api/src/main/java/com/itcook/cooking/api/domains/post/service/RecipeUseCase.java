@@ -124,11 +124,12 @@ public class RecipeUseCase {
 
     //update
     @Transactional
-    public RecipeUpdateResponse updateRecipe(RecipeUpdateRequest recipeUpdateRequest, Long recipeId) {
+    public RecipeUpdateResponse updateRecipe(RecipeUpdateRequest recipeUpdateRequest, String email) {
+        Long authUserId = userService.findIdByEmail(email);
         ImageUrlDto mainImageUrlDto = null;
         if (getUpdateFileExtensionValidation(recipeUpdateRequest.getMainFileExtension())) {
             mainImageUrlDto = postValidationUseCase.getPostFileExtensionValidation(
-                    recipeUpdateRequest.getUserId(), recipeId,
+                    authUserId, recipeUpdateRequest.getPostId(),
                     recipeUpdateRequest.getMainFileExtension());
         }
 
@@ -139,7 +140,8 @@ public class RecipeUseCase {
                 postEntityData);
 
         List<ImageUrlDto> recipeProcessImageUrlDto = updateRecipeProcessFileExtensionsValidation(
-                recipeUpdateRequest, recipeProcessesData, recipeId);
+                authUserId,
+                recipeUpdateRequest, recipeProcessesData, recipeUpdateRequest.getPostId());
         recipeProcessService.updateRecipeProcess(recipeProcessesData, postEntityData);
 
         List<PostCookingTheme> postCookingThemeData = recipeUpdateRequest.toPostCookingThemeDomain(
@@ -155,13 +157,14 @@ public class RecipeUseCase {
     }
 
     private List<ImageUrlDto> updateRecipeProcessFileExtensionsValidation(
+            Long authUserId,
             RecipeUpdateRequest recipeUpdateRequest, List<RecipeProcess> recipeProcessesData, Long recipeId) {
         return recipeUpdateRequest.getRecipeProcess().stream()
                 .filter(recipeProcess -> getUpdateFileExtensionValidation(
                         recipeProcess.getFileExtension()))
                 .map(recipeProcess -> {
                     ImageUrlDto recipeProcessFileImageUrlDto = postValidationUseCase.getRecipeProcessFileExtensionValidation(
-                            recipeUpdateRequest.getUserId(), recipeId,
+                            authUserId, recipeId,
                             recipeProcess);
                     recipeProcessesData.stream()
                             .filter(recipeProcessesDatum -> recipeProcessesDatum.getStepNum()
