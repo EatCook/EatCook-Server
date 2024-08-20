@@ -24,14 +24,8 @@ import java.util.stream.Collectors;
 @Builder
 @Schema(name = "recipe update request")
 public class RecipeUpdateRequest {
-
-//    @Schema(description = "email", example = "user@test.com")
-//    @NotBlank(message = "이메일을 입력해 주세요")
-//    private String email;
-
-//    @Schema(description = "postId", example = "1")
-//    @NotNull(message = "게시물 번호가 없습니다.")
-//    private Long postId;
+    @NotNull(message = "제목을 입력해 주세요")
+    private Long postId;
 
     @Schema(description = "제목", example = "김밥 만들기")
     @NotBlank(message = "제목을 입력해 주세요")
@@ -46,10 +40,6 @@ public class RecipeUpdateRequest {
     @Schema(description = "메인 이미지 확장자명", example = "jpg")
     @NotBlank(message = "메인 이미지 확장자 명이 빈 값입니다.")
     private String mainFileExtension;
-
-    @Schema(description = "유저 id", example = "1")
-    @NotNull(message = "유저 정보가 없습니다.")
-    private Long userId;
 
     @Schema(description = "재료", example = "[\"김밥\",\"밥\"]")
     @NotEmpty(message = "재료를 입력해 주세요")
@@ -70,7 +60,6 @@ public class RecipeUpdateRequest {
                 .recipeName(recipeName)
                 .recipeTime(recipeTime)
                 .introduction(introduction)
-                .userId(userId)
                 .foodIngredients(foodIngredients)
                 .postFlag(PostFlag.ACTIVATE).build();
     }
