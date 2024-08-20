@@ -113,7 +113,6 @@ public class PostService {
         if (!Objects.equals(findPost.getId(), recipeUpdateDto.userId())) {
             throw new ApiException(PostErrorCode.POST_NOT_PERMISSION_UPDATE);
         }
-
     }
 
     @Transactional
@@ -146,7 +145,7 @@ public class PostService {
         return postAdaptor.getOtherPagePostInfo(user.getId(), otherUserId, pageable);
     }
 
-    //    public List<Post> searchByRecipeNameOrIngredients(
+//    public List<Post> searchByRecipeNameOrIngredients(
 //            Long lastId, List<String> names, Integer size
 //    ) {
 //        return postQuerydslRepository.findNamesWithPagination(lastId, names, size);

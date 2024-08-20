@@ -118,7 +118,6 @@ public class Post extends BaseTimeEntity {
         this.recipeName = updateData.getRecipeName();
         this.recipeTime = updateData.getRecipeTime();
         this.introduction = updateData.getIntroduction();
-        this.userId = updateData.getUserId();
         this.foodIngredients = updateData.getFoodIngredients();
         this.postImagePath = updateData.postImagePath;
     }
