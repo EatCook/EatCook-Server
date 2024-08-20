@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 @Builder
 @Schema(name = "recipe update request")
 public class RecipeUpdateRequest {
-    @NotNull(message = "제목을 입력해 주세요")
-    private Long postId;
 
     @Schema(description = "제목", example = "김밥 만들기")
     @NotBlank(message = "제목을 입력해 주세요")
