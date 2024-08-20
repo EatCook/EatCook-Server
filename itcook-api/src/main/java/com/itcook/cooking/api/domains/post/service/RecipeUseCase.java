@@ -124,12 +124,12 @@ public class RecipeUseCase {
 
     //update
     @Transactional
-    public RecipeUpdateResponse updateRecipe(RecipeUpdateRequest recipeUpdateRequest, String email) {
+    public RecipeUpdateResponse updateRecipe(RecipeUpdateRequest recipeUpdateRequest, String email, Long recipeId) {
         Long authUserId = userService.findIdByEmail(email);
         ImageUrlDto mainImageUrlDto = null;
         if (getUpdateFileExtensionValidation(recipeUpdateRequest.getMainFileExtension())) {
             mainImageUrlDto = postValidationUseCase.getPostFileExtensionValidation(
-                    authUserId, recipeUpdateRequest.getPostId(),
+                    authUserId, recipeId,
                     recipeUpdateRequest.getMainFileExtension());
         }
 
@@ -141,7 +141,7 @@ public class RecipeUseCase {
 
         List<ImageUrlDto> recipeProcessImageUrlDto = updateRecipeProcessFileExtensionsValidation(
                 authUserId,
-                recipeUpdateRequest, recipeProcessesData, recipeUpdateRequest.getPostId());
+                recipeUpdateRequest, recipeProcessesData, recipeId);
         recipeProcessService.updateRecipeProcess(recipeProcessesData, postEntityData);
 
         List<PostCookingTheme> postCookingThemeData = recipeUpdateRequest.toPostCookingThemeDomain(
