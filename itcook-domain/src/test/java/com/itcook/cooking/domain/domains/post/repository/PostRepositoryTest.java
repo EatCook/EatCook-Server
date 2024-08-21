@@ -15,6 +15,7 @@ import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,27 @@ public class PostRepositoryTest extends IntegrationTestSupport {
                 tuple(post1.getId(), post1.getRecipeName(), 0L)
             )
             ;
+
+    }
+    @Test
+    @DisplayName("해당 유저id의 글들을 DISABLED 시킨다.")
+    void updatePostToDisabled() {
+        //given
+
+        ItCookUser user = createUser("user@test.com", "잇쿡1");
+
+        createPost(user.getId());
+        createPost(user.getId());
+        //when
+        postRepository.updatePostToDisabled(user.getId());
+
+        //then
+        List<Post> posts = postRepository.findAll();
+        assertThat(posts).hasSize(2)
+            .extracting("postFlag")
+            .containsExactly(PostFlag.DISABLED, PostFlag.DISABLED);
+        ;
+
 
     }
 

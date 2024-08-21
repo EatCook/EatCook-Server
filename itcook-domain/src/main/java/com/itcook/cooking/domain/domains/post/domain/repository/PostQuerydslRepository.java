@@ -9,6 +9,7 @@ import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFoll
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.RecipeDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.SearchPostDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserState;
 import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;

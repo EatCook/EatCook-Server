@@ -10,10 +10,12 @@ import lombok.ToString;
 @ToString
 public class UserLeavedEvent extends DomainEvent {
 
+    private final Long userId;
     private final String email;
 
-    public static UserLeavedEvent of(String email) {
+    public static UserLeavedEvent of(Long userId,String email) {
         return UserLeavedEvent.builder()
+            .userId(userId)
             .email(email)
             .build();
     }
