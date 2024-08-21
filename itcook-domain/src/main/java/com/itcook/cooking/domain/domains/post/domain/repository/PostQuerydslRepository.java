@@ -6,6 +6,7 @@ import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeed
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFollowDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.SearchPostDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserState;
 import com.itcook.cooking.domain.domains.user.service.dto.response.OtherPagePostInfoResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -156,6 +157,7 @@ public class PostQuerydslRepository {
                 .where(
                         lessThanId(lastId),
                         post.postFlag.eq(PostFlag.ACTIVATE),
+                        itCookUser.userState.eq(UserState.ACTIVE),
                         containsRecipeNames(recipeNames),
                         containsIngredientNames(ingredientNames)
                 )
