@@ -100,6 +100,7 @@ public class PostQuerydslRepository {
                 .join(itCookUser).on(itCookUser.id.eq(post.userId))
                 .leftJoin(liked).on(post.id.eq(liked.postId))
                 .where(
+                        itCookUser.userState.eq(UserState.ACTIVE),
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 )
                 .groupBy(post.id)
@@ -116,8 +117,10 @@ public class PostQuerydslRepository {
                         post.count()
                 )
                 .from(post)
+                .join(itCookUser).on(itCookUser.id.eq(post.userId))
                 .leftJoin(liked).on(post.id.eq(liked.postId))
                 .where(
+                        itCookUser.userState.eq(UserState.ACTIVE),
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 );
 
