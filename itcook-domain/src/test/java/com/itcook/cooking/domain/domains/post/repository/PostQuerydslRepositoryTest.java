@@ -11,7 +11,6 @@ import com.itcook.cooking.domain.domains.post.domain.repository.PostQuerydslRepo
 import com.itcook.cooking.domain.domains.post.domain.repository.PostRepository;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.SearchPostDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.domain.enums.ProviderType;
 import com.itcook.cooking.domain.domains.user.domain.enums.UserRole;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserRepository;
@@ -177,41 +176,4 @@ class PostQuerydslRepositoryTest extends IntegrationTestSupport {
 
     }
 
-    @Test
-    @DisplayName("검색시 탈퇴한 회원 게시글 조회 X")
-    void getSearchDeleteUser() {
-        //given
-        ItCookUser user = createUser("user@gmail.com", "잇쿡3");
-        createPost("탈퇴한 회원 요리글", user.getId());
-        user.delete();
-        //when
-        var ingredients = postQuerydslRepository
-            .findAllWithPagination(null, List.of("요리글"), null,10);
-
-        //then
-        assertThat(ingredients).isEmpty();
-    }
-
-    private ItCookUser createUser(String username, String nickName) {
-        ItCookUser user = ItCookUser.builder()
-            .email(username)
-            .password("cook1234")
-            .providerType(ProviderType.COMMON)
-            .nickName(nickName)
-            .lifeType(LifeType.DELIVERY_FOOD)
-            .userRole(UserRole.USER)
-            .build();
-
-        return userRepository.save(user);
-    }
-
-    private Post createPost(String recipeName, Long userId) {
-        Post post = Post.builder()
-            .recipeName(recipeName)
-            .userId(userId)
-            .postFlag(PostFlag.ACTIVATE)
-            .build();
-
-        return postRepository.save(post);
-    }
 }

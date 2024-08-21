@@ -5,6 +5,7 @@ import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -26,7 +27,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     );
 
     Optional<Post> findByIdAndPostFlag(Long postId, PostFlag postFlag);
-//
-//    @Query(value = "select * from Post where post_id in (:postIds) order by field(p.id, :postIds)", nativeQuery = true)
-//    List<Post> findByIdIn(List<Long> postIds);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Post p set p.postFlag = 'DISABLED' where p.userId = :userId")
+    void updatePostToDisabled(Long userId);
 }

@@ -69,4 +69,8 @@ public class PostAdaptor {
     ) {
         return postQuerydslRepository.getOtherPagePostInfo(authUserId, otherUserId, pageable);
     }
+
+    public void updatePostsDisabledBy(Long userId) {
+        postRepository.updatePostToDisabled(userId);
+    }
 }

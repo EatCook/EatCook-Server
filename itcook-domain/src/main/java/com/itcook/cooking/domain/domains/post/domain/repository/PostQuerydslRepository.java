@@ -157,7 +157,6 @@ public class PostQuerydslRepository {
                 .where(
                         lessThanId(lastId),
                         post.postFlag.eq(PostFlag.ACTIVATE),
-                        itCookUser.userState.eq(UserState.ACTIVE),
                         containsRecipeNames(recipeNames),
                         containsIngredientNames(ingredientNames)
                 )
