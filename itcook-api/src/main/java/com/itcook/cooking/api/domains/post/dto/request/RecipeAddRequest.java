@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "recipe update request")
-public class RecipeUpdateRequest {
+@Schema(name = "recipe create request")
+public class RecipeAddRequest {
 
     @Schema(description = "제목", example = "김밥 만들기")
-    @NotBlank(message = "제목을 입력해 주세요")
+    @NotBlank(message = "제목을 입력해주세요")
     private String recipeName;
     @Schema(description = "조리 시간", example = "10")
     @NotNull(message = "조리 시간을 입력해 주세요")
@@ -44,20 +44,21 @@ public class RecipeUpdateRequest {
     private List<String> foodIngredients;
 
     @Schema(description = "테마", example = "[\"한식\",\"중식\"]")
-    @NotEmpty(message = "테마 입력해 주세요")
+    @NotEmpty(message = "테마를 선택해 주세요")
     private List<String> cookingType;
 
     @Schema(description = "조리 과정", example = "[ {\n \"stepNum\": 1,\n \"recipeWriting\": \"밥을 준비해 주세요\",\n \"fileExtension\": \"jpeg\"\n },\n" +
-            "    {\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"fileExtension\": \"default\"\n }\n" +
+            "    {\n \"stepNum\": 2,\n \"recipeWriting\": \"밥을 한 주먹 ~\",\n \"fileExtension\": \"jpeg\"\n }\n" +
             "  ]")
-    @NotEmpty(message = "조리 과정 번호가 없습니다.")
+    @NotEmpty(message = "조리 과정을 입력해 주세요")
     private List<RecipeProcessDto> recipeProcess;
 
-    public Post toPostDomain() {
+    public Post toPostDomain(Long userId) {
         return Post.builder()
                 .recipeName(recipeName)
                 .recipeTime(recipeTime)
                 .introduction(introduction)
+                .userId(userId)
                 .foodIngredients(foodIngredients)
                 .postFlag(PostFlag.ACTIVATE).build();
     }
@@ -72,7 +73,7 @@ public class RecipeUpdateRequest {
                 .collect(Collectors.toList());
     }
 
-    public List<PostCookingTheme> toPostCookingThemeDomain(Post post) {
+    public List<PostCookingTheme> toPostCookingTheme(Post post) {
         return cookingType.stream()
                 .map(name -> {
                     CookingType byName = CookingType.getByName(name);

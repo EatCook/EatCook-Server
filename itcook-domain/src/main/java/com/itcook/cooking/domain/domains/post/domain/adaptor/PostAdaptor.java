@@ -9,6 +9,7 @@ import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFoll
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeInterestDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.HomeSpecialDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.CookTalkFeedDto;
+import com.itcook.cooking.domain.domains.post.domain.repository.dto.RecipeDto;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.response.MyRecipeResponse;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.repository.PostQuerydslRepository;
@@ -70,7 +71,12 @@ public class PostAdaptor {
         return postQuerydslRepository.getOtherPagePostInfo(authUserId, otherUserId, pageable);
     }
 
+<<<<<<< HEAD
     public void updatePostsDisabledBy(Long userId) {
         postRepository.updatePostToDisabled(userId);
+=======
+    public RecipeDto findRecipe(Long postId, Long userId) {
+        return postQuerydslRepository.findRecipe(postId, userId);
+>>>>>>> dev
     }
 }

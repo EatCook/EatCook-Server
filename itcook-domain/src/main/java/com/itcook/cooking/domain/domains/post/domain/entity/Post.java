@@ -1,19 +1,29 @@
 package com.itcook.cooking.domain.domains.post.domain.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
-
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
-import com.itcook.cooking.domain.domains.user.domain.entity.UserCookingTheme;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.*;
-
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -75,7 +85,6 @@ public class Post extends BaseTimeEntity {
         this.recipeName = updateData.getRecipeName();
         this.recipeTime = updateData.getRecipeTime();
         this.introduction = updateData.getIntroduction();
-        this.userId = updateData.getUserId();
         this.foodIngredients = updateData.getFoodIngredients();
         this.postImagePath = updateData.postImagePath;
     }
@@ -84,8 +93,11 @@ public class Post extends BaseTimeEntity {
         this.postImagePath = postImagePath;
     }
 
-    public void deletePost() {
+    public void removePost() {
         this.postFlag = PostFlag.DISABLED;
     }
 
+    public Boolean isAuthor(Long userId) {
+        return Objects.equals(this.userId, userId);
+    }
 }

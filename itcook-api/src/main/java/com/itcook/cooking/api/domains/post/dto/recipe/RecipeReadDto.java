@@ -28,7 +28,7 @@ public class RecipeReadDto {
 
     private List<String> cookingType;
 
-    private List<RecipeProcessReadDto> recipeProcess;
+    private List<RecipeProcessGetResponse> recipeProcess;
 
     private Long userId;
     private String nickName;
