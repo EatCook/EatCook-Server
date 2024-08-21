@@ -139,7 +139,7 @@ public class ItCookUser extends BaseTimeEntity {
         serviceAlertType = ServiceAlertType.DISABLED;
         eventAlertType = EventAlertType.DISABLED;
 
-        Events.raise(UserLeavedEvent.of(deleteEmail));
+        Events.raise(UserLeavedEvent.of(id,deleteEmail));
     }
 
     // 추가 회원가입

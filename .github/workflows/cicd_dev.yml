@@ -61,7 +61,9 @@ jobs:
           context: ./itcook-api
           push: true
           args: --build-arg PROFILE=$ACTIVE_PROFILE
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-dev:${{ github.run_number }}
+          tags: | 
+            ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-dev:${{ github.run_number }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-dev:latest
 
   deploy:
     needs: build
@@ -78,9 +80,6 @@ jobs:
             cd app
             sudo touch .env
             echo "${{ secrets.ENV_VARS }}" | sudo tee .env > /dev/null
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-dev:${{ github.run_number }}
-            docker stop $(docker ps -a -q)
+            docker system prune -a -f
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-dev
             docker-compose up -d
-            docker run --restart=unless-stopped -d -p ${{ secrets.DEV_PORT }}:${{ secrets.DEV_PORT }} --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/itcook-api-dev:${{ github.run_number }}
-            docker rm $(docker ps -a -q --filter "status=exited")
-            docker image prune -a -f

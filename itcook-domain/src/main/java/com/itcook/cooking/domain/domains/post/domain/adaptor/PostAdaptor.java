@@ -78,6 +78,10 @@ public class PostAdaptor {
         return postQuerydslRepository.getOtherPagePostInfo(authUserId, otherUserId, pageable);
     }
 
+    public void updatePostsDisabledBy(Long userId) {
+        postRepository.updatePostToDisabled(userId);
+    }
+
     public RecipeDto findRecipe(Long postId, Long userId) {
         return postQuerydslRepository.findRecipe(postId, userId);
     }
