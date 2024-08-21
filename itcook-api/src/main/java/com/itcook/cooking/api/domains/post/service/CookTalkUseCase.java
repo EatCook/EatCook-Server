@@ -27,8 +27,6 @@ public class CookTalkUseCase {
 
     private final PostService postService;
     private final UserService userService;
-    private final LikedService likedService;
-    private final PostValidationUseCase postValidationUseCase;
 
     /**
      * CookTalk 피드 조회
