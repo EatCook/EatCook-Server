@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 @SecurityRequirement(name = "access-token")
 @Tag(name = "07. Follow")
 public class FollowController {
@@ -29,7 +29,7 @@ public class FollowController {
     private final FollowUseCase followUseCase;
 
     @Operation(summary = "팔로우 등록 요청", description = "팔로우할 유저를 등록합니다.")
-    @PostMapping("/follow")
+    @PostMapping("/v1/follow")
     public void followUser(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody FollowRequest followRequest
@@ -38,7 +38,7 @@ public class FollowController {
     }
 
     @Operation(summary = "팔로우 취소 요청", description = "팔로우한 유저를 삭제합니다.")
-    @DeleteMapping("/follow/{toUserId}")
+    @DeleteMapping("/v1/follow/{toUserId}")
     public void unFollowUser(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @PathVariable Long toUserId
