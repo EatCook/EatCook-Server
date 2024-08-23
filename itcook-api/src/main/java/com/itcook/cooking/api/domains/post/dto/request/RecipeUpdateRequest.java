@@ -73,6 +73,20 @@ public record RecipeUpdateRequest(
         @NotNull(message = "조리 과정을 입력해주세요")
         List<RecipeProcessAddRequest> recipeProcess
 ) {
+    public record RecipeProcessUpdateRequest(
+            @NotNull(message = "조리과정의 번호가 누락되었습니다.")
+            @Min(value = RECIPE_PROCESS_MIN_STEP_NUM, message = "최소 1개 이상을 등록해주세요")
+            Integer stepNum,
+
+            @NotBlank(message = "조리과정의 설명을 입력해주세요.")
+            @Size(max = RECIPE_INTRODUCTION_MAX_SIZE, message = "조리 설명 최대 길이를 초과하였습니다.")
+            String recipeWriting,
+
+            @NotBlank(message = "조리과정의 이미지를 등록해주세요")
+            String fileExtension
+    ) {
+    }
+
     public RecipeUpdateServiceDto toServiceDto(String email, Long recipeId) {
         return builder()
                 .recipeId(recipeId)
@@ -97,19 +111,4 @@ public record RecipeUpdateRequest(
                         .build()).toList();
 
     }
-
-    public record RecipeProcessUpdateRequest(
-            @NotNull(message = "조리과정의 번호가 누락되었습니다.")
-            @Min(value = RECIPE_PROCESS_MIN_STEP_NUM, message = "최소 1개 이상을 등록해주세요")
-            Integer stepNum,
-
-            @NotBlank(message = "조리과정의 설명을 입력해주세요.")
-            @Size(max = RECIPE_INTRODUCTION_MAX_SIZE, message = "조리 설명 최대 길이를 초과하였습니다.")
-            String recipeWriting,
-
-            @NotBlank(message = "조리과정의 이미지를 등록해주세요")
-            String fileExtension
-    ) {
-    }
-
 }
