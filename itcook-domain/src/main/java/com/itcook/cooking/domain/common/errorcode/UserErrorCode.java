@@ -23,7 +23,7 @@ public enum UserErrorCode implements ErrorCode {
     ALREADY_FOLLOW_USER(BAD_REQUEST.code, "U-012", "이미 팔로우한 유저입니다."),
     NOT_EQUAL_PROVIDER_TYPE(BAD_REQUEST.code, "U-013", "일치하는 Provider Type이 존재하지 않습니다."),
     NO_FOLLOWERS(OK.code, "U-014", "팔로우 정보가 없습니다."),
-
+    LEAVE_USER(BAD_REQUEST.code, "U-015", "이미 탈퇴한 회원입니다."),
     ;
 
     private final Integer httpStatusCode;

@@ -52,8 +52,6 @@ public class RecipeUseCase {
 
     /**
      * 레시피 수정
-     *
-     * @return
      */
     @Transactional
     public RecipeUpdateResponse updateRecipe(RecipeUpdateServiceDto recipeUpdateRequest) {
