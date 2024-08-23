@@ -25,7 +25,13 @@ spring:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
-
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
 ---
 spring:
   config:
@@ -51,6 +57,13 @@ spring:
     open-in-view: false
   flyway:
     enabled: false
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
 
 ---
 spring:
@@ -80,3 +93,10 @@ spring:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
