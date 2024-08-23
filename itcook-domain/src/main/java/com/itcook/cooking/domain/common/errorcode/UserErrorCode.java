@@ -21,6 +21,7 @@ public enum UserErrorCode implements ErrorCode {
     ALREADY_EXISTS_NICKNAME(BAD_REQUEST.code, "U-010", "이미 존재하는 닉네임입니다."),
     NOT_EQUAL_PASSWORD(BAD_REQUEST.code, "U-011", "현재 비밀번호와 일치하지 않습니다."),
     ALREADY_FOLLOW_USER(BAD_REQUEST.code, "U-012", "이미 팔로우한 유저입니다."),
+    ALREADY_UNFOLLOW_USER(BAD_REQUEST.code, "U-012", "팔로우한 유저가 아닙니다."),
     NOT_EQUAL_PROVIDER_TYPE(BAD_REQUEST.code, "U-013", "일치하는 Provider Type이 존재하지 않습니다."),
     NO_FOLLOWERS(OK.code, "U-014", "팔로우 정보가 없습니다."),
 
