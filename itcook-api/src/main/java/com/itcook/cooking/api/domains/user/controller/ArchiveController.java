@@ -17,15 +17,15 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/archive")
+@RequestMapping("/api")
 @SecurityRequirement(name = "access-token")
 @Tag(name = "06. Archive")
 public class ArchiveController {
 
     private final ArchiveUseCase archiveUseCase;
 
-    @PostMapping("/add")
-    public ResponseEntity<ApiResponse> archiveAdd(
+    @PostMapping("/v1/archive")
+    public ResponseEntity<ApiResponse<String>> archiveAdd(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody ArchiveRequest archiveRequest
     ) {
@@ -34,8 +34,8 @@ public class ArchiveController {
                 .body(ApiResponse.OK("저장 되었습니다."));
     }
 
-    @DeleteMapping("/del")
-    public ResponseEntity<ApiResponse> archiveDel(
+    @DeleteMapping("/v1/archive")
+    public ResponseEntity<ApiResponse<String>> archiveDel(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody ArchiveRequest archiveRequest
     ) {
