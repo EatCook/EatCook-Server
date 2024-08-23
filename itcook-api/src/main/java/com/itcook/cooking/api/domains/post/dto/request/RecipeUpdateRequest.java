@@ -58,7 +58,9 @@ public record RecipeUpdateRequest(
                 "    LATE_NIGHT_SNACK(\"야식\")\n" +
                 "    DESERT(\"디저트\")\n" +
                 "    BUNSIK(\"분식\")\n" +
-                "    ASIAN_FOOD(\"아시안\")", example = "KOREAN_FOOD")
+                "    ASIAN_FOOD(\"아시안\")"
+                , example = "[\"KOREAN_FOOD\"]")
+        @Size(min = 1, max = 3, message = "요리 타입은 1 ~ 3개를 선택할 수 있습니다.")
         List<CookingType> cookingType,
         @NotEmpty(message = "요리 유형을 선택해주세요")
         @Schema(description = "DIET(\"다이어트식\")\n" +
@@ -66,7 +68,8 @@ public record RecipeUpdateRequest(
                 "    CONVENIENCE_STORE(\"편의점 요리\")\n" +
                 "    DELIVERY_FOOD(\"배달음식 단골고객\")\n" +
                 "    MEAL_KIT(\"밀키트 요리\")\n"
-                , example = "DIET")
+                , example = "[\"DIET\"]")
+        @Size(min = 1, max = 3, message = "생활 타입은 1 ~ 3개를 선택할 수 있습니다.")
         List<LifeType> lifeType,
 
         @Valid
