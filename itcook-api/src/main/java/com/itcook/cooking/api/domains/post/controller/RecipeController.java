@@ -3,12 +3,12 @@ package com.itcook.cooking.api.domains.post.controller;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeAddRequest;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeUpdateRequest;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeGetResponse;
-import com.itcook.cooking.api.domains.post.dto.response.RecipeUpdateResponse;
 import com.itcook.cooking.api.domains.post.service.RecipeUseCase;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.common.constant.StatusCode;
 import com.itcook.cooking.domain.domains.post.service.dto.reponse.RecipeAddResponse;
+import com.itcook.cooking.domain.domains.post.service.dto.reponse.RecipeUpdateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,11 +71,11 @@ public class RecipeController {
             @Valid @RequestBody RecipeUpdateRequest request,
             @PathVariable Long recipeId
     ) {
-        RecipeUpdateResponse recipeUpdateResponse = recipeUseCase
+        RecipeUpdateResponse response = recipeUseCase
                 .updateRecipe(request.toServiceDto(authenticationUser.getUsername(), recipeId));
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.OK(recipeUpdateResponse));
+                .body(ApiResponse.OK(response));
     }
 
     @Operation(summary = "레시피 삭제 요청", description = "쿡톡에 등록된 레시피를 삭제합니다.")

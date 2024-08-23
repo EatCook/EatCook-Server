@@ -1,13 +1,13 @@
 package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.api.domains.post.dto.response.RecipeGetResponse;
-import com.itcook.cooking.api.domains.post.dto.response.RecipeUpdateResponse;
 import com.itcook.cooking.api.domains.post.service.dto.RecipeAddServiceDto;
 import com.itcook.cooking.api.domains.post.service.dto.RecipeUpdateServiceDto;
 import com.itcook.cooking.domain.common.annotation.UseCase;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.RecipeDto;
 import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.post.service.dto.reponse.RecipeAddResponse;
+import com.itcook.cooking.domain.domains.post.service.dto.reponse.RecipeUpdateResponse;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -52,18 +52,14 @@ public class RecipeUseCase {
 
     /**
      * 레시피 수정
+     *
+     * @return
      */
     @Transactional
     public RecipeUpdateResponse updateRecipe(RecipeUpdateServiceDto recipeUpdateRequest) {
         Long authUserId = userService.findIdByEmail(recipeUpdateRequest.email());
 
-        postService.updatePost(recipeUpdateRequest.toDomainDto(authUserId));
-
-        return null;
-    }
-
-    private Boolean getUpdateFileExtensionValidation(String fileExtension) {
-        return !fileExtension.equals("default");
+        return postService.updatePost(recipeUpdateRequest.toDomainDto(authUserId));
     }
 
     /**

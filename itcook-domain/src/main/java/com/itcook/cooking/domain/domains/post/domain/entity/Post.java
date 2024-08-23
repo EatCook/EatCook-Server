@@ -47,7 +47,7 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeProcess> recipeProcesses = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
@@ -114,15 +114,22 @@ public class Post extends BaseTimeEntity {
         this.postCookingThemes = postCookingThemes;
     }
 
-    public void updatePost(Post updateData) {
-        this.recipeName = updateData.getRecipeName();
-        this.recipeTime = updateData.getRecipeTime();
-        this.introduction = updateData.getIntroduction();
-        this.foodIngredients = updateData.getFoodIngredients();
-        this.postImagePath = updateData.postImagePath;
+    public void updatePost(
+            String recipeName,
+            Integer recipeTime,
+            String introduction,
+            List<String> foodIngredients,
+            PostValidator postValidator
+    ) {
+        //TODO
+//        postValidator.validateUpdate();
+        this.recipeName = recipeName;
+        this.recipeTime = recipeTime;
+        this.introduction = introduction;
+        this.foodIngredients = foodIngredients;
     }
 
-    public void updateFileExtension(String postImagePath, PostValidator postValidator) {
+    public void updatePostImagePath(String postImagePath, PostValidator postValidator) {
         postValidator.validatePostImagePath(postImagePath);
         this.postImagePath = postImagePath;
     }

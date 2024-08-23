@@ -1,6 +1,5 @@
 package com.itcook.cooking.api.domains.post.service.dto;
 
-import com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto;
 import com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeUpdateDto;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
@@ -8,7 +7,7 @@ import lombok.Builder;
 
 import java.util.List;
 
-import static com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeUpdateDto.*;
+import static com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeUpdateDto.RecipeProcessUpdateDto;
 
 @Builder
 public record RecipeUpdateServiceDto(
