@@ -1,14 +1,14 @@
 package com.itcook.cooking.api.domains.post.controller;
 
-import com.itcook.cooking.api.domains.post.dto.request.RecipeCreateRequest;
+import com.itcook.cooking.api.domains.post.dto.request.RecipeAddRequest;
 import com.itcook.cooking.api.domains.post.dto.request.RecipeUpdateRequest;
-import com.itcook.cooking.api.domains.post.dto.response.RecipeCreateResponse;
 import com.itcook.cooking.api.domains.post.dto.response.RecipeGetResponse;
-import com.itcook.cooking.api.domains.post.dto.response.RecipeUpdateResponse;
 import com.itcook.cooking.api.domains.post.service.RecipeUseCase;
 import com.itcook.cooking.api.domains.security.AuthenticationUser;
 import com.itcook.cooking.api.global.dto.ApiResponse;
 import com.itcook.cooking.domain.common.constant.StatusCode;
+import com.itcook.cooking.domain.domains.post.service.dto.reponse.RecipeAddResponse;
+import com.itcook.cooking.domain.domains.post.service.dto.reponse.RecipeUpdateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,15 +40,15 @@ public class RecipeController {
 
     @Operation(summary = "레시피 등록 요청", description = "쿡톡에 레시피를 등록합니다.")
     @PostMapping("/v1/recipes")
-    public ResponseEntity<ApiResponse<RecipeCreateResponse>> createRecipe(
+    public ResponseEntity<ApiResponse<RecipeAddResponse>> addRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @Valid @RequestBody RecipeCreateRequest recipeCreateRequest
+            @Valid @RequestBody RecipeAddRequest request
     ) {
-        RecipeCreateResponse recipeCreateResponse = recipeUseCase.createRecipe(
-                authenticationUser.getUsername(), recipeCreateRequest);
+        RecipeAddResponse response = recipeUseCase
+                .addRecipe(request.toServiceDto(authenticationUser.getUsername()));
 
         return ResponseEntity.status(StatusCode.OK.code)
-                .body(ApiResponse.OK(recipeCreateResponse));
+                .body(ApiResponse.OK(response));
     }
 
     @Operation(summary = "레시피 조회 요청", description = "쿡톡에 등록된 특정 레시피를 조회합니다.")
@@ -68,14 +68,14 @@ public class RecipeController {
     @PatchMapping("/v1/recipes/{recipeId}")
     public ResponseEntity<ApiResponse<RecipeUpdateResponse>> updateRecipe(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @Valid @RequestBody RecipeUpdateRequest recipeUpdateRequest,
+            @Valid @RequestBody RecipeUpdateRequest request,
             @PathVariable Long recipeId
     ) {
-        RecipeUpdateResponse recipeUpdateResponse = recipeUseCase
-                .updateRecipe(recipeUpdateRequest, authenticationUser.getUsername(), recipeId);
+        RecipeUpdateResponse response = recipeUseCase
+                .updateRecipe(request.toServiceDto(authenticationUser.getUsername(), recipeId));
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.OK(recipeUpdateResponse));
+                .body(ApiResponse.OK(response));
     }
 
     @Operation(summary = "레시피 삭제 요청", description = "쿡톡에 등록된 레시피를 삭제합니다.")

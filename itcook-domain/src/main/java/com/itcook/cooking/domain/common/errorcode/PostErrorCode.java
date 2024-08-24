@@ -14,6 +14,7 @@ public enum PostErrorCode implements ErrorCode {
     POST_FILE_EXTENSION_NOT_EXIST(BAD_REQUEST.code, "P-003", "허용되지 않은 파일 확장자입니다."),
     POST_ALREADY_DISABLED(BAD_REQUEST.code, "P-004", "이미 삭제된 게시글입니다."),
     POST_NOT_PERMISSION_DELETE(BAD_REQUEST.code, "P-005", "삭제할 권한이 없습니다."),
+    POST_NOT_PERMISSION_UPDATE(BAD_REQUEST.code, "P-005", "수정할 권한이 없습니다."),
     ;
 
     private final Integer httpStatusCode;

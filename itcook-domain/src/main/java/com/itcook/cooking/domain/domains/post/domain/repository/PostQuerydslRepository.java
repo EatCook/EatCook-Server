@@ -321,6 +321,7 @@ public class PostQuerydslRepository {
                 .join(itCookUser).on(itCookUser.id.eq(post.userId))
                 .leftJoin(liked).on(post.id.eq(liked.postId))
                 .where(
+                        itCookUser.userState.eq(UserState.ACTIVE),
                         post.id.eq(postId),
                         post.postFlag.eq(PostFlag.ACTIVATE)
                 )

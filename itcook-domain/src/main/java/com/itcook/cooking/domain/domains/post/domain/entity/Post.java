@@ -1,6 +1,8 @@
 package com.itcook.cooking.domain.domains.post.domain.entity;
 
 import com.itcook.cooking.domain.common.BaseTimeEntity;
+import com.itcook.cooking.domain.domains.post.domain.entity.dto.RecipeAddDto;
+import com.itcook.cooking.domain.domains.post.domain.entity.validator.PostValidator;
 import com.itcook.cooking.domain.domains.post.domain.enums.PostFlag;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import lombok.AccessLevel;
@@ -22,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,7 +47,7 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeProcess> recipeProcesses = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
@@ -65,10 +68,12 @@ public class Post extends BaseTimeEntity {
     private PostFlag postFlag;
 
     @Builder
-    public Post(String recipeName, Integer recipeTime, String introduction, String postImagePath,
-                Long userId, List<RecipeProcess> recipeProcesses,
-                List<PostCookingTheme> postCookingThemes,
-                List<String> foodIngredients, List<LifeType> lifeTypes, PostFlag postFlag) {
+    private Post(
+            String recipeName, Integer recipeTime, String introduction,
+            String postImagePath, Long userId, List<RecipeProcess> recipeProcesses,
+            List<PostCookingTheme> postCookingThemes, List<String> foodIngredients,
+            List<LifeType> lifeTypes, PostFlag postFlag
+    ) {
         this.recipeName = recipeName;
         this.recipeTime = recipeTime;
         this.introduction = introduction;
@@ -81,15 +86,51 @@ public class Post extends BaseTimeEntity {
         this.postFlag = postFlag;
     }
 
-    public void updatePost(Post updateData) {
-        this.recipeName = updateData.getRecipeName();
-        this.recipeTime = updateData.getRecipeTime();
-        this.introduction = updateData.getIntroduction();
-        this.foodIngredients = updateData.getFoodIngredients();
-        this.postImagePath = updateData.postImagePath;
+    /**
+     * 레시피 등록
+     */
+    public static Post addPost(RecipeAddDto dto, PostValidator postValidator) {
+        List<LifeType> lifeTypeList = new HashSet<>(dto.lifeTypes()).stream().toList();
+        Post post = Post.builder()
+                .recipeName(dto.recipeName())
+                .recipeTime(dto.recipeTime())
+                .introduction(dto.introduction())
+                .userId(dto.userId())
+                .foodIngredients(dto.foodIngredients())
+                .lifeTypes(lifeTypeList)
+                .postFlag(PostFlag.ACTIVATE)
+                .build();
+        postValidator.validateAdd(post);
+        return post;
     }
 
-    public void updateFileExtension(String postImagePath) {
+    public void addRecipeProcess(List<RecipeProcess> recipeProcesses) {
+        this.recipeProcesses = recipeProcesses;
+    }
+
+    public void updateCookingTheme(
+            List<PostCookingTheme> postCookingThemes
+    ) {
+        this.postCookingThemes = postCookingThemes;
+    }
+
+    public void updatePost(
+            String recipeName,
+            Integer recipeTime,
+            String introduction,
+            List<String> foodIngredients,
+            PostValidator postValidator
+    ) {
+        //TODO
+//        postValidator.validateUpdate();
+        this.recipeName = recipeName;
+        this.recipeTime = recipeTime;
+        this.introduction = introduction;
+        this.foodIngredients = foodIngredients;
+    }
+
+    public void updatePostImagePath(String postImagePath, PostValidator postValidator) {
+        postValidator.validatePostImagePath(postImagePath);
         this.postImagePath = postImagePath;
     }
 

@@ -1,5 +1,7 @@
 package com.itcook.cooking.domain.domains.user.service;
 
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
@@ -13,6 +15,7 @@ import com.itcook.cooking.domain.domains.user.domain.entity.validator.UserValida
 import com.itcook.cooking.domain.domains.user.domain.enums.EventAlertType;
 import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import com.itcook.cooking.domain.domains.user.domain.enums.ServiceAlertType;
+import com.itcook.cooking.domain.domains.user.domain.enums.UserState;
 import com.itcook.cooking.domain.domains.user.domain.repository.UserCookingThemeRepository;
 import com.itcook.cooking.domain.domains.user.service.dto.UserUpdatePassword;
 import com.itcook.cooking.domain.domains.user.service.dto.response.MyPageSetUpResponse;
@@ -44,7 +47,11 @@ public class UserService {
     }
 
     public Long findIdByEmail(String email) {
-        return userAdaptor.queryUserByEmail(email).getId();
+        ItCookUser itCookUser = userAdaptor.queryUserByEmail(email);
+        if (itCookUser.getUserState().equals(UserState.DELETE)) {
+            throw new ApiException(UserErrorCode.LEAVE_USER);
+        }
+        return itCookUser.getId();
     }
 
     public void checkDuplicateMail(String email) {
