@@ -76,10 +76,8 @@ spring:
     username: ${PROD_ID}
     password: ${PROD_PW}
   jpa:
-    show-sql: false
     properties:
       hibernate:
-        format_sql: false
         default_batch_fetch_size: 100
         jdbc:
           batch_size: 20
