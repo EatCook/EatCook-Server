@@ -10,8 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum RecipeProcessErrorCode implements ErrorCode {
 
-    RECIPE_PROCESS_REQUEST_ERROR(BAD_REQUEST.code, "RP-001", "요청된 조리 과정 데이터에 문제가 있습니다."),
-    ;
+    INVALID_STEPNUM_ORDER(BAD_REQUEST.code, "RP-001", "조리 과정의 순서가 잘 못 되었습니다."),
+    INVALID_IMAGE_EXTENSION(BAD_REQUEST.code, "RP-002", "기존에 등록된 이미지가 아닙니다.");
 
     private final Integer httpStatusCode;
     private final String errorCode;
