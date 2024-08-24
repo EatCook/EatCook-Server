@@ -2,6 +2,10 @@ package com.itcook.cooking.domain.domains.user.service;
 
 import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
+import com.itcook.cooking.domain.common.errorcode.UserErrorCode;
+import com.itcook.cooking.domain.common.events.Events;
+import com.itcook.cooking.domain.common.events.user.UserFollowedEvent;
+import com.itcook.cooking.domain.common.exception.ApiException;
 import com.itcook.cooking.domain.common.utils.RandomCodeUtils;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
 import com.itcook.cooking.domain.domains.user.domain.adaptor.UserAdaptor;
@@ -205,5 +209,41 @@ public class UserService {
         boolean followCheck = follow.contains(authUser);
         long postCounts = userAdaptor.getUserPostCounts(otherUser.getId());
         return OtherPageUserInfoResponse.of(otherUser, follow.size(), followCheck, postCounts);
+    }
+
+    /**
+     * 팔로우 등록
+     */
+    public void follow(String fromUserEmail, Long toUserId) {
+        ItCookUser fromUser = userAdaptor.queryUserByEmail(fromUserEmail);
+        ItCookUser toUser = userAdaptor.queryUserById(toUserId);
+
+        List<Long> follow = fromUser.getFollow();
+
+        if (follow.contains(toUserId)) {
+            throw new ApiException(UserErrorCode.ALREADY_FOLLOW_USER);
+        }
+
+        follow.add(toUser.getId());
+
+        Events.raise(UserFollowedEvent.of(fromUser.getId(), fromUser.getNickName(), toUserId));
+    }
+
+    /**
+     * 팔로우 취소
+     */
+    public void unFollow(String fromUserEmail, Long toUserId) {
+        ItCookUser fromItCookUserData = userAdaptor.queryUserByEmail(fromUserEmail);
+        ItCookUser toItCookUserData = userAdaptor.queryUserById(toUserId);
+
+        List<Long> follow = fromItCookUserData.getFollow();
+
+        if (!follow.contains(toUserId)) {
+            throw new ApiException(UserErrorCode.ALREADY_UNFOLLOW_USER);
+        }
+
+        follow.remove(toItCookUserData.getId());
+
+        fromItCookUserData.updateFollow(follow);
     }
 }

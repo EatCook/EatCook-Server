@@ -1,4 +1,4 @@
-package com.itcook.cooking.api.domains.user.dto.request.follow;
+package com.itcook.cooking.api.domains.user.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
