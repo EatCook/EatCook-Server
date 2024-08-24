@@ -91,3 +91,6 @@ spring:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
+logging:
+  level:
+    root: warn
