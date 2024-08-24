@@ -1,8 +1,11 @@
 package com.itcook.cooking.domain.domains.post.domain.entity;
 
-import static javax.persistence.FetchType.LAZY;
-
+import com.itcook.cooking.domain.domains.post.domain.entity.validator.PostValidator;
 import com.itcook.cooking.domain.domains.post.domain.enums.CookingType;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,11 +16,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -37,12 +40,22 @@ public class PostCookingTheme {
     private Post post;
 
     @Builder
-    public PostCookingTheme(Long id, CookingType cookingType, Post post) {
+    private PostCookingTheme(Long id, CookingType cookingType, Post post) {
         this.id = id;
         this.cookingType = cookingType;
         this.post = post;
     }
 
-
+    public static List<PostCookingTheme> addPostCookingTheme(
+            List<CookingType> cookingType, Post post, PostValidator postValidator
+    ) {
+        Set<CookingType> cookingTypes = new HashSet<>(cookingType);
+        List<PostCookingTheme> postCookingThemeList = cookingTypes.stream()
+                .map(dto -> PostCookingTheme.builder()
+                        .cookingType(dto)
+                        .post(post).build()).toList();
+        postValidator.validatePostCookingTheme(postCookingThemeList);
+        return postCookingThemeList;
+    }
 
 }
