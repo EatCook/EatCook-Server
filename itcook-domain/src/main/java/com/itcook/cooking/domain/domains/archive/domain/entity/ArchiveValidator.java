@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 public class ArchiveValidator {
     /**
-     * 게시글 생성 검증
+     * 보관함 생성 검증
      */
     public void validateAdd(Archive archive) {
         Assert.notNull(archive.getItCookUserId(), "보관할 회원 정보가 누락되었습니다.");

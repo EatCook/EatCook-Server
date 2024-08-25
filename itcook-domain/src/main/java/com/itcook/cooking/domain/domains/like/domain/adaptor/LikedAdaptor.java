@@ -2,8 +2,8 @@ package com.itcook.cooking.domain.domains.like.domain.adaptor;
 
 import com.itcook.cooking.domain.common.errorcode.LikedErrorCode;
 import com.itcook.cooking.domain.common.exception.ApiException;
-import com.itcook.cooking.domain.domains.like.domain.repository.LikedRepository;
 import com.itcook.cooking.domain.domains.like.domain.entity.Liked;
+import com.itcook.cooking.domain.domains.like.domain.repository.LikedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

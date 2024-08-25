@@ -25,14 +25,7 @@ public class LikedUseCase {
         ItCookUser findByItCookUser = userService.findUserByEmail(email);
         Post findByPost = postService.fetchFindByPost(reqPostId);
 
-        likedService.validateDuplicateLiked(findByItCookUser.getId(), reqPostId);
-
-        Liked newLiked = Liked.builder()
-                .postId(findByPost.getId()) // 좋아요 누른 게시글 id
-                .itCookUserId(findByItCookUser.getId()) // from user
-                .build();
-
-        likedService.createLiked(newLiked);
+        likedService.createLiked(findByItCookUser.getId(), findByPost.getId());
     }
 
     public void likedDel(String email, Long reqPostId) {
