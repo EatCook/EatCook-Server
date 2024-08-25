@@ -1,7 +1,6 @@
 package com.itcook.cooking.api.domains.post.service;
 
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.like.domain.entity.Liked;
 import com.itcook.cooking.domain.domains.like.service.LikedService;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.service.PostService;
@@ -28,13 +27,11 @@ public class LikedUseCase {
         likedService.createLiked(findByItCookUser.getId(), findByPost.getId());
     }
 
-    public void likedDel(String email, Long reqPostId) {
+    public void removeLiked(String email, Long reqPostId) {
         ItCookUser findByItCookUser = userService.findUserByEmail(email);
         Post findByPost = postService.fetchFindByPost(reqPostId);
 
-        Liked findLiked = likedService.validateEmptyArchive(findByItCookUser.getId(), findByPost.getId());
-
-        likedService.removeLiked(findLiked);
+        likedService.removeLiked(findByItCookUser.getId(), findByPost.getId());
     }
 
 }

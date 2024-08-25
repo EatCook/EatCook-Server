@@ -43,11 +43,11 @@ public class LikedController {
     }
 
     @DeleteMapping("/v1/liked/{postId}")
-    public ResponseEntity<ApiResponse> likedDel(
+    public ResponseEntity<ApiResponse<String>> likedDel(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @PathVariable Long postId
     ) {
-        likedUseCase.likedDel(authenticationUser.getUsername(), postId);
+        likedUseCase.removeLiked(authenticationUser.getUsername(), postId);
 
         return ResponseEntity.status(OK.code)
                 .body(ApiResponse.OK("해당 게시물의 좋아요를 삭제하였습니다."));

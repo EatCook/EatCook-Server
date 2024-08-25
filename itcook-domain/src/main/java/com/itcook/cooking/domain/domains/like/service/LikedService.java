@@ -17,10 +17,6 @@ public class LikedService {
     private final LikedAdaptor likedAdaptor;
     private final LikedValidator likedValidate;
 
-    public Liked validateEmptyArchive(Long userId, Long postId) {
-        return likedAdaptor.validateEmptyLiked(userId, postId);
-    }
-
     @Transactional
     public void createLiked(Long userId, Long postId) {
         likedAdaptor.checkDuplicateLiked(userId, postId);
@@ -29,7 +25,10 @@ public class LikedService {
     }
 
     @Transactional
-    public void removeLiked(Liked liked) {
-        likedAdaptor.removeLiked(liked);
+    public void removeLiked(Long userId, Long postId) {
+        Liked findLiked = likedAdaptor.validateEmptyLiked(userId, postId);
+
+        likedAdaptor.removeLiked(findLiked);
     }
+
 }
