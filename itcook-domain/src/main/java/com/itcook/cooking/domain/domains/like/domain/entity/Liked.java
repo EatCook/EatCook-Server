@@ -2,12 +2,18 @@ package com.itcook.cooking.domain.domains.like.domain.entity;
 
 import com.itcook.cooking.domain.common.events.Events;
 import com.itcook.cooking.domain.common.events.user.UserLikedEvent;
+import com.itcook.cooking.domain.domains.like.domain.entity.validator.LikedValidator;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PostPersist;
 
 @Entity
 @Getter
@@ -29,6 +35,15 @@ public class Liked {
     public Liked(Long itCookUserId, Long postId) {
         this.itCookUserId = itCookUserId;
         this.postId = postId;
+    }
+
+    public static Liked addLiked(Long userId, Long postId, LikedValidator likedValidate) {
+        Liked liked = Liked.builder()
+                .itCookUserId(userId)
+                .postId(postId)
+                .build();
+        likedValidate.validateAdd(liked);
+        return liked;
     }
 
     @PostPersist

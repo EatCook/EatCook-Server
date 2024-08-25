@@ -1,9 +1,8 @@
 package com.itcook.cooking.domain.domains.like.service;
 
-import com.itcook.cooking.domain.domains.like.domain.entity.Liked;
-import com.itcook.cooking.domain.domains.like.domain.repository.LikedRepository;
 import com.itcook.cooking.domain.domains.like.domain.adaptor.LikedAdaptor;
-import java.util.List;
+import com.itcook.cooking.domain.domains.like.domain.entity.Liked;
+import com.itcook.cooking.domain.domains.like.domain.entity.validator.LikedValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,27 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class LikedService {
 
     private final LikedAdaptor likedAdaptor;
-    private final LikedRepository likedRepository;
-
-    public List<Liked> getFindAllLiked(List<Long> postIdData) {
-        return likedRepository.findAllByPostIdIn(postIdData);
-    }
-
-    public void validateDuplicateLiked(Long userId, Long postId) {
-        likedAdaptor.checkDuplicateLiked(userId, postId);
-    }
-
-    public Liked validateEmptyArchive(Long userId, Long postId) {
-        return likedAdaptor.validateEmptyLiked(userId, postId);
-    }
+    private final LikedValidator likedValidate;
 
     @Transactional
-    public void createLiked(Liked liked) {
+    public void createLiked(Long userId, Long postId) {
+        likedAdaptor.checkDuplicateLiked(userId, postId);
+        Liked liked = Liked.addLiked(userId, postId, likedValidate);
         likedAdaptor.saveLiked(liked);
     }
 
     @Transactional
-    public void removeLiked(Liked liked) {
-        likedAdaptor.removeLiked(liked);
+    public void removeLiked(Long userId, Long postId) {
+        Liked findLiked = likedAdaptor.validateEmptyLiked(userId, postId);
+
+        likedAdaptor.removeLiked(findLiked);
     }
+
 }
