@@ -6,7 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 @Getter
@@ -24,9 +28,18 @@ public class Archive extends BaseTimeEntity {
     private Long postId;
 
     @Builder
-    public Archive(Long itCookUserId, Long postId) {
+    private Archive(Long itCookUserId, Long postId) {
         this.itCookUserId = itCookUserId;
         this.postId = postId;
+    }
+
+    public static Archive addArchive(Long userId, Long postId, ArchiveValidator archiveValidator) {
+        Archive archive = Archive.builder()
+                .itCookUserId(userId)
+                .postId(postId)
+                .build();
+        archiveValidator.validateAdd(archive);
+        return archive;
     }
 
 }
