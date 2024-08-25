@@ -32,7 +32,7 @@ public class Liked {
     private Long postId;
 
     @Builder
-    private Liked(Long itCookUserId, Long postId) {
+    public Liked(Long itCookUserId, Long postId) {
         this.itCookUserId = itCookUserId;
         this.postId = postId;
     }
