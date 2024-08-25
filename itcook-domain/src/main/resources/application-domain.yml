@@ -4,7 +4,7 @@ spring:
       on-profile: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DEV_URL}/${DEV_DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    url: jdbc:mysql://${DEV_URL}/${DEV_DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true #&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
     username: ${DEV_ID}
     password: ${DEV_PW}
   jpa:
@@ -25,7 +25,13 @@ spring:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
-
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
 ---
 spring:
   config:
@@ -51,6 +57,13 @@ spring:
     open-in-view: false
   flyway:
     enabled: false
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
 
 ---
 spring:
@@ -59,14 +72,12 @@ spring:
       on-profile: prod
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${PROD_URL}/${PROD_DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    url: jdbc:mysql://${PROD_URL}/${PROD_DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
     username: ${PROD_ID}
     password: ${PROD_PW}
   jpa:
-    show-sql: true
     properties:
       hibernate:
-        format_sql: true
         default_batch_fetch_size: 100
         jdbc:
           batch_size: 20
@@ -80,3 +91,6 @@ spring:
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
+logging:
+  level:
+    root: warn
