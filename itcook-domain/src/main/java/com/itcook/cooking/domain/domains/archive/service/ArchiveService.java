@@ -3,16 +3,14 @@ package com.itcook.cooking.domain.domains.archive.service;
 import com.itcook.cooking.domain.domains.archive.domain.adaptor.ArchiveAdaptor;
 import com.itcook.cooking.domain.domains.archive.domain.dto.ArchivePost;
 import com.itcook.cooking.domain.domains.archive.domain.entity.Archive;
+import com.itcook.cooking.domain.domains.archive.domain.entity.ArchiveValidator;
 import com.itcook.cooking.domain.domains.archive.domain.repository.ArchiveQuerydslRepository;
-
-import java.util.List;
-
-import com.itcook.cooking.domain.domains.post.domain.entity.Post;
-import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,30 +20,25 @@ public class ArchiveService {
 
     private final ArchiveAdaptor archiveAdaptor;
     private final ArchiveQuerydslRepository archiveQuerydslRepository;
+    private final ArchiveValidator archiveValidator;
 
     @Transactional
     public void saveArchive(Long userId, Long postId) {
-        validateDuplicateArchive(userId, postId);
+        archiveAdaptor.checkDuplicateArchive(userId, postId);
 
-        Archive newArchive = Archive.addArchive(userId, postId);
+        Archive newArchive = Archive.addArchive(userId, postId, archiveValidator);
         archiveAdaptor.saveArchive(newArchive);
     }
 
-    public Archive validateEmptyArchive(Long userId, Long postId) {
-        return archiveAdaptor.checkEmptyArchive(userId, postId);
-    }
-
     @Transactional
-    public void removeArchive(Archive archive) {
-        archiveAdaptor.removeArchiveEntity(archive);
+    public void removeArchive(Long userId, Long postId) {
+        Archive findArchive = archiveAdaptor.checkEmptyArchive(userId, postId);
+
+        archiveAdaptor.removeArchiveEntity(findArchive);
     }
 
     public List<ArchivePost> getArchivesPosts(Long userId) {
         return archiveQuerydslRepository.findPostsByUserId(userId);
-    }
-
-    private void validateDuplicateArchive(Long userId, Long postId) {
-        archiveAdaptor.checkDuplicateArchive(userId, postId);
     }
 
 }

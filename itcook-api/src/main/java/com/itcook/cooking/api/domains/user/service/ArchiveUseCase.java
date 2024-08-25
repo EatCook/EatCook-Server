@@ -1,11 +1,10 @@
 package com.itcook.cooking.api.domains.user.service;
 
 import com.itcook.cooking.domain.common.annotation.UseCase;
-import com.itcook.cooking.domain.domains.archive.domain.entity.Archive;
+import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.service.PostService;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
-import com.itcook.cooking.domain.domains.archive.service.ArchiveService;
 import com.itcook.cooking.domain.domains.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +25,11 @@ public class ArchiveUseCase {
         archiveService.saveArchive(findByItCookUser.getId(), findByPost.getId());
     }
 
-    public void archiveDel(String email, Long postId) {
+    public void removeArchive(String email, Long postId) {
         ItCookUser findByItCookUser = userService.findUserByEmail(email);
         Post findByPost = postService.fetchFindByPost(postId);
 
-        Archive findArchive = archiveService.validateEmptyArchive(findByItCookUser.getId(), findByPost.getId());
-
-        archiveService.removeArchive(findArchive);
+        archiveService.removeArchive(findByItCookUser.getId(), findByPost.getId());
     }
 
 }

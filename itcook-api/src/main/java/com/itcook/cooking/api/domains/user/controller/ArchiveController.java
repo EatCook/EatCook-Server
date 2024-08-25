@@ -10,11 +10,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.itcook.cooking.domain.common.constant.StatusCode.*;
+import static com.itcook.cooking.domain.common.constant.StatusCode.OK;
 
 @Slf4j
 @RestController
@@ -36,12 +41,12 @@ public class ArchiveController {
                 .body(ApiResponse.OK("저장 되었습니다."));
     }
 
-    @DeleteMapping("/v1/archive")
+    @DeleteMapping("/v1/archive/{postId}")
     public ResponseEntity<ApiResponse<String>> archiveDel(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @Valid @RequestBody ArchiveRequest archiveRequest
+            @PathVariable Long postId
     ) {
-        archiveUseCase.archiveDel(authenticationUser.getUsername(), archiveRequest.getPostId());
+        archiveUseCase.removeArchive(authenticationUser.getUsername(), postId);
 
         return ResponseEntity.status(OK.code)
                 .body(ApiResponse.OK("삭제 되었습니다."));
