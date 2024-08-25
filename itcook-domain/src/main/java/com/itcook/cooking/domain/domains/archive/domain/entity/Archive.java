@@ -24,9 +24,16 @@ public class Archive extends BaseTimeEntity {
     private Long postId;
 
     @Builder
-    public Archive(Long itCookUserId, Long postId) {
+    private Archive(Long itCookUserId, Long postId) {
         this.itCookUserId = itCookUserId;
         this.postId = postId;
+    }
+
+    public static Archive addArchive(Long userId, Long postId) {
+        return Archive.builder()
+                .itCookUserId(userId)
+                .postId(postId)
+                .build();
     }
 
 }

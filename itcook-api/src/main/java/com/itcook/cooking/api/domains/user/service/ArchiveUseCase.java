@@ -19,18 +19,11 @@ public class ArchiveUseCase {
     private final PostService postService;
     private final ArchiveService archiveService;
 
-    public void archiveAdd(String email, Long postId) {
-
+    public void addArchive(String email, Long postId) {
         ItCookUser findByItCookUser = userService.findUserByEmail(email);
         Post findByPost = postService.fetchFindByPost(postId);
 
-        archiveService.validateDuplicateArchive(findByItCookUser.getId(), findByPost.getId());
-
-        Archive newArchive = Archive.builder()
-                .itCookUserId(findByItCookUser.getId())
-                .postId(findByPost.getId())
-                .build();
-        archiveService.saveArchive(newArchive);
+        archiveService.saveArchive(findByItCookUser.getId(), findByPost.getId());
     }
 
     public void archiveDel(String email, Long postId) {

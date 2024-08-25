@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.itcook.cooking.domain.common.constant.StatusCode.*;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,8 +31,8 @@ public class ArchiveController {
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @Valid @RequestBody ArchiveRequest archiveRequest
     ) {
-        archiveUseCase.archiveAdd(authenticationUser.getUsername(), archiveRequest.getPostId());
-        return ResponseEntity.status(200)
+        archiveUseCase.addArchive(authenticationUser.getUsername(), archiveRequest.getPostId());
+        return ResponseEntity.status(OK.code)
                 .body(ApiResponse.OK("저장 되었습니다."));
     }
 
@@ -41,7 +43,7 @@ public class ArchiveController {
     ) {
         archiveUseCase.archiveDel(authenticationUser.getUsername(), archiveRequest.getPostId());
 
-        return ResponseEntity.status(200)
+        return ResponseEntity.status(OK.code)
                 .body(ApiResponse.OK("삭제 되었습니다."));
     }
 }
