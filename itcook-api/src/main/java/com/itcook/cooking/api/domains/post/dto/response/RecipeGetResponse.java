@@ -5,6 +5,7 @@ import com.itcook.cooking.api.domains.post.dto.recipe.RecipeProcessGetResponse;
 import com.itcook.cooking.domain.domains.post.domain.entity.Post;
 import com.itcook.cooking.domain.domains.post.domain.repository.dto.RecipeDto;
 import com.itcook.cooking.domain.domains.user.domain.entity.ItCookUser;
+import com.itcook.cooking.domain.domains.user.domain.enums.LifeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class RecipeGetResponse {
     private String introduction;
     private String postImagePath;
     private List<String> foodIngredients;
+    private List<String> lifeTypes;
     private List<String> cookingType;
     private List<RecipeProcessGetResponse> recipeProcess;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -46,6 +48,8 @@ public class RecipeGetResponse {
     ) {
         Post post = dto.getPost();
         ItCookUser itCookUser = dto.getItCookUser();
+        List<String> lifeTypes = post.getLifeTypes().stream()
+                .map(LifeType::getLifeTypeName).toList();
         List<String> cookingTypes = post.getPostCookingThemes().stream()
                 .map(type -> type.getCookingType().getCookingTypeName())
                 .toList();
@@ -53,6 +57,7 @@ public class RecipeGetResponse {
                 .fromDto(post.getRecipeProcesses());
 
         return RecipeGetResponse.builder()
+
                 .writerUserId(itCookUser.getId())
                 .writerUserEmail(itCookUser.getEmail())
                 .writerProfile(itCookUser.getProfile())
@@ -63,6 +68,7 @@ public class RecipeGetResponse {
                 .introduction(post.getIntroduction())
                 .postImagePath(post.getPostImagePath())
                 .foodIngredients(post.getFoodIngredients())
+                .lifeTypes(lifeTypes)
                 .cookingType(cookingTypes)
                 .recipeProcess(recipeProcessGetResponses)
                 .lastModifiedAt(post.getLastModifiedAt())
