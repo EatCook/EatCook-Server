@@ -1,3 +1,5 @@
+CREATE INDEX idx_archive_user_id_id ON archive (user_id, archive_id DESC);
+
 CREATE INDEX user_email_idx ON itcook_user (email, user_state);
 CREATE INDEX post_user_id_flag_created_idx ON post (user_id, post_flag, created_at desc);
 CREATE INDEX post_flag_last_modified_idx ON post (post_flag, last_modified_at desc);

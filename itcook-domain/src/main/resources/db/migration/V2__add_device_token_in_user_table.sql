@@ -1,1 +1,0 @@
-ALTER TABLE itcook_user ADD COLUMN device_token VARCHAR(255);

@@ -1,1 +1,0 @@
-CREATE INDEX idx_archive_user_id_id ON archive (user_id, archive_id DESC);
