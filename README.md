@@ -56,7 +56,8 @@ DDD와 멀티모듈 구조를 사용했습니다. 각 도메인별 연관관계�
 │               └── service  # 도메인 서비스, 도메인 이벤트 핸들러
 └── ItCook-infra  # Redis, FeignClient(외부 API 호출), 메일(AWS SES), S3 등
 ```
-
+<br>
+<img width="640" alt="image" src="https://github.com/user-attachments/assets/e07794e8-afd5-4c21-82ff-35786217838a" />
 
 <br>
 
