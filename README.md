@@ -16,7 +16,7 @@
 ---
 DDD와 멀티모듈 구조를 사용했습니다. 각 도메인별 연관관계를 최대한 끊어내고 도메인 이벤트를 활용해 도메인간의 의존성을 줄였습니다. 도메인 모듈 -> 인프라 모듈의 의존성을 끊어내기 위해 DIP를 적용하여 의존성을 관리했습니다.
 
-
+```
 ├── ItCook-Api
 │   └── com.eatcook.api
 │       └── <각 usecase 별 패키지>  # 예: recipe, user
@@ -34,8 +34,9 @@ DDD와 멀티모듈 구조를 사용했습니다. 각 도메인별 연관관계�
 │               ├── domain  # 도메인 객체
 │               ├── exception  # 도메인별 에러 정의
 │               ├── repository  # 도메인 리포지토리
-│           └── service  # 도메인 서비스, 도메인 이벤트 핸들러
+│               └── service  # 도메인 서비스, 도메인 이벤트 핸들러
 └── ItCook-infra  # Redis, FeignClient(외부 API 호출), 메일(AWS SES), S3 등
+```
 
 
 
